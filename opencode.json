@@ -1,0 +1,134 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "jarvis",
+  "provider": {
+    "openrouter": {
+      "models": {
+        "owl-alpha": {
+          "name": "Owl Alpha (1M, free)",
+          "context": 1000000
+        }
+      }
+    }
+  },
+  "permission": {
+    "glob": "deny",
+    "grep": "deny",
+    "webfetch": "deny"
+  },
+  "mcp": {
+    "agentmemory": {
+      "type": "local",
+      "command": [
+        "agentmemory",
+        "mcp"
+      ],
+      "env": {
+        "AGENTMEMORY_URL": "http://localhost:3111"
+      },
+      "enabled": true
+    },
+    "exa": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "exa-mcp-server"
+      ],
+      "environment": {
+        "EXA_API_KEY": "<YOUR_EXA_API_KEY>"
+      },
+      "timeout": 25000,
+      "enabled": true
+    },
+    "obsidian": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "@bitbonsai/mcpvault@latest",
+        "<PATH_TO_OBSIDIAN_VAULT_CONFIG>"
+      ],
+      "enabled": true
+    },
+    "deepwiki": {
+      "type": "remote",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer <YOUR_CONTEXT7_API_KEY>"
+      }
+    }
+  },
+  "agent": {
+    "jarvis": {
+      "permission": {
+        "glob": "deny",
+        "grep": "deny"
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-obsidian*": true,
+        "mcp-sequential-thinking*": true
+      }
+    },
+    "executor": {
+      "permission": {
+        "glob": "deny",
+        "grep": "deny"
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true,
+        "mcp-context7*": true
+      }
+    },
+    "scout": {
+      "permission": {
+        "glob": "deny",
+        "grep": "deny"
+      },
+      "tools": {
+        "mcp-context7*": true,
+        "mcp-deepwiki*": true,
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true,
+        "mcp-exa*": true
+      }
+    },
+    "obsidian": {
+      "permission": {
+        "glob": "deny",
+        "grep": "deny"
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-obsidian*": true,
+        "mcp-sequential-thinking*": true
+      }
+    }
+  },
+  "lsp": {},
+  "plugin": [
+    "opencode-intellisearch",
+    "opencode-scheduler",
+    "@tarquinen/opencode-dcp@latest"
+  ],
+  "experimental": {
+    "mcp_timeout": 120000
+  }
+}
