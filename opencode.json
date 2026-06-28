@@ -1,0 +1,258 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4-flash-free",
+  "default_agent": "jarvis",
+  "share": "disabled",
+  "instructions": [
+    "~/.config/opencode/global-rules.md"
+  ],
+  "provider": {
+    "openrouter": {
+      "models": {
+        "owl-alpha": {
+          "name": "Owl Alpha (1M, free)",
+          "limit": {
+            "context": 1000000,
+            "output": 262144
+          }
+        }
+      }
+    }
+  },
+  "permission": {
+    "bash": {
+      "find*": "deny",
+      "grep*": "deny",
+      "npm*": "deny",
+      "sqlite*": "ask",
+      "opencode*": "ask"
+    },
+    "glob": "deny",
+    "grep": "deny",
+    "websearch": "deny"
+  },
+  "mcp": {
+    "agentmemory": {
+      "type": "local",
+      "command": [
+        "agentmemory",
+        "mcp"
+      ],
+      "environment": {
+        "AGENTMEMORY_URL": "http://localhost:3111",
+        "AGENTMEMORY_TOOLS": "jarvis"
+      },
+      "enabled": true
+    },
+    "exa": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "exa-mcp-server"
+      ],
+      "environment": {
+        "EXA_API_KEY": "57c7932c-0ffa-4f75-8173-da5b8a343752"
+      },
+      "timeout": 25000,
+      "enabled": false
+    },
+    "deepwiki": {
+      "type": "remote",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "timeout": 60000,
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500"
+      }
+    },
+    "web-research": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "web-research-mcp"
+      ],
+      "enabled": false,
+      "description": "Поиск через DuckDuckGo + fetch страниц. (DuckDuckGo сломан)"
+    },
+    "searxng": {
+      "type": "local",
+      "command": [
+        "mcp-searxng"
+      ],
+      "enabled": true,
+      "timeout": 60000,
+      "environment": {
+        "SEARXNG_URL": "http://localhost:8099",
+        "SEARXNG_MAX_RESULTS": "15"
+      },
+      "description": "Поиск через свой SearXNG (Docker) + web_url_read"
+    },
+    "crawl4ai": {
+      "type": "local",
+      "command": [
+        "uv",
+        "run",
+        "--project",
+        "/home/kasiro/Документы/python_projects/crawl4ai-rag",
+        "python",
+        "/home/kasiro/Документы/python_projects/crawl4ai-rag/crawl4ai_mcp_server.py"
+      ],
+      "timeout": 60000,
+      "enabled": true,
+      "description": "Парсинг сайтов через Crawl4AI — поиск информации на естественном языке"
+    },
+    "youtube-transcript": {
+      "type": "local",
+      "command": [
+        "/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp"
+      ],
+      "environment": {
+        "EXA_API_KEY": "57c7932c-0ffa-4f75-8173-da5b8a343752"
+      },
+      "timeout": 60000,
+      "enabled": true
+    }
+  },
+  "agent": {
+    "jarvis": {
+      "permission": {
+        "edit": {
+          "*": "deny"
+        },
+        "bash": {
+          "*": "deny"
+        },
+        "websearch": "deny",
+        "webfetch": "deny",
+        "agentmemory_memory_slot_create": "deny",
+        "agentmemory_memory_slot_get": "deny",
+        "agentmemory_memory_slot_list": "deny",
+        "agentmemory_memory_slot_append": "deny",
+        "agentmemory_memory_slot_replace": "deny",
+        "agentmemory_memory_slot_delete": "deny"
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true,
+        "mcp-searxng*": false
+      }
+    },
+    "researcher": {
+      "permission": {
+        "edit": {
+          "*": "deny"
+        },
+        "bash": {
+          "curl*": "allow",
+          "wget*": "allow",
+          "*": "deny"
+        },
+        "skill": {
+          "agent-delegation": "deny",
+          "jarvis-cycles": "deny",
+          "context-mgmt": "deny",
+          "how_use_memory": "deny"
+        }
+      },
+      "tools": {
+        "mcp-deepwiki*": true,
+        "mcp-context7*": true,
+        "mcp-searxng*": true,
+        "mcp-youtube-transcript*": true
+      }
+    },
+    "executor": {
+      "permission": {
+        "edit": {
+          "*": "allow"
+        },
+        "bash": {
+          "*": "allow"
+        },
+        "skill": {
+          "agent-delegation": "deny",
+          "jarvis-cycles": "deny",
+          "context-mgmt": "deny",
+          "how_use_memory": "deny"
+        }
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true
+      }
+    },
+    "sysadmin": {
+      "permission": {
+        "bash": {
+          "*": "allow"
+        },
+        "skill": {
+          "agent-delegation": "deny",
+          "jarvis-cycles": "deny",
+          "context-mgmt": "deny",
+          "how_use_memory": "deny"
+        }
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true,
+        "mcp-searxng*": true
+      }
+    },
+    "general": {
+      "permission": {
+        "edit": {
+          "*": "allow"
+        },
+        "bash": {
+          "*": "allow"
+        },
+        "skill": {
+          "agent-delegation": "deny",
+          "jarvis-cycles": "deny",
+          "context-mgmt": "deny",
+          "how_use_memory": "deny"
+        }
+      },
+      "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true,
+        "mcp-searxng*": true,
+        "mcp-deepwiki*": true,
+        "mcp-context7*": true
+      }
+    }
+  },
+  "lsp": {},
+  "plugin": [
+    "@prevalentware/opencode-goal-plugin",
+    "opencode-intellisearch",
+    "@tarquinen/opencode-dcp@3.1.13"
+  ],
+  "compaction": {
+    "auto": false,
+    "prune": false
+  },
+  "tool_output": {
+    "max_lines": 5000,
+    "max_bytes": 204800
+  },
+  "experimental": {
+    "mcp_timeout": 60000
+  }
+}
