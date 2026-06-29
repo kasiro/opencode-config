@@ -21,11 +21,11 @@
   },
   "permission": {
     "bash": {
-      "find*": "deny",
-      "grep*": "deny",
-      "npm*": "deny",
-      "sqlite*": "ask",
-      "opencode*": "ask"
+      "*find*": "deny",
+      "*grep*": "deny",
+      "*npm*": "deny",
+      "*sqlite*": "ask",
+      "*opencode*": "ask"
     },
     "glob": "deny",
     "grep": "deny",
@@ -144,13 +144,15 @@
         "agentmemory_memory_slot_list": "deny",
         "agentmemory_memory_slot_append": "deny",
         "agentmemory_memory_slot_replace": "deny",
-        "agentmemory_memory_slot_delete": "deny"
-      },
-      "tools": {
-        "mcp-agentmemory*": true,
-        "mcp-sequential-thinking*": true,
-        "mcp-searxng*": false
+        "agentmemory_memory_slot_delete": "deny",
+        "mcp-searxng*": "deny",
+        "mcp-crawl4ai*": "deny",
+        "mcp-deepwiki*": "deny",
+        "mcp-context7*": "deny"
       }
+    },
+    "title": {
+      "model": "opencode/big-pickle"
     },
     "researcher": {
       "permission": {
@@ -170,10 +172,13 @@
         }
       },
       "tools": {
+        "mcp-agentmemory*": true,
+        "mcp-sequential-thinking*": true,
         "mcp-deepwiki*": true,
         "mcp-context7*": true,
         "mcp-searxng*": true,
-        "mcp-youtube-transcript*": true
+        "mcp-youtube-transcript*": true,
+        "mcp-crawl4ai*": true
       }
     },
     "executor": {
@@ -184,16 +189,14 @@
         "bash": {
           "*": "allow"
         },
+        "websearch": "deny",
+        "webfetch": "deny",
         "skill": {
           "agent-delegation": "deny",
           "jarvis-cycles": "deny",
           "context-mgmt": "deny",
           "how_use_memory": "deny"
         }
-      },
-      "tools": {
-        "mcp-agentmemory*": true,
-        "mcp-sequential-thinking*": true
       }
     },
     "sysadmin": {

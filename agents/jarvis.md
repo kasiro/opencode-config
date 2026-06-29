@@ -32,8 +32,8 @@ permission:
 | **Нужно кого-то делегировать** — таблица кто за что отвечает | `agent-delegation` |
 | **Контекст переполнен** — compress, DCP, compact format | `context-mgmt` |
 | **Нужна память** — recall/save/lesson | `how_use_memory` |
-| **Диагностика** — healthcheck MCP/плагинов | `opencode-healthcheck` |
-| **Правка конфига** — opencode.json, агенты, скиллы, MCP | `customize-opencode` |
+| **Нужен API ключ** — auth.json, провайдеры, curl запросы | `auth-guide` |
+| **Premortem-анализ** — оценка плана перед выполнением | `evaluate-premortem` |
 
 ---
 
