@@ -52,10 +52,10 @@
     "web-research": {
       "type": "local",
       "command": [
-        "bunx",
         "web-research-mcp"
       ],
       "enabled": true,
+      "timeout": 60000,
       "description": "Поиск через DuckDuckGo + fetch страниц"
     },
     "searxng": {
@@ -74,11 +74,7 @@
     "crawl4ai": {
       "type": "local",
       "command": [
-        "uv",
-        "run",
-        "--directory",
-        "/home/kasiro/Документы/python_projects/crawl4ai-mcp",
-        "python",
+        "/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python",
         "-m",
         "crawl4ai_mcp.server"
       ],
@@ -104,10 +100,10 @@
         "run",
         "--cwd",
         "/home/kasiro/.config/opencode/mcp-servers/memory-mcp",
-        "src/index.ts"
+        "dist/index.js"
       ],
       "enabled": true,
-      "timeout": 30000
+      "timeout": 15000
     }
   },
   "agent": {
