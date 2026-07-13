@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>DCP и контекст-менеджмент — J.A.R.V.I.S.</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .tag-orange { background: #ff910033; color: #ff9100; border: 1px solid #ff9100; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>📐 DCP и контекст-менеджмент</h1>
+<p><span class="tag tag-green">плагин</span> <span class="tag tag-blue">@tarquinen/opencode-dcp@3.1.13</span> <span class="tag tag-orange">free tier optimization</span></p>
+
+<div class="section">
+  <h3>🔍 Что такое DCP</h3>
+  <p><strong>Dynamic Compression Protocol</strong> (DCP) — плагин для OpenCode, реализующий динамическое управление контекстным окном. Установлен через <code>@tarquinen/opencode-dcp@3.1.13</code>. Основная задача: автоматически сжимать старый контекст, когда окно приближается к лимиту модели.</p>
+  <p>Плагин зарегистрирован в <span class="path">~/.opencode/opencode.json</span> в секции <code>plugin</code>.</p>
+
+  <pre>{
+  "plugin": [
+    "@prevalentware/opencode-goal-plugin",
+    "opencode-intellisearch",
+    "@tarquinen/opencode-dcp@3.1.13"
+  ]
+}</pre>
+</div>
+
+<h2>⚙️ Конфигурация dcp.jsonc</h2>
+
+<div class="section">
+  <p>Файл конфигурации: <span class="path">~/.config/opencode/dcp.jsonc</span></p>
+
+  <pre>{
+  "$schema": "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json",
+  "enabled": true,
+  "autoUpdate": false,
+  "debug": false,
+  "pruneNotification": "minimal",
+  "pruneNotificationType": "chat",
+  "turnProtection": {
+    "enabled": true,
+    "turns": 4
+  },
+  "compress": {
+    "mode": "range",
+    "permission": "allow",
+    "showCompression": false,
+    "summaryBuffer": true,
+    "maxContextLimit": "85%",
+    "minContextLimit": "50%",
+    "nudgeFrequency": 8,
+    "iterationNudgeThreshold": 1,
+    "nudgeForce": "soft",
+    "protectedTools": [],
+    "protectTags": false,
+    "protectUserMessages": false
+  },
+  "strategies": {
+    "deduplication": {
+      "enabled": true
+    },
+    "purgeErrors": {
+      "enabled": true,
+      "turns": 6
+    }
+  }
+}</pre>
+
+  <table>
+    <tr><th>Параметр</th><th>Текущее значение</th><th>Назначение</th></tr>
+    <tr><td><code>enabled</code></td><td><code>true</code></td><td>Включение DCP</td></tr>
+    <tr><td><code>autoUpdate</code></td><td><code>false</code></td><td>Автообновление плагина</td></tr>
+    <tr><td><code>turnProtection.turns</code></td><td><code>4</code></td><td>Защита последних 4 сообщений от сжатия</td></tr>
+    <tr><td><code>compress.mode</code></td><td><code>"range"</code></td><td>Диапазонный режим сжатия</td></tr>
+    <tr><td><code>compress.maxContextLimit</code></td><td><code>"85%"</code></td><td>Порог сжатия (85% контекста)</td></tr>
+    <tr><td><code>compress.minContextLimit</code></td><td><code>"50%"</code></td><td>Целевой уровень после сжатия (50%)</td></tr>
+    <tr><td><code>compress.summaryBuffer</code></td><td><code>true</code></td><td>Буферизация суммаризации</td></tr>
+    <tr><td><code>strategies.deduplication</code></td><td><code>true</code></td><td>Удаление дублирующегося контента</td></tr>
+    <tr><td><code>strategies.purgeErrors</code></td><td><code>true, turns: 6</code></td><td>Удаление старых ошибок/выводов тулов</td></tr>
+  </table>
+</div>
+
+<h2>🔄 Режимы сжатия</h2>
+
+<div class="section">
+  <h3><span class="tag tag-blue">mode "range"</span> — Диапазонное сжатие</h3>
+  <p>Текущий режим. Сжимает <strong>диапазон сообщений</strong> между protected зоной и началом контекста. Включает суммаризацию (summaryBuffer) для сохранения смысла.</p>
+  
+  <h3><span class="tag tag-yellow">mode "summary"</span> — Суммаризация</h3>
+  <p>Заменяет старые сообщения их кратким содержанием. Более агрессивное сжатие, но теряет детали.</p>
+  
+  <h3><span class="tag tag-yellow">mode "drop"</span> — Удаление</h3>
+  <p>Просто удаляет старые сообщения. Самое агрессивное, но теряет контекст полностью.</p>
+</div>
+
+<h2>🛡️ Стратегии сжатия</h2>
+
+<div class="section">
+  <h3>Deduplication (включена)</h3>
+  <p>Удаляет дублирующийся контент между сообщениями. Полезно при повторяющихся вызовах инструментов с одинаковыми результатами.</p>
+  <p><strong>protectedTools:</strong> список инструментов, вывод которых не подлежит дедупликации (на данный момент пуст).</p>
+
+  <h3>PurgeErrors (включена, turns: 6)</h3>
+  <p>Удаляет старые сообщения об ошибках и выводы инструментов через 6 шагов. Очищает контекст от шума, но сохраняет недавние ошибки для дебага.</p>
+</div>
+
+<h2>🤝 Взаимодействие DCP и OpenCode compaction</h2>
+
+<div class="section">
+  <p>В <span class="path">opencode.json</span> есть встроенная секция <code>compaction</code>:</p>
+
+  <pre>"compaction": {
+    "auto": false,
+    "prune": false
+  }</pre>
+
+  <table>
+    <tr><th>Механизм</th><th>Статус</th><th>Описание</th></tr>
+    <tr><td><strong>DCP (плагин)</strong></td><td><span class="tag tag-green">Включён</span></td><td>Динамическое сжатие по проценту контекста</td></tr>
+    <tr><td><strong>OpenCode compaction</strong></td><td><span class="tag tag-red">Выключен</span></td><td>Встроенное сжатие (хвостовые сообщения)</td></tr>
+  </table>
+
+  <p><strong>Рекомендация:</strong> Используй ОДИН основной механизм. DCP активен — compaction OpenCode отключён (auto: false, prune: false). Если оба активны — DCP может сжимать то, что compaction уже проредил, что избыточно.</p>
+</div>
+
+<h2>🎯 Настройки под модель</h2>
+
+<div class="section">
+  <h3>deepseek-v4-flash-free (200K контекст)</h3>
+  <table>
+    <tr><th>Параметр</th><th>Рекомендация</th><th>Текущее</th></tr>
+    <tr><td><code>maxContextLimit</code></td><td>75% (150K)</td><td><span class="tag tag-yellow">85% (170K)</span></td></tr>
+    <tr><td><code>minContextLimit</code></td><td>40% (80K)</td><td><span class="tag tag-yellow">50% (100K)</span></td></tr>
+    <tr><td><code>turnProtection.turns</code></td><td>3-4</td><td><span class="tag tag-green">4 ✓</span></td></tr>
+    <tr><td><code>preserve_recent_tokens</code></td><td>20000</td><td><span class="tag tag-yellow">не настроено</span></td></tr>
+    <tr><td><code>reserved</code></td><td>40000</td><td><span class="tag tag-yellow">не настроено</span></td></tr>
+  </table>
+
+  <h3>DeepSeek V4 Flash (1M контекст)</h3>
+  <table>
+    <tr><th>Параметр</th><th>Рекомендация</th></tr>
+    <tr><td><code>maxContextLimit</code></td><td>80% (800K)</td></tr>
+    <tr><td><code>minContextLimit</code></td><td>50% (500K)</td></tr>
+    <tr><td><code>turnProtection.turns</code></td><td>5-6</td></tr>
+    <tr><td><code>preserve_recent_tokens</code></td><td>100000</td></tr>
+    <tr><td><code>reserved</code></td><td>100000</td></tr>
+  </table>
+
+  <p><strong>Заметка:</strong> Текущая конфигурация (85%/50%) ориентирована на 200K модель. При смене на 1M модель — параметры нужно адаптировать.</p>
+</div>
+
+<h2>📋 context-mgmt скилл</h2>
+
+<div class="section">
+  <p>Скилл <span class="path">~/.config/opencode/skills/context-mgmt/SKILL.md</span> содержит рекомендации по оптимизации контекста для free tier:</p>
+  
+  <h3>Когда сжимать:</h3>
+  <ul>
+    <li>✅ После закрытого блока работы (задача завершена, исследование закончено)</li>
+    <li>✅ При смене темы</li>
+    <li>✅ Когда чувствуешь что контекст тяжёлый</li>
+    <li>✅ После 20-30 сообщений без компрессии</li>
+  </ul>
+
+  <h3>Когда НЕ сжимать:</h3>
+  <ul>
+    <li>❌ В середине активной задачи, если нужны точные ссылки на код/ошибки</li>
+    <li>❌ Если следующий шаг зависит от деталей из истории</li>
+  </ul>
+
+  <h3>Дополнительные методы экономии контекста:</h3>
+  <ul>
+    <li>Использовать <code>format="compact"</code> в memory_recall</li>
+    <li>Делегировать исследовательские задачи сабагенту <strong>researcher</strong> (экономит ~50% контекста)</li>
+    <li>Делать задачи последовательно, не параллельно</li>
+    <li>Compress каждые 20-30 сообщений или при смене темы</li>
+  </ul>
+</div>
+
+<h2>⌨️ Команда /dcp-compress</h2>
+
+<div class="section">
+  <p>Ручное сжатие контекста через чат-команду:</p>
+  <pre>/dcp-compress</pre>
+  <p>Принудительно запускает сжатие независимо от <code>maxContextLimit</code>. Полезно когда:</p>
+  <ul>
+    <li>Чувствуется "тяжесть" в ответах модели</li>
+    <li>Перед сменой темы для "чистого листа"</li>
+    <li>После завершения крупной задачи</li>
+  </ul>
+</div>
+
+<h2>💡 Рекомендации по улучшению</h2>
+
+<div class="section">
+  <ol>
+    <li><strong>Авто-консолидация по расписанию:</strong> Настроить <code>autoUpdate: true</code> или добавить cron-триггер для периодической консолидации контекста в неактивные часы</li>
+    <li><strong>Динамическая настройка под модель:</strong> Сделать параметры DCP адаптивными — при смене модели с 200K на 1M менять <code>maxContextLimit</code> и <code>minContextLimit</code></li>
+    <li><strong>Заполнить protectedTools:</strong> Указать инструменты, чей вывод нельзя удалять (например <code>edit</code>, <code>write</code> для active coding session)</li>
+    <li><strong>protectUserMessages: true</strong> — включить защиту сообщений пользователя от сжатия (сейчас выключено)</li>
+    <li><strong>Настроить preserve_recent_tokens</strong> — явно указать количество токенов для защиты (20000 для 200K модели)</li>
+    <li><strong>Интеграция с agentmemory:</strong> При DCP-сжатии автоматически сохранять session_summary в episodic память</li>
+  </ol>
+</div>
+
+<p style="text-align:center; color:#666; margin-top:40px;">Сгенерировано E.X.E.C.U.T.O.R • 01.07.2026</p>
+
+</body>
+</html>

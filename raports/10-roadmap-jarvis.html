@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёт 10: Дорожная карта: OpenCode → полноценный Jarvis</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .diagram { background: #0d1117; padding: 20px; border-radius: 8px; border-left: 3px solid #e94560; font-family: monospace; white-space: pre; line-height: 1.5; color: #8b949e; }
+  .progress-bar { background: #0f3460; height: 20px; border-radius: 10px; overflow: hidden; margin: 5px 0; }
+  .progress-fill { height: 100%; border-radius: 10px; text-align: center; color: #fff; font-size: 0.8em; line-height: 20px; }
+</style>
+</head>
+<body>
+
+<h1>Отчёт 10: Дорожная карта: OpenCode → полноценный Jarvis</h1>
+<p><em>Дата: Июль 2026 | Итого: 15-25 дней до полноценного ассистента</em></p>
+
+<div class="section" style="text-align: center; font-size: 1.2em;">
+  <p style="color: #e94560; font-weight: bold;">🎯 Цель: Превратить OpenCode из инструмента для разработки<br>в полноценного голосового ассистента класса Jarvis</p>
+</div>
+
+<h2>Фаза 0: Фундамент ✅ (уже есть — 0 дней)</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Компонент</th><th>Статус</th><th>Описание</th></tr>
+    <tr>
+      <td>CYCLE 1-3 протоколы</td>
+      <td><span class="tag tag-green">Готово</span></td>
+      <td>Task Intake, Execution, Autonomous протоколы</td>
+    </tr>
+    <tr>
+      <td>5 сабагентов</td>
+      <td><span class="tag tag-green">Готово</span></td>
+      <td>architect, executor, researcher, code-review, memory</td>
+    </tr>
+    <tr>
+      <td>agentmemory</td>
+      <td><span class="tag tag-green">Готово</span></td>
+      <td>Память: recall, save, lesson, graph, consolidate</td>
+    </tr>
+    <tr>
+      <td>pc-control скилл</td>
+      <td><span class="tag tag-green">Готово</span></td>
+      <td>32 скрипта, 13 API-файлов, управление ПК</td>
+    </tr>
+    <tr>
+      <td>MCP сервера</td>
+      <td><span class="tag tag-green">Готово</span></td>
+      <td>context7, deepwiki, searxng, crawl4ai, pc-control</td>
+    </tr>
+    <tr>
+      <td>Плагины</td>
+      <td><span class="tag tag-green">Готово</span></td>
+      <td>plugin-creator, plugin-installer</td>
+    </tr>
+  </table>
+  <p><strong>Итого фундамент:</strong> Протоколы, агенты, память, управление ПК, MCP, плагины — всё работает.</p>
+</div>
+
+<h2>Фаза 1: Голос (3-5 дней) 🎤</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Задача</th><th>Дней</th><th>Описание</th><th>Приоритет</th></tr>
+    <tr>
+      <td>Whisper MCP сервер</td>
+      <td>1</td>
+      <td>MCP сервер с инструментом transcribe (Whisper large-v3 или whisper.cpp)</td>
+      <td><span class="tag tag-green">Критично</span></td>
+    </tr>
+    <tr>
+      <td>TTS плагин</td>
+      <td>1</td>
+      <td>Интеграция opencode-voice-plugin или agent-tts как MCP сервер</td>
+      <td><span class="tag tag-green">Критично</span></td>
+    </tr>
+    <tr>
+      <td>Микрофонный плагин</td>
+      <td>1</td>
+      <td>MCP сервер для захвата аудио с микрофона (sounddevice)</td>
+      <td><span class="tag tag-green">Критично</span></td>
+    </tr>
+    <tr>
+      <td>Wake Word</td>
+      <td>1</td>
+      <td>RustPotter или Porcupine MCP сервер</td>
+      <td><span class="tag tag-yellow">Важно</span></td>
+    </tr>
+    <tr>
+      <td>VAD (Silero)</td>
+      <td>0.5</td>
+      <td>Детекция голосовой активности</td>
+      <td><span class="tag tag-yellow">Важно</span></td>
+    </tr>
+    <tr>
+      <td>Интеграция пайплайна</td>
+      <td>0.5</td>
+      <td>Listen → VAD → Wake → STT → OpenCode → TTS</td>
+      <td><span class="tag tag-green">Критично</span></td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Итого Фаза 1</td>
+      <td style="font-weight: bold;">3-5</td>
+      <td colspan="2">OpenCode может слышать и говорить</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Фаза 2: Демонизация (3-5 дней) ⚙️</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Задача</th><th>Дней</th><th>Описание</th></tr>
+    <tr>
+      <td>EventBus MCP сервер</td>
+      <td>1</td>
+      <td>Перенос event_bus.py в MCP сервер, SQLite persistence</td>
+    </tr>
+    <tr>
+      <td>systemd user unit</td>
+      <td>0.5</td>
+      <td>opencode-daemon.service, автостарт, restart on failure</td>
+    </tr>
+    <tr>
+      <td>HTTP/WS API</td>
+      <td>1</td>
+      <td>FastAPI сервер на порту :9710, POST /publish, GET /state</td>
+    </tr>
+    <tr>
+      <td>Планировщик</td>
+      <td>1</td>
+      <td>cron-like задачи: напоминания, авто-консолидация, healthcheck</td>
+    </tr>
+    <tr>
+      <td>File Watcher</td>
+      <td>0.5</td>
+      <td>watchdog → inotify → publish(event) на изменения файлов</td>
+    </tr>
+    <tr>
+      <td>Webhook приёмник</td>
+      <td>1</td>
+      <td>GitHub push, Telegram, IFTTT → execute команды</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Итого Фаза 2</td>
+      <td style="font-weight: bold;">3-5</td>
+      <td>24/7 работа, внешние триггеры, фоновые задачи</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Фаза 3: PC Control MCP (2-3 дня) 🖥️</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Задача</th><th>Дней</th><th>Описание</th></tr>
+    <tr>
+      <td>MCP сервер pc-control</td>
+      <td>1</td>
+      <td>12+ инструментов вместо subprocess. Быстрый, типизированный.</td>
+    </tr>
+    <tr>
+      <td>Мышь (click, move, scroll)</td>
+      <td>0.5</td>
+      <td>ydotool mouse move/click, scroll</td>
+    </tr>
+    <tr>
+      <td>Мониторинг системы</td>
+      <td>0.5</td>
+      <td>CPU, RAM, диск, температура (psutil)</td>
+    </tr>
+    <tr>
+      <td>Docker управление</td>
+      <td>0.5</td>
+      <td>docker-py: ps, start, stop, logs, exec</td>
+    </tr>
+    <tr>
+      <td>Громкость / аудио-устройства</td>
+      <td>0.5</td>
+      <td>pactl: get/set volume, mute, список устройств</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Итого Фаза 3</td>
+      <td style="font-weight: bold;">2-3</td>
+      <td>Полный контроль ПК через единый MCP сервер</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Фаза 4: Multi-agent Mesh (4-7 дней) 🕸️</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Задача</th><th>Дней</th><th>Описание</th></tr>
+    <tr>
+      <td>Агент voice</td>
+      <td>1-2</td>
+      <td>Диспетчер голосовых команд: STT → intent → action → TTS</td>
+    </tr>
+    <tr>
+      <td>Агент monitor</td>
+      <td>1</td>
+      <td>Мониторинг системы: алерты при высоком CPU, низком диске</td>
+    </tr>
+    <tr>
+      <td>Агент scheduler</td>
+      <td>1</td>
+      <td>Планировщик: напоминания, периодические задачи, cron</td>
+    </tr>
+    <tr>
+      <td>DAG execution</td>
+      <td>1-2</td>
+      <td>Граф зависимостей: A → B → C, параллельное выполнение</td>
+    </tr>
+    <tr>
+      <td>Mesh коммуникация</td>
+      <td>1</td>
+      <td>Сигналы между агентами через EventBus publish/subscribe</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Итого Фаза 4</td>
+      <td style="font-weight: bold;">4-7</td>
+      <td>Многозадачность, параллельные агенты, сложные сценарии</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Фаза 5: Интеграция и polish (3-5 дней) ✨</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Задача</th><th>Дней</th><th>Описание</th></tr>
+    <tr>
+      <td>Telegram бот</td>
+      <td>1</td>
+      <td>Управление OpenCode через Telegram (python-telegram-bot)</td>
+    </tr>
+    <tr>
+      <td>Веб-интерфейс</td>
+      <td>1-2</td>
+      <td>Simple SPA: логи, статистика, ручной ввод команд</td>
+    </tr>
+    <tr>
+      <td>Авто-консолидация памяти</td>
+      <td>0.5</td>
+      <td>agentmemory consolidate по расписанию</td>
+    </tr>
+    <tr>
+      <td>Профилирование</td>
+      <td>0.5</td>
+      <td>Замеры скорости, использование памяти, оптимизация</td>
+    </tr>
+    <tr>
+      <td>Документация</td>
+      <td>1</td>
+      <td>README, SKILL.md, схемы, примеры</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Итого Фаза 5</td>
+      <td style="font-weight: bold;">3-5</td>
+      <td>Пользовательский опыт, стабильность, документирование</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Сводная таблица: 6 фаз, 15-25 дней</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Фаза</th><th>Тема</th><th>Дней</th><th>Результат</th><th>Суммарно</th></tr>
+    <tr><td><strong>0</strong></td><td>Фундамент</td><td>✅ 0</td><td>Протоколы, агенты, память, MCP, pc-control</td><td>Есть</td></tr>
+    <tr><td><strong>1</strong></td><td>🎤 Голос</td><td>3-5</td><td>STT, TTS, микрофон, wake-word</td><td>3-5</td></tr>
+    <tr><td><strong>2</strong></td><td>⚙️ Демонизация</td><td>3-5</td><td>24/7, EventBus, планировщик</td><td>6-10</td></tr>
+    <tr><td><strong>3</strong></td><td>🖥️ PC Control MCP</td><td>2-3</td><td>Единый MCP сервер, мышь, мониторинг</td><td>8-13</td></tr>
+    <tr><td><strong>4</strong></td><td>🕸️ Multi-agent Mesh</td><td>4-7</td><td>Агенты voice/monitor/scheduler, DAG</td><td>12-20</td></tr>
+    <tr><td><strong>5</strong></td><td>✨ Интеграция + polish</td><td>3-5</td><td>Telegram, веб, авто-консолидация</td><td>15-25</td></tr>
+  </table>
+  <p style="color: #e94560; font-weight: bold; text-align: center; font-size: 1.2em;">Итого: 15-25 дней до полноценного Jarvis на базе OpenCode</p>
+</div>
+
+<h2>Таблица готовности по 10 измерениям</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Измерение</th><th>Сейчас</th><th>Цель</th><th>Прогресс</th></tr>
+    <tr>
+      <td>1. 🤖 LLM / интеллект</td>
+      <td>100%</td><td>DeepSeek, Claude, GPT</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: #00c853;">100%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>2. 🧠 Память</td>
+      <td>85%</td><td>Полная авто-консолидация</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: #00c853;">85%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>3. 🖥️ Управление ПК</td>
+      <td>70%</td><td>MCP сервер + мышь + Docker</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 70%; background: #82aaff;">70%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>4. 🎤 Голосовой ввод (STT)</td>
+      <td>0%</td><td>Whisper MCP + VAD + wake-word</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 0%; background: #ff1744;">0%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>5. 🔊 Голосовой вывод (TTS)</td>
+      <td>40%</td><td>EdgeTTS / Kokoro MCP сервер</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 40%; background: #ffd600;">40%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>6. ⚙️ Демонизация / 24/7</td>
+      <td>0%</td><td>systemd, EventBus, планировщик</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 0%; background: #ff1744;">0%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>7. 🕸️ Multi-agent Mesh</td>
+      <td>50%</td><td>5 агентов, DAG, сигналы</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 50%; background: #ffd600;">50%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>8. 🔌 MCP экосистема</td>
+      <td>80%</td><td>10+ серверов, кастомные инструменты</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 80%; background: #82aaff;">80%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>9. 📱 Внешние каналы</td>
+      <td>0%</td><td>Telegram, веб-интерфейс, webhook</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 0%; background: #ff1744;">0%</div></div>
+      </td>
+    </tr>
+    <tr>
+      <td>10. 🏗️ Интеграция (bridge)</td>
+      <td>30%</td><td>OpenCode + Jarvis bridge</td>
+      <td>
+        <div class="progress-bar"><div class="progress-fill" style="width: 30%; background: #ffd600;">30%</div></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2>Ключевые файлы для изменений</h2>
+
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Файл</th><th>Фаза</th><th>Описание</th></tr>
+    <tr><td>1</td><td><code>~/.config/opencode/mcp/stt_server.py</code></td><td>1</td><td>Whisper MCP сервер</td></tr>
+    <tr><td>2</td><td><code>~/.config/opencode/mcp/tts_server.py</code></td><td>1</td><td>TTS MCP сервер (EdgeTTS/Kokoro)</td></tr>
+    <tr><td>3</td><td><code>~/.config/opencode/mcp/microphone_server.py</code></td><td>1</td><td>Микрофонный MCP сервер</td></tr>
+    <tr><td>4</td><td><code>~/.config/opencode/mcp/wakeword_server.py</code></td><td>1</td><td>Wake-word детектор</td></tr>
+    <tr><td>5</td><td><code>~/.config/opencode/mcp/eventbus_server.py</code></td><td>2</td><td>EventBus MCP сервер</td></tr>
+    <tr><td>6</td><td><code>~/.config/systemd/user/opencode-daemon.service</code></td><td>2</td><td>Systemd unit</td></tr>
+    <tr><td>7</td><td><code>~/.config/opencode/daemon/server.py</code></td><td>2</td><td>HTTP/WS API (FastAPI)</td></tr>
+    <tr><td>8</td><td><code>~/.config/opencode/daemon/scheduler.py</code></td><td>2</td><td>Планировщик задач</td></tr>
+    <tr><td>9</td><td><code>~/.config/opencode/daemon/watcher.py</code></td><td>2</td><td>File watcher</td></tr>
+    <tr><td>10</td><td><code>~/.config/opencode/mcp/pc_control_server.py</code></td><td>3</td><td>PC Control MCP сервер</td></tr>
+    <tr><td>11</td><td><code>~/.config/opencode/mcp/opencode_jarvis_bridge.py</code></td><td>5</td><td>Bridge-слой</td></tr>
+    <tr><td>12</td><td><code>~/.config/opencode/opencode.json</code></td><td>Все</td><td>Конфигурация MCP серверов</td></tr>
+  </table>
+</div>
+
+<h2>Архитектурная диаграмма: конечное состояние</h2>
+
+<div class="diagram">
+┌──────────────────────────────────────────────────────────────────────────┐
+│                           OpenCode (Ядро)                                │
+│                                                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │   LLM Core   │  │  5 Agents    │  │  agentmemory │  │  MCP Client  │ │
+│  │  (модель)    │  │  (Mesh)      │  │  (graph)     │  │  (transport) │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘ │
+│         │                 │                  │                 │         │
+└─────────┼─────────────────┼──────────────────┼─────────────────┼─────────┘
+          │                 │                  │                 │
+          ▼                 ▼                  ▼                 ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                         MCP Message Bus (EventBus)                       │
+│              publish / subscribe / state / schedule / signal             │
+└─────┬─────────────────────┬─────────────────────┬──────────────────┬─────┘
+      │                     │                     │                  │
+      ▼                     ▼                     ▼                  ▼
+┌──────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│ Voice    │    │ PC Control   │    │ External     │    │ System       │
+│ MCP      │    │ MCP          │    │ MCP          │    │ Daemon       │
+│          │    │              │    │              │    │              │
+│ STT:     │    │ 🪟 Окна     │    │ SearXNG      │    │ systemd      │
+│ Whisper  │    │ 🚀 Прилож.  │    │ crawl4ai     │    │ HTTP/WS API  │
+│ Vosk     │    │ 🎮 Клавиа   │    │ context7     │    │ Scheduler    │
+│          │    │ 🔐 Система  │    │ deepwiki     │    │ File Watcher │
+│ TTS:     │    │ 👶 Режимы   │    │ YouTube      │    │ Webhooks     │
+│ EdgeTTS  │    │ 🔊 Громк.   │    │              │    │              │
+│ Kokoro   │    │ 🐳 Docker   │    │ Telegram бот │    │ Telegram бот │
+│          │    │ 📊 Монитор  │    │              │    │              │
+│ WakeWord │    │ 🖱️ Мышь    │    │ Веб-интерфейс│    │              │
+│ RustPot. │    │              │    │              │    │              │
+└──────────┘    └──────────────┘    └──────────────┘    └──────────────┘</div>
+
+<h2>Финальный вердикт</h2>
+
+<div class="section" style="border: 2px solid #e94560;">
+  <p style="font-size: 1.2em;"><strong>Готовность OpenCode быть полноценным Jarvis: <span style="color: #ffd600;">~35%</span></strong></p>
+
+  <p><strong>Что уже есть (хорошо):</strong></p>
+  <ul>
+    <li>Отличный LLM (DeepSeek V4, Claude, GPT) — ядро интеллекта</li>
+    <li>5 сабагентов с разными ролями — база для Mesh</li>
+    <li>agentmemory — система памяти с графами и консолидацией</li>
+    <li>pc-control — мощный скилл управления ПК (32 скрипта)</li>
+    <li>MCP экосистема — гибкое расширение функциональности</li>
+    <li>Протоколы CYCLE 1-3 — структурированная работа</li>
+  </ul>
+
+  <p><strong>Чего не хватает (критично):</strong></p>
+  <ul>
+    <li>Голос — полный ноль. Без STT/TTS это не ассистент</li>
+    <li>Демон — нет 24/7 режима. Закрыл терминал = умер</li>
+    <li>Внешние каналы — Telegram, webhook, веб-интерфейс</li>
+  </ul>
+
+  <p><strong>Главный вывод:</strong></p>
+  <p style="font-size: 1.1em;">
+    OpenCode — <strong>лучшая база</strong> для создания Jarvis. Уже есть мозг (LLM, память, агенты) 
+    и зачатки тела (pc-control). Не хватает <strong>органов чувств</strong> (микрофон, STT) и 
+    <strong>кровеносной системы</strong> (EventBus, демон).
+  </p>
+
+  <p style="text-align: center; font-size: 1.3em; color: #e94560; font-weight: bold;">
+    15-25 дней работы = полноценный Jarvis на базе OpenCode
+  </p>
+
+  <p style="text-align: center; font-style: italic; color: #8b949e;">
+    "OpenCode — это не просто инструмент для кода. Это фундамент для ИИ-ассистента будущего."
+  </p>
+</div>
+
+<h2>Приоритетная последовательность работ</h2>
+
+<div class="section">
+  <pre>Неделя 1: ГОЛОС (Фаза 1) — самое слабое место
+  День 1-2: Whisper MCP + Микрофон MCP
+  День 3:   TTS MCP + WakeWord
+  День 4-5: Пайплайн Listen → STT → OpenCode → TTS
+
+Неделя 2: ДЕМОН (Фаза 2) — 24/7 режим
+  День 6-7:   EventBus MCP + systemd unit
+  День 8-9:   HTTP/WS API + Scheduler
+  День 10:    File Watcher + Webhook
+
+Неделя 3: PC CONTROL MCP (Фаза 3)
+  День 11-12: MCP сервер pc-control
+  День 13:    Мышь + Мониторинг + Docker
+
+Неделя 4: MESH + POLISH (Фазы 4-5)
+  День 14-17: Multi-agent Mesh
+  День 18-20: Telegram, веб, документация
+  День 21-25: Тестирование, оптимизация, бета</pre>
+</div>
+
+<hr />
+
+<p><em>Конец цикла отчётов. Все 5 файлов сохранены в ~/.config/opencode/raports/. OpenCode имеет чёткую дорожную карту для превращения в полноценного голосового ассистента класса Jarvis за 15-25 дней.</em></p>
+
+</body>
+</html>

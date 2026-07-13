@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёт 9: Интеграция OpenCode + Jarvis через bridge</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .diagram { background: #0d1117; padding: 20px; border-radius: 8px; border-left: 3px solid #e94560; font-family: monospace; white-space: pre; line-height: 1.5; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<h1>Отчёт 9: Интеграция OpenCode + Jarvis через bridge</h1>
+<p><em>Дата: Июль 2026 | Статус: <span class="tag tag-yellow">Проектирование</span></em></p>
+
+<h2>Зачем нужен bridge</h2>
+
+<div class="section">
+  <table>
+    <tr><th></th><th>OpenCode</th><th>Jarvis (pc-control)</th></tr>
+    <tr>
+      <td><strong>Язык</strong></td>
+      <td>TypeScript / Go</td>
+      <td>Python + Rust (core)</td>
+    </tr>
+    <tr>
+      <td><strong>Умеет</strong></td>
+      <td>LLM, интернет, код, память, MCP, агенты</td>
+      <td>Микрофон, wake-word, VAD, управление ПК, режимы</td>
+    </tr>
+    <tr>
+      <td><strong>Не умеет</strong></td>
+      <td>Микрофон, wake-word, VAD, GNOME D-Bus</td>
+      <td>LLM, интернет, код, долговременная память</td>
+    </tr>
+    <tr>
+      <td><strong>Сильная сторона</strong></td>
+      <td>Мозг: понимание, генерация, планирование</td>
+      <td>Тело: действия, сенсоры, периферия</td>
+    </tr>
+  </table>
+  <p><strong>Вывод:</strong> OpenCode — мозг, Jarvis — тело. Вместе — полноценный ассистент.</p>
+</div>
+
+<h2>Три способа интеграции</h2>
+
+<div class="section">
+  <h3>1. Python executor → subprocess (прямой запуск) <span class="tag tag-green">Работает сейчас</span></h3>
+  <p>OpenCode вызывает Python скрипты pc-control через subprocess. Используется в SKILL.md.</p>
+  <pre># OpenCode → subprocess → python3 script.py
+# Плюсы: работает прямо сейчас, не требует изменений
+# Минусы: ~200-500ms на каждый вызов, нет состояния между вызовами,
+#         нет двусторонней связи, нет сложных возвратов
+
+def execute_command(script_path: str, args: list = None) -> dict:
+    cmd = ["python3", script_path] + (args or [])
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    return {
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "returncode": result.returncode
+    }
+
+# Пример:
+# execute_command("~/.config/opencode/skills/pc-control/scripts/screenshot.py")
+# → {"stdout": "/tmp/screenshot_20260701_1234.png", "returncode": 0}</pre>
+</div>
+
+<div class="section">
+  <h3>2. JSON-RPC через jarvis_server.py <span class="tag tag-yellow">Прототип</span></h3>
+  <p>Эмуляция Rust-core Jarvis. Python HTTP сервер, который принимает JSON-RPC запросы.</p>
+  <pre># ~/.config/opencode/mcp/jarvis_server.py
+# Запускается как MCP сервер
+
+{
+  "mcpServers": {
+    "jarvis": {
+      "command": "python3",
+      "args": ["~/.config/opencode/mcp/jarvis_server.py"]
+    }
+  }
+}
+
+# MCP инструменты:
+# jarvis_execute(command: str, args: dict) → dict
+#   Выполнить команду через API Jarvis (pc-control)
+#   Пример: {"command": "launch_app", "args": {"app": "brave", "workspace": 1}}
+#
+# jarvis_rpc(method: str, params: dict) → dict
+#   Вызвать любой метод API через RPC протокол
+#
+# jarvis_state(key: str) → any
+#   Прочитать состояние Jarvis (режим, VPN, etc.)
+
+# jarvis_server.py (ядро):
+from api import init_jarvis
+from api.event_bus import get_bus
+
+class JarvisMCPServer:
+    def __init__(self):
+        self.bus = get_bus()
+        self.jarvis = None  # будет инициализирован
+
+    async def execute(self, command: str, args: dict):
+        if command == "launch_app":
+            return await self._launch_app(**args)
+        elif command == "get_state":
+            return {"state": self.bus.get_all_state()}
+        # ... routing</pre>
+</div>
+
+<div class="section">
+  <h3>3. WebSocket IPC <span class="tag tag-yellow">Предложение</span></h3>
+  <p>Самый производительный способ. WebSocket сервер на порту <code>127.0.0.1:9712</code>.</p>
+  <pre># WebSocket IPC протокол:
+# ws://127.0.0.1:9712
+# 
+# Сообщения (JSON):
+# { "type": "request", "id": "1", "method": "app.launch", 
+#   "params": {"name": "brave", "workspace": 1} }
+#
+# { "type": "response", "id": "1", "result": {"success": true} }
+#
+# { "type": "event", "event": "state:mode_changed", 
+#   "data": {"old": "kid", "new": "dev"} }
+#
+# { "type": "ping" } / { "type": "pong" }
+
+# Плюсы WebSocket:
+# - Двусторонняя связь (OpenCode может получать события от Jarvis)
+# - Persistent connection (нет overhead на handshake)
+# - Event push (Jarvis сам сообщает об изменениях)
+# - Быстрее HTTP (меньше заголовков)</pre>
+</div>
+
+<h2>Bridge-слой: opencode_jarvis_bridge.py</h2>
+
+<div class="section">
+  <pre># ~/.config/opencode/mcp/opencode_jarvis_bridge.py
+# 
+# Единый bridge-слой для всех трёх способов интеграции.
+# Позволяет OpenCode взаимодействовать с Jarvis через:
+
+class OpenCodeJarvisBridge:
+    """Мост между OpenCode (MCP) и Jarvis (pc-control)"""
+    
+    def __init__(self, mode: str = "direct"):
+        # mode: "direct" | "rpc" | "ws"
+        self.mode = mode
+        self.ws_connection = None
+    
+    async def direct_call(self, script: str, **kwargs) -> dict:
+        """Прямой вызов Python скрипта (subprocess)"""
+        cmd = ["python3", f"~/.config/opencode/skills/pc-control/scripts/{script}"]
+        for k, v in kwargs.items():
+            cmd.extend([f"--{k}", str(v)])
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        return {"stdout": result.stdout, "returncode": result.returncode}
+    
+    async def rpc_execute(self, method: str, params: dict = None) -> dict:
+        """JSON-RPC вызов через jarvis_server.py"""
+        if self.mode == "direct":
+            # Маршрутизация на основе метода
+            script_map = {
+                "app.launch": ("open_browser.py", {"app": "brave"}),
+                "app.close": ("browser_close.py", {}),
+                "system.screenshot": ("screenshot.py", {}),
+                "system.sleep": ("sleep.py", {}),
+                "system.notify": None,  # через API
+                # ...
+            }
+            if method in script_map:
+                script, defaults = script_map[method]
+                return await self.direct_call(script, **(defaults | (params or {})))
+        elif self.mode == "rpc":
+            # HTTP запрос к jarvis_server.py
+            pass
+        elif self.mode == "ws":
+            # WebSocket запрос
+            pass
+    
+    def get_state(self, key: str = None) -> dict:
+        """Получить состояние Jarvis"""
+        return get_bus().get_all_state() if not key else {key: get_bus().get_state(key)}
+    
+    def set_state(self, key: str, value: any):
+        """Установить состояние Jarvis"""
+        get_bus().set_state(key, value)</pre>
+</div>
+
+<h2>Схема "OpenCode как мозг, Jarvis как тело"</h2>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────────┐
+│                        OpenCode (Мозг)                              │
+│                                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
+│  │ LLM      │  │ Agent    │  │ Memory   │  │ MCP Client       │   │
+│  │ (модель) │  │ Memory   │  │ Graph    │  │ (связь с миром)   │   │
+│  └──────────┘  └──────────┘  └──────────┘  └────────┬─────────┘   │
+│                                                      │              │
+└──────────────────────────────────────────────────────┼──────────────┘
+                                                       │
+              ┌────────────────── Bridge ──────────────────┐
+              │  opencode_jarvis_bridge.py                   │
+              │  subprocess / HTTP / WebSocket              │
+              └──────────────────┬─────────────────────────┘
+                                 │
+┌────────────────────────────────┼──────────────────────────────┐
+│                    Jarvis (Тело)                               │
+│                                                                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐  │
+│  │ Микрофон │  │ STT/TTS  │  │ WakeWord │  │ pc-control    │  │
+│  │ (вход)   │  │ (речь)   │  │ (триггер)│  │ (действия)    │  │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────────┘  │
+│                                                                │
+│  Реальность:                                                   │
+│  - "Jarvis, открой браузер" → wake → STT → "открой браузер"  │
+│  → OpenCode → pc-control → Brave открылся                      │
+└────────────────────────────────────────────────────────────────┘</div>
+
+<h2>Схема "Jarvis как голосовой интерфейс OpenCode"</h2>
+
+<div class="diagram">
+┌──────────────────────────────────────────────────────────────┐
+│                    Конечный пользователь                      │
+│                                                              │
+│   "Jarvis, напиши письмо клиенту"                            │
+│         │                                                    │
+│         ▼                                                    │
+│  ┌─────────────┐                                             │
+│  │ Jarvis voice│  STT: "напиши письмо клиенту"               │
+│  │ (Vosk)      │                                            │
+│  └──────┬──────┘                                             │
+│         │ текст                                               │
+│         ▼                                                    │
+│  ┌─────────────┐                                             │
+│  │   Bridge    │  JSON-RPC: {"command": "llm_query",         │
+│  │             │            "text": "напиши письмо клиенту"}  │
+│  └──────┬──────┘                                             │
+│         │ MCP вызов                                           │
+│         ▼                                                    │
+│  ┌──────────────────────────────────────────────────────┐    │
+│  │ OpenCode (LLM) → генерирует письмо → возвращает текст│    │
+│  └──────────────────────────────────────────────────────┘    │
+│         │                                                    │
+│         ▼                                                    │
+│  ┌─────────────┐                                             │
+│  │ Jarvis TTS  │  "Готово. Письмо: Уважаемый клиент..."     │
+│  │ (EdgeTTS)   │  Пользователь слышит ответ                  │
+│  └─────────────┘                                             │
+└──────────────────────────────────────────────────────────────┘
+
+# Преимущества:
+# - Пользователь не переключает контекст
+# - Jarvis занимается ONLY вводом/выводом
+# - OpenCode занимается ONLY мышлением
+# - Bridge — единственная точка интеграции, 30 строк кода</div>
+
+<h2>Что Jarvis НЕ умеет (и что даёт OpenCode)</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Возможность</th><th>Jarvis (сейчас)</th><th>OpenCode</th></tr>
+    <tr><td>LLM / генерация текста</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">DeepSeek, Claude, GPT и др.</span></td></tr>
+    <tr><td>Интернет</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">SearXNG, crawl4ai, YouTube transcript</span></td></tr>
+    <tr><td>Написание кода</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">Редактирование, создание, рефакторинг</span></td></tr>
+    <tr><td>Память (долгосрочная)</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">agentmemory: recall, lessons, graph</span></td></tr>
+    <tr><td>MCP сервера / инструменты</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">Filesystem, GitHub, Docker, и др.</span></td></tr>
+    <tr><td>Агенты / сабагенты</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">5 встроенных сабагентов</span></td></tr>
+  </table>
+</div>
+
+<h2>Что OpenCode НЕ умеет (и что даёт Jarvis)</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Возможность</th><th>OpenCode (сейчас)</th><th>Jarvis (pc-control)</th></tr>
+    <tr><td>Микрофон / захват аудио</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">sounddevice / PyAudio</span></td></tr>
+    <tr><td>Wake Word ("Jarvis")</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">RustPotter / Porcupine</span></td></tr>
+    <tr><td>VAD (детекция голоса)</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">Silero VAD</span></td></tr>
+    <tr><td>STT (речь → текст)</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">Vosk</span></td></tr>
+    <tr><td>TTS (текст → речь)</td><td><span class="tag tag-yellow">Плагин</span></td><td><span class="tag tag-green">EdgeTTS / Kokoro</span></td></tr>
+    <tr><td>Управление окнами (D-Bus)</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">wm_manager.py</span></td></tr>
+    <tr><td>Эмуляция клавиатуры/мыши</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">ydotool</span></td></tr>
+    <tr><td>Режимы (детский/разработчик)</td><td><span class="tag tag-red">Нет</span></td><td><span class="tag tag-green">modes.py</span></td></tr>
+  </table>
+</div>
+
+<h2>Модификация Rust-core для делегирования незнакомых команд</h2>
+
+<div class="section">
+  <p>Rust-core Jarvis — базовая логика обработки команд на Rust. Текущая проблема: падает на незнакомых командах.</p>
+  <p><strong>Предлагаемая модификация:</strong></p>
+
+  <pre>// Rust core: при незнакомой команде → делегировать OpenCode
+// Вместо: unknown_command → error
+// Делаем: unknown_command → bridge → OpenCode → ответ
+
+// Псевдокод Rust-core:
+enum CommandResult {
+    Handled(String),        // Jarvis сам обработал
+    Delegated(String),      // Отправлено в OpenCode
+    Error(String),          // Ошибка
+}
+
+fn process_command(text: &str) -> CommandResult {
+    // 1. Проверяем локальные команды (pc-control)
+    if let Some(result) = pc_control::try_execute(text) {
+        return CommandResult::Handled(result);
+    }
+    
+    // 2. Проверяем системные команды
+    if let Some(result) = system::try_execute(text) {
+        return CommandResult::Handled(result);
+    }
+    
+    // 3. ⭐ Делегируем OpenCode через bridge!
+    //    Bridge сам решит: LLM, интернет, код или что-то ещё
+    return CommandResult::Delegated(text);
+}
+
+// Результат: Jarvis не падает на "напиши письмо"
+// → делегирует OpenCode → получает ответ → TTS пользователю</pre>
+</div>
+
+<h2>План интеграции: 4 фазы, 12 дней</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Фаза</th><th>Дни</th><th>Что делаем</th><th>Результат</th></tr>
+    <tr>
+      <td><strong>Фаза 1: Bridge MVP</strong></td>
+      <td>1-3</td>
+      <td>
+        - Создать <code>opencode_jarvis_bridge.py</code><br>
+        - Режим direct_call (уже работает через SKILL.md)<br>
+        - MCP сервер jarvis с инструментом execute<br>
+        - Маршрутизация команд: script_map
+      </td>
+      <td>OpenCode может вызывать любой Python скрипт Jarvis через MCP</td>
+    </tr>
+    <tr>
+      <td><strong>Фаза 2: Интеграция</strong></td>
+      <td>4-7</td>
+      <td>
+        - JSON-RPC режим (jarvis_server.py)<br>
+        - Двусторонняя связь: Jarvis → OpenCode<br>
+        - Rust-core: делегирование незнакомых команд<br>
+        - EventBus: Jarvis события → OpenCode
+      </td>
+      <td>Jarvis передаёт сложные запросы в OpenCode, OpenCode управляет ПК через Jarvis</td>
+    </tr>
+    <tr>
+      <td><strong>Фаза 3: WebSocket IPC</strong></td>
+      <td>8-10</td>
+      <td>
+        - WebSocket сервер на :9712<br>
+        - Persistent connection<br>
+        - Push-уведомления: режим сменился, VPN подключён<br>
+        - Ping/pong keepalive
+      </td>
+      <td>Постоянное соединение, события в реальном времени</td>
+    </tr>
+    <tr>
+      <td><strong>Фаза 4: Skill и документация</strong></td>
+      <td>11-12</td>
+      <td>
+        - Создать SKILL.md для jarvis-integration<br>
+        - Примеры использования<br>
+        - Тесты: 20+ сценариев<br>
+        - Документация для других разработчиков
+      </td>
+      <td>Готовый скилл для интеграции OpenCode + Jarvis</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Создание jarvis-integration SKILL.md</h2>
+
+<div class="section">
+  <p>Файл: <code class="path">~/.config/opencode/skills/jarvis-integration/SKILL.md</code></p>
+
+  <pre>---
+name: jarvis-integration
+description: |-
+  Интеграция OpenCode с Jarvis (голосовой ассистент).
+  Позволяет OpenCode управлять компьютером через Jarvis pc-control,
+  получать голосовой ввод (STT) и отвечать голосом (TTS).
+  
+  Используй когда нужно:
+  - Выполнить команду управления ПК через голос
+  - Передать запрос от Jarvis в OpenCode для LLM обработки
+  - Получить состояние Jarvis (режим, VPN, аудио)
+  - Отправить TTS ответ через динамики
+
+  Примеры:
+  - user: "открой браузер" → jarvis.execute("app.launch", {app: "brave", workspace: 1})
+  - user: "какой режим" → jarvis.get_state("mode")
+  - user: (голосом) "напиши письмо" → jarvis.stt() → OpenCode LLM → jarvis.tts()
+---</pre>
+</div>
+
+<hr />
+
+<p><em>Резюме: OpenCode и Jarvis — идеальная пара. У одного мозг (LLM, MCP, память), у другого тело (микрофон, ПК, действия). Bridge — связующий слой. 12 дней на полную интеграцию. SKILL.md для простого подключения.</em></p>
+
+</body>
+</html>

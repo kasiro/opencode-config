@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёт 7: Автономная работа и демонизация OpenCode</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .diagram { background: #0d1117; padding: 20px; border-radius: 8px; border-left: 3px solid #e94560; font-family: monospace; white-space: pre; line-height: 1.5; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<h1>Отчёт 7: Автономная работа и демонизация OpenCode</h1>
+<p><em>Дата: Июль 2026 | Статус: <span class="tag tag-red">Не реализовано</span></em></p>
+
+<h2>Текущее состояние</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Аспект</th><th>Статус</th><th>Описание</th></tr>
+    <tr>
+      <td>Режим работы</td>
+      <td><span class="tag tag-red">Сессионный</span></td>
+      <td>OpenCode работает только внутри активной терминальной сессии. Закрыл терминал — ассистент умер.</td>
+    </tr>
+    <tr>
+      <td>Фоновые задачи</td>
+      <td><span class="tag tag-red">Нет</span></td>
+      <td>Нет встроенного планировщика. Нет cron-подобного механизма внутри OpenCode.</td>
+    </tr>
+    <tr>
+      <td>File Watcher</td>
+      <td><span class="tag tag-red">Нет</span></td>
+      <td>Не отслеживает изменения в файловой системе автоматически.</td>
+    </tr>
+    <tr>
+      <td>Webhook приём</td>
+      <td><span class="tag tag-red">Нет</span></td>
+      <td>Нет HTTP сервера для приёма внешних запросов.</td>
+    </tr>
+    <tr>
+      <td>Event Bus</td>
+      <td><span class="tag tag-yellow">Есть в pc-control</span></td>
+      <td>В pc-control/api/event_bus.py есть реализация publish/subscribe. Локальная, не MCP.</td>
+    </tr>
+    <tr>
+      <td>CYCLE 2.5 Autonomous</td>
+      <td><span class="tag tag-yellow">Протокол есть</span></td>
+      <td>Протокол описан, но требует активной сессии для работы. Не демонизирован.</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Что нужно для 24/7 режима</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Компонент</th><th>Назначение</th><th>Аналог в Jarvis</th></tr>
+    <tr>
+      <td><strong>EventBus</strong></td>
+      <td>Центральная шина событий: publish/subscribe, state management, сигналы между компонентами</td>
+      <td><code>api/event_bus.py</code> — уже существует</td>
+    </tr>
+    <tr>
+      <td><strong>Демон (systemd unit)</strong></td>
+      <td>Запуск OpenCode в фоне при старте системы. Держит EventBus и MCP сервера живыми.</td>
+      <td>Jarvis запускается через <code>jarvis.service</code></td>
+    </tr>
+    <tr>
+      <td><strong>Планировщик</strong></td>
+      <td>Периодические задачи: напоминания, проверки, авто-консолидация памяти</td>
+      <td>systemd timer + python-crontab</td>
+    </tr>
+    <tr>
+      <td><strong>File Watcher</strong></td>
+      <td>Авто-реакция на изменения в файлах (inotify, watchdog)</td>
+      <td>inotify + asyncio</td>
+    </tr>
+    <tr>
+      <td><strong>HTTP/WebSocket API</strong></td>
+      <td>Приём вебхуков от внешних сервисов (GitHub, Telegram, IFTTT)</td>
+      <td>Flask + WebSocket server</td>
+    </tr>
+    <tr>
+      <td><strong>MCP Message Bus</strong></td>
+      <td>Мост между MCP серверами и EventBus</td>
+      <td>—</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Архитектура EventBus (референс из Jarvis)</h2>
+
+<div class="section">
+  <p>Файл: <code class="path">~/.config/opencode/skills/pc-control/api/event_bus.py</code></p>
+
+  <pre># Ключевые методы EventBus:
+# subscribe(event_type, callback) — подписка на событие
+# unsubscribe(event_type, callback) — отписка
+# publish(event_type, data) — публикация события (асинхронно, всем подписчикам)
+# set_state(key, value) — установка состояния (авто-публикация state:{key})
+# get_state(key) — чтение состояния
+# get_all_state() — полный слепок состояний
+
+# Типы событий в pc-control:
+# - state:mode_changed — режим изменился
+# - state:vpn_connected — VPN подключён
+# - command:executed — команда выполнена
+# - state_changed — любое изменение состояния</pre>
+
+  <p><strong>Недостатки текущей реализации:</strong></p>
+  <ul>
+    <li>Локальная (только в рамках одного процесса)</li>
+    <li>Нет персистентности (при перезапуске состояния теряются)</li>
+    <li>Нет межпроцессного взаимодействия</li>
+    <li>Нет MCP интерфейса</li>
+  </ul>
+</div>
+
+<h2>Архитектура демона</h2>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────────┐
+│                        systemd user unit                             │
+│                    opencode-daemon.service                           │
+│              ~/.config/systemd/user/opencode-daemon.service          │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │ запускает
+                           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                      OpenCode Daemon Core                            │
+│                                                                      │
+│  ┌──────────┐  ┌──────────┐  ┌────────────┐  ┌──────────────────┐   │
+│  │ EventBus │  │  MCP     │  │  HTTP/WS   │  │  Plugin Loader   │   │
+│  │ (ядро)   │←─│  Bridge  │←─│  API       │←─│  (skills/        │   │
+│  │          │  │          │  │  :9710     │  │   plugins)       │   │
+│  └────┬─────┘  └──────────┘  └────────────┘  └──────────────────┘   │
+│       │                                                              │
+│       ├── Scheduler (cron-like tasks)                                │
+│       ├── File Watcher (inotify → события)                           │
+│       ├── Webhook Listener (GitHub, Telegram, etc.)                  │
+│       └── Memory Consolidator (авто-перенос памяти)                  │
+└──────────────────────────────────────────────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                      MCP Servers (сабпроцессы)                       │
+│                                                                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐    │
+│  │ voice    │  │ pc-      │  │ filesys  │  │ 🐳 Docker       │    │
+│  │ (STT/TTS)│  │ control  │  │          │  │ monitor          │    │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│  Внешние каналы: Git webhook · HTTP API · Telegram бот · cron       │
+└──────────────────────────────────────────────────────────────────────┘</div>
+
+<h2>Предлагаемый MCP EventBus</h2>
+
+<div class="section">
+  <p>MCP сервер, который предоставляет EventBus через стандартный протокол OpenCode:</p>
+
+  <pre>{
+  "mcpServers": {
+    "eventbus": {
+      "command": "python3",
+      "args": ["~/.config/opencode/mcp/eventbus_server.py"]
+    }
+  }
+}
+
+# Инструменты MCP EventBus:
+# 
+# publish(event_type: str, data: dict) → void
+#   Отправить событие всем подписчикам
+#
+# subscribe(event_type: str, callback_tool: str) → subscription_id
+#   Подписаться на событие (указать tool для вызова при событии)
+#
+# unsubscribe(subscription_id: str) → void  
+#   Отписаться от события
+#
+# state_get(key: str) → any
+#   Получить значение состояния
+#
+# state_set(key: str, value: any) → void
+#   Установить значение состояния (публикует событие state:{key})
+#
+# schedule(cron_expr: str, action: str) → schedule_id
+#   Запланировать периодическое действие
+#
+# signal_send(target: str, type: str, data: dict) → void
+#   Отправить сигнал конкретному агенту/компоненту</pre>
+</div>
+
+<h2>Systemd user unit</h2>
+
+<div class="section">
+  <pre># ~/.config/systemd/user/opencode-daemon.service
+[Unit]
+Description=OpenCode Daemon — 24/7 AI Assistant
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/bunx opencode daemon
+Restart=on-failure
+RestartSec=5
+Environment=OPENCODE_DAEMON=1
+
+# Лимиты
+LimitNOFILE=4096
+MemoryMax=2G
+
+[Install]
+WantedBy=default.target
+
+# Установка и запуск:
+# systemctl --user daemon-reload
+# systemctl --user enable --now opencode-daemon.service
+# journalctl --user -u opencode-daemon -f</pre>
+</div>
+
+<h2>Пошаговый план внедрения (3-5 дней)</h2>
+
+<div class="section">
+  <table>
+    <tr><th>День</th><th>Что делаем</th><th>Результат</th></tr>
+    <tr>
+      <td><strong>День 1</strong></td>
+      <td>Создать MCP EventBus сервер. Перенести EventBus из pc-control в отдельный MCP сервер. Добавить персистентность через SQLite.</td>
+      <td>EventBus работает как MCP сервер. Подписка/публикация через инструменты.</td>
+    </tr>
+    <tr>
+      <td><strong>День 2</strong></td>
+      <td>Создать systemd user unit. HTTP/WebSocket API сервер (FastAPI). Эндпоинты: POST /publish, POST /execute, GET /state.</td>
+      <td>OpenCode запускается как демон. Доступен по HTTP.</td>
+    </tr>
+    <tr>
+      <td><strong>День 3</strong></td>
+      <td>Планировщик (cron внутри EventBus). File Watcher (watchdog → publish событий).</td>
+      <td>Фоновые задачи по расписанию. Авто-реакция на изменения файлов.</td>
+    </tr>
+    <tr>
+      <td><strong>День 4</strong></td>
+      <td>Webhook приёмник. Интеграция с GitHub (push → авто-действие), Telegram ботом.</td>
+      <td>OpenCode реагирует на внешние события.</td>
+    </tr>
+    <tr>
+      <td><strong>День 5</strong></td>
+      <td>Стабильность: авто-рестарт, healthcheck, мониторинг, Graceful shutdown. Документация.</td>
+      <td>24/7 работа без присмотра.</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Ключевые файлы для изменений</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Файл</th><th>Назначение</th></tr>
+    <tr><td><code>~/.config/opencode/mcp/eventbus_server.py</code></td><td>MCP сервер EventBus</td></tr>
+    <tr><td><code>~/.config/systemd/user/opencode-daemon.service</code></td><td>Systemd unit для демона</td></tr>
+    <tr><td><code>~/.config/opencode/opencode.json</code></td><td>Добавить eventbus в mcpServers</td></tr>
+    <tr><td><code>~/.config/opencode/daemon/server.py</code></td><td>HTTP/WS API сервер (FastAPI)</td></tr>
+    <tr><td><code>~/.config/opencode/daemon/scheduler.py</code></td><td>Планировщик задач</td></tr>
+    <tr><td><code>~/.config/opencode/daemon/watcher.py</code></td><td>File watcher (watchdog)</td></tr>
+    <tr><td><code>~/.config/opencode/daemon/webhooks.py</code></td><td>Webhook обработчик</td></tr>
+  </table>
+</div>
+
+<h2>Схема: MCP Message Bus</h2>
+
+<div class="diagram">
+  ┌──────────────┐     publish("user:said", {"text": "..."})     ┌──────────────┐
+  │  STT сервер  │─────────────────────────────────────────────→│               │
+  │  (голос)     │                                              │   EventBus    │
+  └──────────────┘                                              │   (MCP)       │
+                                                                │               │
+  ┌──────────────┐     subscribe("state:mode", callback)        │  ┌─────────┐  │
+  │  pc-control  │←────────────────────────────────────────────│  │  SQLite  │  │
+  │  MCP         │                                              │  │  (state) │  │
+  └──────────────┘                                              │  └─────────┘  │
+                                                                └──────┬───────┘
+  ┌──────────────┐     schedule("0 */1 * * *", "consolidate")         │
+  │  Scheduler   │───────────────────────────────────────────────────→│
+  └──────────────┘                                                    │
+                                                                      ▼
+                                                          ┌──────────────────┐
+                                                          │  OpenCode Core   │
+                                                          │  (LLM + Tools)   │
+                                                          └──────────────────┘</div>
+
+<hr />
+
+<p><em>Резюме: Самое слабое место OpenCode — отсутствие фонового режима. Без демона это инструмент для сессионной работы. EventBus из pc-control — готовый фундамент, который нужно вынести в MCP сервер и расширить. 5 дней до 24/7 режима.</em></p>
+
+</body>
+</html>

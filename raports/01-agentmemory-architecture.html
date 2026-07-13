@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Архитектура памяти agentmemory — J.A.R.V.I.S.</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>🧠 Архитектура памяти agentmemory</h1>
+<p><span class="tag tag-green">v1.0</span> <span class="tag tag-blue">MCP Server</span> <span class="tag tag-yellow">Hermes-inspired</span></p>
+
+<div class="section">
+  <h3>🔍 Что такое agentmemory</h3>
+  <p>AgentMemory — MCP сервер на базе Node.js, работающий на <code>localhost:3111</code> через <code>systemd user service</code>. Предоставляет 53 инструмента для управления долговременной памятью J.A.R.V.I.S. Архитектура вдохновлена <strong>Hermes Agent</strong> — системой с 4-уровневой консолидацией и Frozen Snapshot Pattern.</p>
+  
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Процесс</td><td>node /home/kasiro/.bun/bin/agentmemory --port 3111</td></tr>
+    <tr><td>REST API</td><td>http://127.0.0.1:3111</td></tr>
+    <tr><td>Viewer (UI)</td><td>http://127.0.0.1:3113</td></tr>
+    <tr><td>Streams (WebSocket)</td><td>ws://127.0.0.1:3112</td></tr>
+    <tr><td>Service файл</td><td>~/.config/systemd/user/agentmemory.service</td></tr>
+    <tr><td>Engine (iii)</td><td>~/.agentmemory/bin/iii --config ~/Документы/agentmemory-fork/dist/iii-config.yaml</td></tr>
+    <tr><td>Потребление RAM</td><td>~226 MB (пик 228 MB, лимит 500 MB)</td></tr>
+    <tr><td>Статус</td><td><span class="tag tag-green">Active (running)</span></td></tr>
+  </table>
+</div>
+
+<h2>4-Tier Consolidation Pipeline</h2>
+
+<div class="section">
+  <p>Данные проходят 4 уровня консолидации, каждый следующий уровень — более абстрактное и долговременное представление:</p>
+  
+  <pre>
+Working (сырые наблюдения от tool use)
+    │ LLM-компрессия / session_summary
+    ▼
+Episodic (что произошло за сессию)
+    │ Извлечение паттернов через reflect()
+    ▼
+Semantic (факты, концепты, предпочтения)
+    │ Повторение и практика → consolidate()
+    ▼
+Procedural (уроки, навыки, how-to)</pre>
+
+  <table>
+    <tr><th>Уровень</th><th>Функция</th><th>Когда запускать</th></tr>
+    <tr><td><strong>Working</strong></td><td><code>save()</code> + <code>lesson_save()</code></td><td>Каждое сообщение (CYCLE 1 → SAVE)</td></tr>
+    <tr><td><strong>Episodic</strong></td><td><code>save(type="session_summary")</code></td><td>Конец сессии (CYCLE 3 END)</td></tr>
+    <tr><td><strong>Semantic</strong></td><td><code>consolidate(tier="semantic")</code></td><td>Каждые 3-5 сессий</td></tr>
+    <tr><td><strong>Procedural</strong></td><td><code>consolidate(tier="procedural")</code></td><td>Каждые 10 сессий</td></tr>
+  </table>
+</div>
+
+<h2>❄️ Frozen Snapshot Pattern (Hermes)</h2>
+
+<div class="section">
+  <p><strong>Правило:</strong> Один раз загрузил → заморозил → не меняй до конца сессии. Это предотвращает инвалидацию KV-кэша модели.</p>
+  
+  <h3>При старте сессии (CYCLE 3 START):</h3>
+  <ol>
+    <li><code>lesson_recall(query="error, pattern, preference", limit=5)</code> — ключевые уроки</li>
+    <li><code>memory_recall(query="slot:persona, slot:project_state", limit=3)</code> — контекст проекта</li>
+    <li><code>memory_profile()</code> / <code>memory_timeline()</code> — профиль и недавняя история</li>
+  </ol>
+  <p>Эти данные формируют <strong>Frozen Snapshot</strong> — они помещаются в system prompt и не меняются до конца сессии.</p>
+  
+  <h3>🚫 НЕ делай:</h3>
+  <ul>
+    <li>❌ Не вызывай <code>lesson_recall</code>/<code>memory_recall</code> на каждое сообщение — это ломает KV-кэш</li>
+    <li>❌ Не сохраняй одну и ту же информацию дважды</li>
+    <li>❌ Не вызывай <code>consolidate()</code> чаще раза в сессию — это тяжелая операция</li>
+  </ul>
+</div>
+
+<h2>📋 Decision Matrix</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Ситуация</th><th>Инструмент</th><th>Когда НЕ использовать</th></tr>
+    <tr><td>Вспомнить контекст сессии</td><td><code>memory_recall(query, limit=5, format="compact")</code></td><td>Если snapshot уже загружен при старте</td></tr>
+    <tr><td>Найти неточный факт</td><td><code>memory_smart_search(query)</code></td><td>При точном запросе — используй recall</td></tr>
+    <tr><td>Сохранить решение</td><td><code>memory_save(type="decision", content, concepts)</code></td><td>Для временных заметок — не надо</td></tr>
+    <tr><td>Сохранить баг/фикс</td><td><code>memory_save(type="bug", content, files)</code></td><td>Для косметических правок</td></tr>
+    <tr><td>Сохранить паттерн</td><td><code>memory_save(type="pattern", content)</code></td><td>Для разовых случаев</td></tr>
+    <tr><td>Извлечь урок</td><td><code>lesson_save(content, confidence, tags)</code></td><td>Если уверенность &lt; 0.3</td></tr>
+    <tr><td>Найти уроки</td><td><code>lesson_recall(query, limit=5)</code></td><td>Если нужно &gt;5 — лучше consolidate</td></tr>
+    <tr><td>Связи между решениями</td><td><code>graph_query(nodeType, query)</code></td><td>Если нужен простой поиск</td></tr>
+    <tr><td>Диагностика памяти</td><td><code>diagnose()</code></td><td>В production реже 1 раза в день</td></tr>
+    <tr><td>Консолидация</td><td><code>consolidate(tier)</code></td><td>Чаще 1 раза в сессию — дорого</td></tr>
+    <tr><td>Рефлексия</td><td><code>reflect()</code></td><td>Если &lt;5 session_summary</td></tr>
+    <tr><td>Что делать дальше</td><td><code>frontier(project, limit)</code></td><td>Для простых задач — сам план</td></tr>
+    <tr><td>Профиль проекта</td><td><code>profile(project)</code></td><td>Для быстрого вопроса — не надо</td></tr>
+    <tr><td>Проверить здоровье</td><td><code>sessions()</code></td><td>Если MCP отвечает — не надо</td></tr>
+    <tr><td>Удалить мусор</td><td><code>governance_delete(memoryIds, reason)</code></td><td>Без причины — никогда</td></tr>
+  </table>
+</div>
+
+<h2>🔧 Все 53 инструмента</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Категория</th><th>Инструменты</th><th>Назначение</th></tr>
+    <tr><td><strong>Поиск</strong></td><td><code>recall</code>, <code>smart_search</code>, <code>timeline</code>, <code>patterns</code></td><td>Продвинутый поиск контекста</td></tr>
+    <tr><td><strong>Сохранение</strong></td><td><code>save</code>, <code>lesson_save</code>, <code>memory_save</code>, <code>signal_send</code></td><td>Запись информации в память</td></tr>
+    <tr><td><strong>Консолидация</strong></td><td><code>consolidate</code>, <code>reflect</code></td><td>Перевод между tiers</td></tr>
+    <tr><td><strong>Граф</strong></td><td><code>graph_query</code>, <code>relations</code></td><td>Связи между сущностями</td></tr>
+    <tr><td><strong>Диагностика</strong></td><td><code>diagnose</code>, <code>heal</code>, <code>sessions</code>, <code>profile</code></td><td>Здоровье системы</td></tr>
+    <tr><td><strong>Действия</strong></td><td><code>frontier</code>, <code>next</code>, <code>signal_read</code></td><td>Планирование и сигналы</td></tr>
+    <tr><td><strong>Управление</strong></td><td><code>action_create</code>, <code>action_update</code>, <code>governance_delete</code></td><td>Работа с action-ами</td></tr>
+    <tr><td><strong>Верификация</strong></td><td><code>verify</code></td><td>Проверка источника данных</td></tr>
+  </table>
+</div>
+
+<h2>⚙️ Конфигурация</h2>
+
+<div class="section">
+  <h3>Переменные окружения (в opencode.json):</h3>
+  <pre>{
+  "mcp": {
+    "agentmemory": {
+      "type": "local",
+      "command": ["agentmemory", "mcp"],
+      "environment": {
+        "AGENTMEMORY_URL": "http://localhost:3111",
+        "AGENTMEMORY_TOOLS": "jarvis"
+      },
+      "enabled": true
+    }
+  }
+}</pre>
+
+  <h3>Ключевые параметры:</h3>
+  <ul>
+    <li><code>CONSOLIDATION_ENABLED=true</code> — автоматическая консолидация</li>
+    <li><code>GRAPH_EXTRACTION_ENABLED=true</code> — извлечение графовых связей</li>
+    <li><code>AGENTMEMORY_REFLECT=true</code> — рефлексия через LLM</li>
+    <li><code>AGENTMEMORY_URL=http://localhost:3111</code> — адрес API</li>
+    <li><code>AGENTMEMORY_TOOLS=jarvis</code> — фильтр доступных инструментов</li>
+  </ul>
+</div>
+
+<h2>💡 Best Practices</h2>
+
+<div class="section">
+  <ul>
+    <li><strong>format="compact"</strong> — всегда используй для recall, чтобы экономить контекст</li>
+    <li><strong>limit=5</strong> — оптимальное количество результатов для recall/lesson_recall</li>
+    <li><strong>confidence &gt;= 0.3</strong> — минимальный порог для lesson_recall (ниже — шум)</li>
+    <li><strong>project поле</strong> — всегда указывай для scoping памяти</li>
+    <li><strong>Один consolidate за сессию</strong> — не чаще, это тяжелая операция</li>
+    <li><strong>Frozen Snapshot при старте</strong> — загрузи один раз, не перегружай</li>
+  </ul>
+</div>
+
+<h2>📌 Практические примеры</h2>
+
+<div class="section">
+  <h3>Поиск контекста:</h3>
+  <pre>agentmemory_memory_recall(query="архитектура плагинов", limit=5, format="compact")</pre>
+
+  <h3>Сохранение решения:</h3>
+  <pre>agentmemory_memory_save(type="decision", content="Выбрали SQLite для хранения конфигов", concepts="architecture, database, decision", files="opencode.json")</pre>
+
+  <h3>Извлечение урока из ошибки:</h3>
+  <pre>agentmemory_memory_lesson_save(confidence=0.7, tags="error", content="Не использовать glob для поиска — fd в 5-10x быстрее", context="оптимизация инструментов")</pre>
+
+  <h3>Поиск связей в графе:</h3>
+  <pre>agentmemory_memory_graph_query(query="MCP сервер", nodeType="architecture", maxDepth=3)</pre>
+
+  <h3>Диагностика здоровья:</h3>
+  <pre>agentmemory_memory_diagnose(categories="actions,leases,memories")</pre>
+
+  <h3>Что делать дальше:</h3>
+  <pre>agentmemory_memory_frontier(project="/home/kasiro/.config/opencode", limit=10)</pre>
+
+  <h3>Сигнал другому агенту:</h3>
+  <pre>agentmemory_memory_signal_send(from="jarvis", to="researcher", type="request", content="Найди документацию по DCP плагину")</pre>
+</div>
+
+<p style="text-align:center; color:#666; margin-top:40px;">Сгенерировано E.X.E.C.U.T.O.R • 01.07.2026</p>
+
+</body>
+</html>

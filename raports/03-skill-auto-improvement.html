@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Skill auto-discovery и улучшение — J.A.R.V.I.S.</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .tag-purple { background: #aa00ff33; color: #aa00ff; border: 1px solid #aa00ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>🎯 Skill auto-discovery и улучшение</h1>
+<p><span class="tag tag-green">скиллы</span> <span class="tag tag-blue">auto-discovery</span> <span class="tag tag-purple">progressive disclosure</span></p>
+
+<div class="section">
+  <h3>🔍 Механизм авто-загрузки скиллов</h3>
+  <p>OpenCode автоматически обнаруживает и загружает скиллы при старте сессии. Механизм работает через <strong>frontmatter</strong> в SKILL.md — YAML-блок в начале файла, содержащий <code>name</code> и <code>description</code>.</p>
+  
+  <pre>---
+name: agent-delegation
+description: |-
+  Agent delegation system for J.A.R.V.I.S. — who does what. executor (code, edits, git),
+  researcher (web research, deepwiki, exa), sysadmin (system diagnostics, monitoring),
+  general (multistep code+research hybrid), explore (fast read-only navigation).
+  Use proactively when a task matches an agent's specialization.
+---</pre>
+
+  <p>Принцип работы:</p>
+  <ol>
+    <li>При старте сессии OpenCode сканирует директории скиллов</li>
+    <li>Читает <code>name</code> и <code>description</code> из frontmatter каждого SKILL.md</li>
+    <li>Помещает описание в system prompt как <code>&lt;available_skills&gt;</code></li>
+    <li>Агент в CYCLE 1 → ORIENT проверяет: если задача подходит под описание скилла — вызывает <code>skill(name="...")</code></li>
+    <li>Skill-инструмент инжектит полный SKILL.md в контекст</li>
+  </ol>
+</div>
+
+<h2>📁 Структура скилла</h2>
+
+<div class="section">
+  <pre>skill-name/
+├── SKILL.md          # Главный файл (frontmatter + инструкции)
+├── scripts/          # Исполняемые скрипты (Python, Bash, JS)
+│   ├── deploy.sh
+│   └── analyze.py
+├── references/       # Документация, шпаргалки, примеры
+│   └── api-reference.md
+└── assets/           # Изображения, шаблоны, конфиги
+      └── template.json</pre>
+
+  <table>
+    <tr><th>Компонент</th><th>Обязательность</th><th>Назначение</th></tr>
+    <tr><td><code>SKILL.md</code></td><td><span class="tag tag-red">Обязателен</span></td><td>Frontmatter + инструкции для агента</td></tr>
+    <tr><td><code>scripts/</code></td><td>Опционально</td><td>Автоматизация через bash/python/js</td></tr>
+    <tr><td><code>references/</code></td><td>Опционально</td><td>Справочные материалы</td></tr>
+    <tr><td><code>assets/</code></td><td>Опционально</td><td>Ресурсы для работы скилла</td></tr>
+  </table>
+</div>
+
+<h2>📂 Локации скиллов</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Тип</th><th>Путь</th><th>Назначение</th></tr>
+    <tr><td><strong>Глобальные</strong></td><td><span class="path">~/.config/opencode/skills/</span></td><td>Системные, доступны всем проектам</td></tr>
+    <tr><td><strong>Агентские</strong></td><td><span class="path">~/.agents/skills/</span></td><td>Установленные через bunx skills + кастомные</td></tr>
+    <tr><td><strong>Проектные</strong></td><td><span class="path">.opencode/skills/</span></td><td>Локальные для конкретного проекта</td></tr>
+  </table>
+</div>
+
+<h2>📊 Progressive Disclosure (3 уровня)</h2>
+
+<div class="section">
+  <p>Описание скилла раскрывается <strong>постепенно</strong>, чтобы не тратить контекст:</p>
+
+  <table>
+    <tr><th>Уровень</th><th>Что видит агент</th><th>Когда</th></tr>
+    <tr>
+      <td><strong>1. System prompt</strong></td>
+      <td>Только <code>name</code> + <code>description</code> из frontmatter</td>
+      <td>Всегда в prompt</td>
+    </tr>
+    <tr>
+      <td><strong>2. Skill content</strong></td>
+      <td>Полный SKILL.md + пути к scripts/references/assets</td>
+      <td>После вызова <code>skill(name="...")</code></td>
+    </tr>
+    <tr>
+      <td><strong>3. Scripts/References</strong></td>
+      <td>Содержимое файлов из scripts/, references/</td>
+      <td>Когда агент явно читает файл</td>
+    </tr>
+  </table>
+</div>
+
+<h2>✍️ Правила описания скиллов</h2>
+
+<div class="section">
+  <ul>
+    <li><strong>Action verb:</strong> начни с глагола действия ("Use...", "Evaluate...", "Search...", "Create...")</li>
+    <li><strong>Не "You are":</strong> избегай "You are a..." — это тратит контекст, не добавляет ценности</li>
+    <li><strong>|- literal block scalar:</strong> используй <code>|-</code> для многострочного описания (YAML)</li>
+    <li><strong>Примеры:</strong> обязательно добавь секцию Examples с конкретными use cases</li>
+    <li><strong>STRONG TRIGGERS:</strong> если скилл должен срабатывать на определённые фразы — укажи их</li>
+    <li><strong>Do NOT trigger:</strong> укажи когда скилл НЕ должен вызываться (чтобы избежать ложных срабатываний)</li>
+  </ul>
+</div>
+
+<h2>🛠️ Skill-creator процесс</h2>
+
+<div class="section">
+  <ol>
+    <li><strong>Understand</strong> — понять задачу: какой пробел закрывает скилл</li>
+    <li><strong>Plan</strong> — структура: нужен ли scripts/ или достаточно SKILL.md</li>
+    <li><strong>Initialize</strong> — создать директорию и SKILL.md с frontmatter</li>
+    <li><strong>Edit</strong> — написать инструкции, примеры, скрипты</li>
+    <li><strong>Validate</strong> — проверить что frontmatter корректен, description информативен</li>
+    <li><strong>Iterate</strong> — улучшать на основе реального использования</li>
+  </ol>
+  
+  <p><strong>Авто-коммит:</strong> при изменениях скиллов (создание/обновление SKILL.md) автоматически создаётся git commit с сообщением <code>skill: update [name]</code>.</p>
+</div>
+
+<h2>📋 Все 12 глобальных скиллов</h2>
+
+<div class="section">
+  <p><span class="path">~/.config/opencode/skills/</span></p>
+  <table>
+    <tr><th>#</th><th>Скилл</th><th>Назначение</th></tr>
+    <tr><td>1</td><td><code>agent-delegation</code></td><td>Делегирование задач суб-агентам</td></tr>
+    <tr><td>2</td><td><code>auth-guide</code></td><td>Работа с auth.json (API ключи)</td></tr>
+    <tr><td>3</td><td><code>context-mgmt</code></td><td>Оптимизация контекста deepseek-v4-flash-free</td></tr>
+    <tr><td>4</td><td><code>evaluate-premortem</code></td><td>Premortem-оценка планов и решений</td></tr>
+    <tr><td>5</td><td><code>how_use_memory</code></td><td>Полный справочник agentmemory (53 инструмента)</td></tr>
+    <tr><td>6</td><td><code>intellisearch</code></td><td>Поиск JS/TS библиотек и GitHub репозиториев</td></tr>
+    <tr><td>7</td><td><code>jarvis-cycles</code></td><td>Core runtime protocol J.A.R.V.I.S.</td></tr>
+    <tr><td>8</td><td><code>pc-control</code></td><td>Управление ПК через голосовые команды</td></tr>
+    <tr><td>9</td><td><code>plugin-creator</code></td><td>Создание OpenCode плагинов</td></tr>
+    <tr><td>10</td><td><code>task-decomposition</code></td><td>Декомпозиция задач J.A.R.V.I.S.</td></tr>
+    <tr><td>11</td><td><code>vk-reg-nso</code></td><td>Регистрация ВК (НСО)</td></tr>
+    <tr><td colspan="3"><em>12-й глобальный скилл будет добавлен</em></td></tr>
+  </table>
+</div>
+
+<h2>🤖 Все 6 агентских скиллов</h2>
+
+<div class="section">
+  <p><span class="path">~/.agents/skills/</span></p>
+  <table>
+    <tr><th>#</th><th>Скилл</th><th>Назначение</th></tr>
+    <tr><td>1</td><td><code>agent-architect</code></td><td>Создание и улучшение OpenCode агентов</td></tr>
+    <tr><td>2</td><td><code>find-skills</code></td><td>Поиск и установка скиллов из экосистемы</td></tr>
+    <tr><td>3</td><td><code>frontend-design</code></td><td>Визуальный дизайн UI</td></tr>
+    <tr><td>4</td><td><code>gh-cli</code></td><td>GitHub CLI справочник</td></tr>
+    <tr><td>5</td><td><code>hallmark</code></td><td>Anti-AI-slop дизайн</td></tr>
+    <tr><td>6</td><td><code>improve</code></td><td>Аудит кодобазы и планы улучшений</td></tr>
+    <tr><td>7</td><td><code>jest-react-testing</code></td><td>Тестирование React приложений</td></tr>
+    <tr><td>8</td><td><code>mcp-installer</code></td><td>Установка MCP серверов</td></tr>
+    <tr><td>9</td><td><code>model-researcher</code></td><td>Добавление новых AI моделей</td></tr>
+    <tr><td>10</td><td><code>modern-web-guidance</code></td><td>Современные веб-практики</td></tr>
+    <tr><td>11</td><td><code>opensource-guide-coach</code></td><td>Руководство по open source</td></tr>
+    <tr><td>12</td><td><code>plugin-installer</code></td><td>Установка OpenCode плагинов</td></tr>
+    <tr><td>13</td><td><code>skill-creator</code></td><td>Создание скиллов</td></tr>
+    <tr><td>14</td><td><code>smithery-ai-cli</code></td><td>MCP инструменты через Smithery CLI</td></tr>
+  </table>
+</div>
+
+<h2>🔬 Аудит описаний скиллов</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Скилл</th><th>Качество описания</th><th>Рекомендация</th></tr>
+    <tr>
+      <td><code>intellisearch</code></td>
+      <td><span class="tag tag-green">Отличное</span></td>
+      <td>Чёткие триггеры, action verb</td>
+    </tr>
+    <tr>
+      <td><code>jarvis-cycles</code></td>
+      <td><span class="tag tag-green">Отличное</span></td>
+      <td>Много примеров, чёткие границы</td>
+    </tr>
+    <tr>
+      <td><code>context-mgmt</code></td>
+      <td><span class="tag tag-green">Хорошее</span></td>
+      <td>Есть примеры, Do NOT trigger указан</td>
+    </tr>
+    <tr>
+      <td><code>pc-control</code></td>
+      <td><span class="tag tag-yellow">Среднее</span></td>
+      <td>Много примеров, но описание слишком общее. Добавить триггеры</td>
+    </tr>
+    <tr>
+      <td><code>auth-guide</code></td>
+      <td><span class="tag tag-yellow">Среднее</span></td>
+      <td>Короткое описание, нет Do NOT trigger</td>
+    </tr>
+    <tr>
+      <td><code>vk-reg-nso</code></td>
+      <td><span class="tag tag-red">Слабое</span></td>
+      <td>Нет action verb, примеров, триггеров</td>
+    </tr>
+    <tr>
+      <td><code>evaluate-premortem</code></td>
+      <td><span class="tag tag-green">Отличное</span></td>
+      <td>STRONG TRIGGERS + Do NOT trigger, action verb</td>
+    </tr>
+    <tr>
+      <td><code>task-decomposition</code></td>
+      <td><span class="tag tag-yellow">Среднее</span></td>
+      <td>Есть примеры, но описание можно конкретнее</td>
+    </tr>
+  </table>
+</div>
+
+<h2>💡 Рекомендации по улучшению</h2>
+
+<div class="section">
+  <ul>
+    <li><strong>Добавить STRONG TRIGGERS</strong> во все скиллы — это улучшает авто-детекцию</li>
+    <li><strong>Добавить Do NOT trigger</strong> везде, чтобы избежать ложных срабатываний</li>
+    <li><strong>Укоротить описания</strong> — в system prompt попадает весь description, он должен быть лаконичным</li>
+    <li><strong>Action verb в начале</strong> — "Use...", "Search...", "Evaluate..." — помогает агенту быстро понять назначение</li>
+    <li><strong>Примеры в description</strong> — добавляют контекст и ускоряют понимание</li>
+    <li><strong>Обновлять metadata</strong> — скиллы эволюционируют, описание должно отражать текущие возможности</li>
+  </ul>
+</div>
+
+<p style="text-align:center; color:#666; margin-top:40px;">Сгенерировано E.X.E.C.U.T.O.R • 01.07.2026</p>
+
+</body>
+</html>

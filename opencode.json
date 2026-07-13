@@ -4,21 +4,9 @@
   "default_agent": "jarvis",
   "share": "disabled",
   "instructions": [
-    "~/.config/opencode/global-rules.md"
+    "~/.config/opencode/global-rules.md",
+    "~/.config/opencode/persona/soul.md"
   ],
-  "provider": {
-    "openrouter": {
-      "models": {
-        "owl-alpha": {
-          "name": "Owl Alpha (1M, free)",
-          "limit": {
-            "context": 1000000,
-            "output": 262144
-          }
-        }
-      }
-    }
-  },
   "permission": {
     "bash": {
       "*find*": "deny",
@@ -32,50 +20,31 @@
     "websearch": "deny"
   },
   "mcp": {
-    "agentmemory": {
-      "type": "local",
-      "command": [
-        "agentmemory",
-        "mcp"
-      ],
-      "environment": {
-        "AGENTMEMORY_URL": "http://localhost:3111",
-        "AGENTMEMORY_TOOLS": "jarvis"
-      },
-      "enabled": true
-    },
     "exa": {
-      "type": "local",
-      "command": [
-        "bunx",
-        "-y",
-        "exa-mcp-server"
-      ],
-      "environment": {
-        "EXA_API_KEY": "57c7932c-0ffa-4f75-8173-da5b8a343752"
-      },
-      "timeout": 25000,
-      "enabled": false
+      "type": "remote",
+      "url": "http://127.0.0.1:18099",
+      "enabled": true,
+      "timeout": 120000
     },
     "deepwiki": {
       "type": "remote",
       "url": "https://mcp.deepwiki.com/mcp",
-      "enabled": true
+      "enabled": true,
+      "timeout": 120000
     },
     "sequential-thinking": {
       "type": "local",
       "command": [
-        "bunx",
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
+        "/home/kasiro/.bun/bin/mcp-server-sequential-thinking"
       ],
-      "timeout": 60000,
+      "timeout": 120000,
       "enabled": true
     },
     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "enabled": true,
+      "timeout": 120000,
       "headers": {
         "Authorization": "Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500"
       }
@@ -86,8 +55,8 @@
         "bunx",
         "web-research-mcp"
       ],
-      "enabled": false,
-      "description": "Поиск через DuckDuckGo + fetch страниц. (DuckDuckGo сломан)"
+      "enabled": true,
+      "description": "Поиск через DuckDuckGo + fetch страниц"
     },
     "searxng": {
       "type": "local",
@@ -107,14 +76,15 @@
       "command": [
         "uv",
         "run",
-        "--project",
-        "/home/kasiro/Документы/python_projects/crawl4ai-rag",
+        "--directory",
+        "/home/kasiro/Документы/python_projects/crawl4ai-mcp",
         "python",
-        "/home/kasiro/Документы/python_projects/crawl4ai-rag/crawl4ai_mcp_server.py"
+        "-m",
+        "crawl4ai_mcp.server"
       ],
       "timeout": 60000,
       "enabled": true,
-      "description": "Парсинг сайтов через Crawl4AI — поиск информации на естественном языке"
+      "description": "Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions"
     },
     "youtube-transcript": {
       "type": "local",
@@ -126,6 +96,18 @@
       },
       "timeout": 60000,
       "enabled": true
+    },
+    "memory": {
+      "type": "local",
+      "command": [
+        "bun",
+        "run",
+        "--cwd",
+        "/home/kasiro/.config/opencode/mcp-servers/memory-mcp",
+        "src/index.ts"
+      ],
+      "enabled": true,
+      "timeout": 30000
     }
   },
   "agent": {
@@ -139,105 +121,72 @@
         },
         "websearch": "deny",
         "webfetch": "deny",
-        "agentmemory_memory_slot_create": "deny",
-        "agentmemory_memory_slot_get": "deny",
-        "agentmemory_memory_slot_list": "deny",
-        "agentmemory_memory_slot_append": "deny",
-        "agentmemory_memory_slot_replace": "deny",
-        "agentmemory_memory_slot_delete": "deny",
-        "mcp-searxng*": "deny",
-        "mcp-crawl4ai*": "deny",
-        "mcp-deepwiki*": "deny",
-        "mcp-context7*": "deny"
+        "searxng_*": "deny",
+        "crawl4ai_*": "deny",
+        "deepwiki_*": "deny",
+        "context7_*": "deny",
+        "exa_*": "deny",
+        "web-research_*": "deny",
+        "youtube-transcript_*": "deny",
+        "memory_*": "allow"
       }
     },
     "title": {
       "model": "opencode/big-pickle"
     },
-    "researcher": {
+    "general": {
       "permission": {
         "edit": {
-          "*": "deny"
+          "**/memory/**": "deny",
+          "*": "allow"
         },
         "bash": {
-          "curl*": "allow",
-          "wget*": "allow",
-          "*": "deny"
+          "*sqlite*": "ask",
+          "*": "allow"
         },
+        "websearch": "allow",
+        "webfetch": "allow",
         "skill": {
           "agent-delegation": "deny",
           "jarvis-cycles": "deny",
           "context-mgmt": "deny",
           "how_use_memory": "deny"
-        }
+        },
+        "memory_*": "deny"
       },
       "tools": {
-        "mcp-agentmemory*": true,
-        "mcp-sequential-thinking*": true,
-        "mcp-deepwiki*": true,
-        "mcp-context7*": true,
-        "mcp-searxng*": true,
-        "mcp-youtube-transcript*": true,
-        "mcp-crawl4ai*": true
+        "sequential-thinking_*": true,
+        "searxng_*": true,
+        "deepwiki_*": true,
+        "context7_*": true,
+        "exa_*": true,
+        "web-research_*": true,
+        "crawl4ai_*": true,
+        "youtube-transcript_*": true
       }
     },
-    "executor": {
+    "memory-agent": {
       "permission": {
         "edit": {
-          "*": "allow"
+          "**/memory/projects/**": "allow",
+          "**/memory/global/**": "allow",
+          "**/memory/sessions/**": "allow",
+          "*": "deny"
+        },
+        "read": {
+          "**/memory/**": "allow",
+          "*": "deny"
         },
         "bash": {
           "*": "allow"
         },
         "websearch": "deny",
         "webfetch": "deny",
-        "skill": {
-          "agent-delegation": "deny",
-          "jarvis-cycles": "deny",
-          "context-mgmt": "deny",
-          "how_use_memory": "deny"
-        }
-      }
-    },
-    "sysadmin": {
-      "permission": {
-        "bash": {
-          "*": "allow"
-        },
-        "skill": {
-          "agent-delegation": "deny",
-          "jarvis-cycles": "deny",
-          "context-mgmt": "deny",
-          "how_use_memory": "deny"
-        }
+        "memory_*": "allow",
+        "skill": "allow"
       },
       "tools": {
-        "mcp-agentmemory*": true,
-        "mcp-sequential-thinking*": true,
-        "mcp-searxng*": true
-      }
-    },
-    "general": {
-      "permission": {
-        "edit": {
-          "*": "allow"
-        },
-        "bash": {
-          "*": "allow"
-        },
-        "skill": {
-          "agent-delegation": "deny",
-          "jarvis-cycles": "deny",
-          "context-mgmt": "deny",
-          "how_use_memory": "deny"
-        }
-      },
-      "tools": {
-        "mcp-agentmemory*": true,
-        "mcp-sequential-thinking*": true,
-        "mcp-searxng*": true,
-        "mcp-deepwiki*": true,
-        "mcp-context7*": true
+        "memory_*": true
       }
     }
   },
@@ -256,6 +205,6 @@
     "max_bytes": 204800
   },
   "experimental": {
-    "mcp_timeout": 60000
+    "mcp_timeout": 120000
   }
 }

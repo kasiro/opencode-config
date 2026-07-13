@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Autolearn и извлечение уроков — J.A.R.V.I.S.</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>🤖 Autolearn и извлечение уроков</h1>
+<p><span class="tag tag-green">механизм</span> <span class="tag tag-blue">lesson_save</span> <span class="tag tag-yellow">self-improvement</span></p>
+
+<div class="section">
+  <h3>📖 Что такое Autolearn</h3>
+  <p>Autolearn — это явная, протоколированная система извлечения и сохранения уроков в OpenCode/J.A.R.V.I.S. В отличие от "чёрного ящика", где обучение происходит невидимо, autolearn работает через <strong>явные вызовы инструментов</strong> с указанием контекста, уверенности и типа урока.</p>
+  <p>Механизм встроен в <span class="path">agentmemory</span> как часть 4-tier консолидации на уровне <strong>Procedural Memory</strong> — самой абстрактной и долговременной формы памяти.</p>
+</div>
+
+<h2>📂 Хранилище уроков</h2>
+
+<div class="section">
+  <p>Извлечённые уроки хранятся в <span class="path">~/.config/opencode/global-rules.md</span> в секции <code>[AUTOLEARN LESSONS]</code>:</p>
+
+  <pre>---
+[AUTOLEARN LESSONS] ═══════════════════════════════════════
+# Извлечённые уроки autolearn — сохранено 23.06.2026
+═══════════════════════════════════════════════════════════
+
+## Research и ответы
+- При нумерованных вопросах от сэра не уходить в исследовательский цикл.
+  Собрать данные из 2-3 параллельных источников и сразу выдать структурированный ответ.
+- Research-before-conclusions: всегда искать в интернете перед тем как делать
+  утверждения, аудиты, оценки или выводы.
+
+## Выполнение инструкций
+- Когда сэр даёт точные команды bullet-списком с конкретными флагами/аргументами —
+  выполнять их напрямую, не делегируя сабагентам и не анализируя дальше.
+
+## Дебаг и диагностика
+- При отладке API/совместимости — сначала эмпирическая проверка (curl, прямой
+  запрос), потом выводы. Не полагаться только на трассировку кода.
+
+## MCP и инструменты
+- При удалении MCP серверов — чистить и opencode.json, и глобально.
+  Не оставлять осиротевшие пакеты.</pre>
+
+  <p>На текущий момент зафиксировано <strong>7 извлечённых уроков</strong> в 4 категориях.</p>
+</div>
+
+<h2>🏷️ Система тегов</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Тег</th><th>Назначение</th><th>Пример</th></tr>
+    <tr>
+      <td><span class="tag tag-yellow">error</span></td>
+      <td>Ошибка, которую нужно запомнить и не повторять</td>
+      <td><code>lesson_save(confidence=0.7, tags="error", content="glob медленнее fd в 5-10x")</code></td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-green">pattern</span></td>
+      <td>Рабочий паттерн, который нужно повторять</td>
+      <td><code>lesson_save(confidence=0.5, tags="pattern", content="Для поиска файлов — fd вместо find")</code></td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-blue">preference</span></td>
+      <td>Предпочтение пользователя (стиль, подход)</td>
+      <td><code>lesson_save(confidence=0.8, tags="preference", content="Пользователь предпочитает doas вместо sudo")</code></td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-red">correction</span></td>
+      <td>Исправление неверного понимания</td>
+      <td><code>lesson_save(confidence=0.7, tags="correction", content="Сэр использует doas, не sudo")</code></td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-yellow">execution</span></td>
+      <td>Оптимизация выполнения команд/процессов</td>
+      <td><code>lesson_save(confidence=0.6, tags="execution", content="bun вместо npm — в 10x быстрее")</code></td>
+    </tr>
+  </table>
+</div>
+
+<h2>📊 Confidence Scoring</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Уровень</th><th>Значение</th><th>Когда ставить</th></tr>
+    <tr><td><strong>1.0</strong></td><td><span class="tag tag-red">Критический</span></td><td>Безопасность, потеря данных, архитектурные решения</td></tr>
+    <tr><td><strong>0.8</strong></td><td><span class="tag tag-red">Preference</span></td><td>Предпочтения пользователя, confirmed паттерны</td></tr>
+    <tr><td><strong>0.7</strong></td><td><span class="tag tag-red">Error</span></td><td>Подтверждённая ошибка (воспроизведена 2+ раза)</td></tr>
+    <tr><td><strong>0.5</strong></td><td><span class="tag tag-yellow">Pattern</span></td><td>Рабочий паттерн, замеченный 1-2 раза</td></tr>
+    <tr><td><strong>0.3</strong></td><td><span class="tag tag-yellow">Шум</span></td><td>Сомнительное наблюдение, единичный случай</td></tr>
+  </table>
+  
+  <p><strong>Правило:</strong> уроки с confidence &lt; 0.3 автоматически считаются шумом и не участвуют в recall.</p>
+</div>
+
+<h2>🔄 Auto-trigger Self-improvement</h2>
+
+<div class="section">
+  <p>При сохранении урока с тегом <code>tags="error"</code> срабатывает механизм авто-улучшения:</p>
+  
+  <ol>
+    <li><strong>Детекция:</strong> CYCLE 1 → VERIFY обнаруживает <code>lesson_save(tags="error")</code></li>
+    <li><strong>Анализ:</strong> Агент анализирует причину ошибки и контекст</li>
+    <li><strong>Действие:</strong>
+      <ul>
+        <li>Если ошибка повторяется 2+ раза → обновление SKILL.md</li>
+        <li>Если ошибка в конфигурации → исправление opencode.json</li>
+        <li>Если ошибка в подходе → запись урока с correction</li>
+      </ul>
+    </li>
+    <li><strong>Фиксация:</strong> git commit изменений скилла/конфига</li>
+  </ol>
+
+  <p><strong>Важно:</strong> Сэр тоже может ошибаться. Агент учитывает контекст и не записывает уроки вслепую.</p>
+</div>
+
+<h2>🔍 Accuracy Protocol</h2>
+
+<div class="section">
+  <p>Система включает встроенный <strong>Accuracy Protocol</strong> — механизм проверки достоверности:</p>
+  
+  <ul>
+    <li><strong>Research-before-conclusions:</strong> всегда искать в интернете перед утверждениями</li>
+    <li><strong>Скептицизм к себе:</strong> не полагаться только на трассировку кода если есть сомнения</li>
+    <li><strong>Double-check:</strong> прямые доказательства от сэра (вывод команд, логи) авторитетнее моментальных снимков</li>
+    <li><strong>Эмпирика важнее анализа:</strong> при отладке API — сначала curl, потом выводы</li>
+  </ul>
+</div>
+
+<h2>📎 Повторная ошибка → git commit</h2>
+
+<div class="section">
+  <p><strong>Правило:</strong> Если одна и та же ошибка зафиксирована 2+ раза:</p>
+  <pre>1. lesson_recall(query="error", tags="error") → обнаружить повторение
+2. Проанализировать контекст обеих ошибок
+3. Обновить SKILL.md с инструкцией по предотвращению
+4. git commit -m "fix: add prevention for [ошибка]"</pre>
+  
+  <p>Это превращает единичные ошибки в системные улучшения, доступные всем агентам.</p>
+</div>
+
+<h2>💡 Примеры всех тегов</h2>
+
+<div class="section">
+  <h3><span class="tag tag-yellow">error</span> — Ошибка инструмента</h3>
+  <pre>agentmemory_memory_lesson_save(
+  confidence=0.7,
+  tags="error",
+  content="glob медленнее fd в 5-10x, не использовать glob для поиска файлов",
+  context="оптимизация поисковых инструментов"
+)</pre>
+
+  <h3><span class="tag tag-green">pattern</span> — Рабочий паттерн</h3>
+  <pre>agentmemory_memory_lesson_save(
+  confidence=0.5,
+  tags="pattern",
+  content="Для диагностики сети использовать слои: процессы → интерфейсы → порты → DNS",
+  context="сетевая диагностика"
+)</pre>
+
+  <h3><span class="tag tag-blue">preference</span> — Предпочтение</h3>
+  <pre>agentmemory_memory_lesson_save(
+  confidence=0.8,
+  tags="preference",
+  content="Использовать doas вместо sudo для эскалации привилегий",
+  context="безопасность"
+)</pre>
+
+  <h3><span class="tag tag-red">correction</span> — Исправление</h3>
+  <pre>agentmemory_memory_lesson_save(
+  confidence=0.7,
+  tags="correction",
+  content="pip install глобально нельзя — Arch Linux PEP 668, использовать uv",
+  context="установка Python пакетов"
+)</pre>
+
+  <h3><span class="tag tag-yellow">execution</span> — Оптимизация выполнения</h3>
+  <pre>agentmemory_memory_lesson_save(
+  confidence=0.6,
+  tags="execution",
+  content="bun run вместо npm run — в 3-5x быстрее установка зависимостей",
+  context="Node.js workflow"
+)</pre>
+</div>
+
+<h2>🎯 Как работает lesson_recall</h2>
+
+<div class="section">
+  <p>Поиск уроков использует комбинацию: <strong>семантический поиск</strong> + <strong>фильтрация по тегам</strong> + <strong>порог confidence</strong>:</p>
+  
+  <pre>agentmemory_memory_lesson_recall(query="поиск файлов", limit=5, minConfidence=0.3)</pre>
+  
+  <table>
+    <tr><th>Параметр</th><th>Назначение</th><th>Рекомендация</th></tr>
+    <tr><td><code>query</code></td><td>Поисковый запрос (семантика)</td><td>Ключевые слова по теме</td></tr>
+    <tr><td><code>limit</code></td><td>Количество результатов</td><td>5 (оптимально для контекста)</td></tr>
+    <tr><td><code>minConfidence</code></td><td>Минимальный порог уверенности</td><td>0.3 (отсеивает шум)</td></tr>
+    <tr><td><code>project</code></td><td>Фильтр по проекту</td><td>Указывать для scoping</td></tr>
+  </table>
+  
+  <p><strong>Механизм:</strong> При <code>lesson_recall()</code> уроки ранжируются по confidence (высший — первый). Уроки с confidence &lt; minConfidence отбрасываются. Дублирующееся содержимое авто-усиливает существующий урок (confidence повышается).</p>
+</div>
+
+<p style="text-align:center; color:#666; margin-top:40px;">Сгенерировано E.X.E.C.U.T.O.R • 01.07.2026</p>
+
+</body>
+</html>

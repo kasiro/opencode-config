@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Self-improving AI agents — J.A.R.V.I.S. Research</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>Self-improving AI Agents</h1>
+<p>Исследование механизмов самоулучшения AI-агентов: от lesson-loop до multi-agent эволюции. Дата: июль 2026.</p>
+<p>
+  <span class="tag tag-green">self-improving</span>
+  <span class="tag tag-blue">reinforcement-learning</span>
+  <span class="tag tag-yellow">meta-learning</span>
+  <span class="tag tag-red">hyperagents</span>
+</p>
+
+<h2>1. Lesson Loop Pattern</h2>
+<div class="section">
+  <p><strong>Цикл самоулучшения:</strong> фундаментальный паттерн, при котором агент выполняет задачу, фиксирует неудачу/ошибку, извлекает урок, сохраняет его в долговременную память и применяет в будущем.</p>
+  <pre>execute → fail → extract_lesson → store → retrieve → apply → improve</pre>
+  <p>Ключевые элементы успешного Lesson Loop:</p>
+  <ul>
+    <li><strong>Верификация урока:</strong> урок должен быть проверен на релевантность перед сохранением (confidence score)</li>
+    <li><strong>Контекстная привязка:</strong> урок хранится вместе с контекстом (проект, тип задачи, файл)</li>
+    <li><strong>Автоматическое применение:</strong> при старте похожей задачи уроки автоматически загружаются</li>
+    <li><strong>Decay-механизм:</strong> неиспользуемые уроки со временем теряют вес</li>
+  </ul>
+  <p>В OpenCode этот паттерн реализован через <code>agentmemory_memory_lesson_save</code> и <code>agentmemory_memory_lesson_recall</code>. Confidence score обновляется при каждом успешном использовании урока.</p>
+</div>
+
+<h2>2. HyperAgents (Meta, 03.2026)</h2>
+<div class="section">
+  <p><strong>HyperAgents</strong> — фреймворк Meta Research для cross-domain transfer улучшений между агентами. Ключевая инновация: улучшения, полученные одним агентом в одной предметной области, автоматически передаются другим агентам в других областях.</p>
+  <h3>Архитектура</h3>
+  <ul>
+    <li><strong>Agent Pool:</strong> популяция агентов с разными специализациями</li>
+    <li><strong>Evolve Controller:</strong> анализирует успешные стратегии и мутирует их в другие домены</li>
+    <li><strong>Cross-domain Mapper:</strong> отображает уроки из одной предметной области в другую</li>
+    <li><strong>Fitness Function:</strong> метрика успеха для каждого агента</li>
+  </ul>
+  <h3>Multi-Agent Evolve</h3>
+  <p>Процесс эволюции:</p>
+  <ol>
+    <li>Агенты выполняют задачи и записывают траектории (prompt → action → result)</li>
+    <li>Evolve Controller выбирает лучшие траектории (top-k по fitness)</li>
+    <li>Мутация: лучшие траектории комбинируются и адаптируются для других доменов</li>
+    <li>Новые траектории загружаются в промпты агентов</li>
+    <li>Цикл повторяется каждые N итераций</li>
+  </ol>
+  <p><strong>Результаты Meta:</strong> улучшение accuracy на 23-47% в cross-domain сценариях по сравнению с изолированным обучением.</p>
+</div>
+
+<h2>3. SAGE: 4-агентная архитектура</h2>
+<div class="section">
+  <p><strong>SAGE</strong> (Self-improving AGent with Evolution) — архитектура с четырьмя специализированными агентами и защитой от дрейфа curriculum.</p>
+  <table>
+    <tr><th>Агент</th><th>Роль</th><th>Функция</th></tr>
+    <tr><td><strong>Challenger</strong></td><td>Генерация задач</td><td>Создаёт задачи возрастающей сложности для Solver-агента</td></tr>
+    <tr><td><strong>Planner</strong></td><td>Стратегия</td><td>Разрабатывает план решения, разбивает на подшаги</td></tr>
+    <tr><td><strong>Solver</strong></td><td>Исполнение</td><td>Выполняет шаги плана, генерирует код/действия</td></tr>
+    <tr><td><strong>Critic</strong></td><td>Оценка</td><td>Анализирует результат, извлекает уроки, обновляет память</td></tr>
+  </table>
+  <h3>Curriculum Drift Prevention</h3>
+  <p>Критическая проблема self-improving систем: агент может «застрять» на лёгких задачах, избегая сложных. SAGE решает это через:</p>
+  <ul>
+    <li><strong>Автоматическое повышение сложности:</strong> Challenger анализирует историю успехов и повышает сложность на 10-20% при N последовательных успехах</li>
+    <li><strong>Struggle Detection:</strong> если Solver не может решить задачу после K попыток, Challenger понижает сложность на 30%</li>
+    <li><strong>Diversity Reward:</strong> агент получает бонус за использование новых стратегий (не повторение старых)</li>
+  </ul>
+</div>
+
+<h2>4. SWE-RL: RL на результатах кода</h2>
+<div class="section">
+  <p><strong>SWE-RL</strong> (Software Engineering Reinforcement Learning) — техника, при которой агент обучается через reinforcement learning на реальных результатах выполнения кода (unit test pass/fail, compilation success, code review score).</p>
+  <h3>Как работает:</h3>
+  <ol>
+    <li>Агент генерирует код для задачи</li>
+    <li>Код выполняется в изолированной среде (sandbox)</li>
+    <li>Результат: pass/fail тестов, ошибки компиляции, coverage</li>
+    <li>RL-алгоритм (PPO/GRPO) обновляет веса LM через reward signal</li>
+    <li>Цикл повторяется тысячи раз</li>
+  </ol>
+  <p><strong>Результаты:</strong> SWE-RL на базе Qwen2.5-Coder-7B достиг 41.6% solve rate на SWE-Bench Verified, превзойдя GPT-4o (33.2%) при значительно меньшем размере модели.</p>
+  <p>Ключевые компоненты успеха:</p>
+  <ul>
+    <li>Высококачественный reward signal (не binary pass/fail, а graded: compilation → tests → style → perf)</li>
+    <li>Разнообразие задач (не переобучаться на одном типе)</li>
+    <li>Правильный balance между exploration и exploitation</li>
+  </ul>
+</div>
+
+<h2>5. Prompt Optimization Loop</h2>
+<div class="section">
+  <p>Методология A/B тестирования промптов для автоматического улучшения качества ответов агента.</p>
+  <h3>Цикл оптимизации:</h3>
+  <ol>
+    <li><strong>Baseline:</strong> текущий промпт выполняет задачу N раз</li>
+    <li><strong>Variant:</strong> изменённый промпт (добавление/удаление инструкций, изменение порядка)</li>
+    <li><strong>A/B Test:</strong> оба варианта выполняют одинаковые задачи, результаты сравниваются</li>
+    <li><strong>Winner Selection:</strong> вариант с лучшей метрикой становится новым baseline</li>
+    <li><strong>Mutation:</strong> новый baseline мутирует (изменение 10-30% контента) для следующего раунда</li>
+  </ol>
+  <p>Метрики для сравнения:</p>
+  <ul>
+    <li><strong>Accuracy:</strong> правильность ответа (0-1)</li>
+    <li><strong>Completeness:</strong> полнота охвата требований</li>
+    <li><strong>Token Efficiency:</strong> количество токенов на единицу результата</li>
+    <li><strong>User Satisfaction:</strong> оценка пользователя (thumbs up/down)</li>
+  </ul>
+  <p>Для OpenCode может быть реализовано через плагин, который перехватывает запросы, применяет разные версии system prompt и логирует результаты.</p>
+</div>
+
+<h2>6. METR: темп улучшения агентов</h2>
+<div class="section">
+  <p><strong>METR</strong> (Model Evaluation and Threat Research) — организация, отслеживающая прогресс AI-агентов. Ключевое наблюдение: сложность задач, которые могут решать агенты, удваивается каждые <strong>7 месяцев</strong>.</p>
+  <table>
+    <tr><th>Год</th><th>Пример задачи</th><th>Оценка сложности (METR)</th></tr>
+    <tr><td>2023</td><td>Написание простых функций, вопросы-ответы по документации</td><td>1.0</td></tr>
+    <tr><td>2024</td><td>Многошаговый рефакторинг, деплой простых приложений</td><td>3.5</td></tr>
+    <tr><td>2025</td><td>End-to-end разработка модулей, дебаг production инцидентов</td><td>8.2</td></tr>
+    <tr><td>2026</td><td>Cross-repo рефакторинг, архитектурные решения, автономные исследования</td><td>16.0+</td></tr>
+  </table>
+  <p>Импликация: self-improving механизмы критичны — без них агент будет отставать от exponentially улучшающихся конкурентов.</p>
+</div>
+
+<h2>7. Сравнение с текущей системой Jarvis</h2>
+<div class="section">
+  <table>
+    <tr><th>Компонент</th><th>Jarvis (текущий)</th><th>Self-improving (целевой)</th></tr>
+    <tr><td>Сохранение уроков</td><td><code>lesson_save</code> — ручной вызов агентом</td><td>Автоматическая экстракция уроков из неудач + верификация</td></tr>
+    <tr><td>Accuracy Protocol</td><td>Базовый: retry на ошибках</td><td>Structured: анализ ошибки → извлечение паттерна → update промпта</td></tr>
+    <tr><td>Confidence decay</td><td>Есть (базовый)</td><td>Adaptive: уроки переоцениваются через cross-validation</td></tr>
+    <tr><td>Cross-domain transfer</td><td>Нет</td><td>HyperAgents-style mapping между доменами</td></tr>
+    <tr><td>Prompt evolution</td><td>Ручная правка</td><td>Автоматический A/B цикл с мутациями</td></tr>
+    <tr><td>Multi-agent обучение</td><td>Каждый агент сам за себя</td><td>Pool эволюция с обменом стратегиями</td></tr>
+  </table>
+</div>
+
+<h2>8. Рекомендации</h2>
+<div class="section">
+  <ol>
+    <li><strong>Верификатор уроков:</strong> добавить агента-верификатора, который проверяет качество урока перед сохранением (relevance, specificity, actionability). Confidence < 0.3 — rejected, 0.3-0.7 — requires review, > 0.7 — auto-save.</li>
+    <li><strong>Multi-Agent Evolve:</strong> имплементировать HyperAgents-style pool, где агенты обмениваются успешными стратегиями через agentmemory signals. Оркестратор выбирает top-k траекторий каждые 100 задач.</li>
+    <li><strong>Meta-learning layer:</strong> добавить слой, который анализирует паттерны в saved lessons и синтезирует higher-order правила (обобщения из частных уроков).</li>
+    <li><strong>Curriculum Manager:</strong> Challenger-агент, автоматически подбирающий задачи для прокачки слабых мест Solver-агентов.</li>
+    <li><strong>SWE-RL integration:</strong> для code generation задач добавить RL fine-tuning через sandbox execution результатов.</li>
+  </ol>
+</div>
+
+<hr>
+<p style="color: #82aaff; text-align: center; font-size: 0.9em;">Отчёт 11 — Self-improving AI Agents | J.A.R.V.I.S. Research | июль 2026</p>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Scheduled и Event-Driven AI агенты — Отчёт 19</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .tag-purple { background: #aa00ff33; color: #aa00ff; border: 1px solid #aa00ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>⏰ Scheduled и Event-Driven AI агенты</h1>
+<p><span class="tag tag-green">v1.0</span> <span class="tag tag-blue">Temporal</span> <span class="tag tag-purple">Durable Execution</span> <span class="tag tag-yellow">Event-Driven</span></p>
+
+<div class="section">
+  <h3>🔍 Обзор</h3>
+  <p>Современные AI-агенты всё чаще работают не в режиме «запрос→ответ», а как <strong>фоновые процессы</strong>, запускаемые по расписанию (cron, Temporal Schedules) или по событиям (webhook, file system watch, signal). 2025–2026 принесли зрелые платформы для durable execution — Temporal стал стандартом для agentic workflow с гарантиями выполнения, а OpenClaw показал zero-polling event-driven архитектуру.</p>
+  <p>По данным AgentCenter 2026, организации в среднем используют <strong>50–200+ агентов</strong>, из которых 30–40% работают в фоновом scheduled/event-driven режиме.</p>
+</div>
+
+<h2>⏳ Temporal — Durable Execution Engine</h2>
+<div class="section">
+  <p><strong>Temporal</strong> — open-source платформа durable execution, ставшая стандартом для надёжных AI-воркфлоу. Позволяет запускать долгоживущие процессы, которые <strong>автоматически восстанавливаются</strong> после падений, перезагрузок и сетевых сбоев.</p>
+
+  <h3>Ключевые концепции</h3>
+  <table>
+    <tr><th>Концепция</th><th>Описание</th><th>Для AI-агентов</th></tr>
+    <tr><td><strong>Workflow</strong></td><td>Долгоживущий процесс с сохранением состояния</td><td>Одна «сессия» агента от начала до завершения задачи</td></tr>
+    <tr><td><strong>Activity</strong></td><td>Атомарный шаг workflow (вызов API, tool use, расчёт)</td><td>Один tool call или действие агента</td></tr>
+    <tr><td><strong>Schedule</strong></td><td>CRON-подобное расписание запуска workflow</td><td>Фоновые задачи агента: «проверь почту каждый час»</td></tr>
+    <tr><td><strong>Signal</strong></td><td>Внешнее событие, прерывающее workflow</td><td>Webhook: «пришло новое письмо → запусти агента»</td></tr>
+    <tr><td><strong>Query</strong></td><td>Запрос состояния workflow без модификации</td><td>«Каков статус задачи #42?» без изменения хода выполнения</td></tr>
+    <tr><td><strong>Event History</strong></td><td>Полный лог всех событий workflow</td><td>Источник контекста для агента — что произошло, в каком порядке</td></tr>
+    <tr><td><strong>Heartbeat</strong></td><td>Периодический сигнал «я жив» от Activity</td><td>Мониторинг, что агент не завис и выполняет задачу</td></tr>
+  </table>
+
+  <h3>ScheduleSpec</h3>
+  <p>Temporal ScheduleSpec — CRON-подобное расписание с гарантиями выполнения:</p>
+  <ul>
+    <li><strong>Calendar-based:</strong> <code>*/5 * * * *</code> (каждые 5 минут)</li>
+    <li><strong>Interval-based:</strong> каждые N секунд/минут/часов</li>
+    <li><strong>Structured calendar:</strong> день недели + месяц + год</li>
+    <li><strong>Time zone aware:</strong> поддержка часовых поясов</li>
+    <li><strong>Backfill:</strong> запуск пропущенных выполнений</li>
+    <li><strong>Pause/Resume:</strong> приостановка без потери конфигурации</li>
+    <li><strong>Last completion check:</strong> предотвращение дублирования</li>
+  </ul>
+
+  <h3>Heartbeat мониторинг</h3>
+  <p>Temporal предоставляет механизм Heartbeat для контроля, что Activity (или агент) жив:</p>
+  <pre>
+  async def agent_heartbeat_activity():
+      while not completed:
+          result = await agent_step()
+          # Сообщаем Temporal: "я жив, прогресс: 45%"
+          activity.heartbeat(result)
+          await asyncio.sleep(5)
+  </pre>
+  <p>Если Heartbeat не поступает N минут → Activity помечается как stalled → Temporal запускает retry или fallback.</p>
+
+  <h3>AI-агенты на Temporal — пример</h3>
+  <p>Из Temporal blog (сентябрь 2025): 24/7 crypto trading system с агентами:</p>
+  <ul>
+    <li><strong>Scheduled agent:</strong> запускается каждые 15 минут для анализа рынка</li>
+    <li><strong>Signal-driven agent:</strong> реагирует на ценовые события (price alert)</li>
+    <li><strong>MCP integration:</strong> Temporal Workflow вызывает MCP-инструменты через Activities</li>
+    <li><strong>Durable tools:</strong> каждый tool call — отдельная Activity с retry</li>
+  </ul>
+</div>
+
+<h2>🔧 OpenClaw Hooks — Zero-Polling Event-Driven</h2>
+<div class="section">
+  <p>OpenClaw (open-source personal AI assistant) использует <strong>Hooks</strong> — event-driven архитектуру без опроса (zero-polling).</p>
+  <table>
+    <tr><th>Hook Type</th><th>Триггер</th><th>Пример</th></tr>
+    <tr><td><strong>Schedule Hook</strong></td><td>CRON-расписание</td><td>«Каждое утро в 9:00 проверяй календарь»</td></tr>
+    <tr><td><strong>File System Hook</strong></td><td>Изменение файлов</td><td>«Новый файл в /Downloads → обработай»</td></tr>
+    <tr><td><strong>Webhook Hook</strong></td><td>HTTP POST на endpoint</td><td>«Получен webhook от GitHub → задеплой»</td></tr>
+    <tr><td><strong>Email Hook</strong></td><td>Новое письмо (IMAP IDLE)</td><td>«Письмо от CEO → приоритетная обработка»</td></tr>
+    <tr><td><strong>Message Hook</strong></td><td>Сообщение из Telegram/WhatsApp/Discord</td><td>«Сообщение от пользователя → ответь»</td></tr>
+    <tr><td><strong>Custom Hook</strong></td><td>Любой пользовательский триггер</td><td>«HID-устройство подключено → запусти скрипт»</td></tr>
+  </table>
+  <p><strong>Преимущества:</strong></p>
+  <ul>
+    <li>Zero CPU/time в ожидании — нет polling</li>
+    <li>Мгновенная реакция на события</li>
+    <li>5700+ community-built skills через ClawHub</li>
+    <li>5,700+ community-built skills</li>
+  </ul>
+</div>
+
+<h2>📊 Статистика: 50–200+ агентов в организациях</h2>
+<div class="section">
+  <p>По данным AgentCenter 2026, PwC AI Agent Survey и других исследований:</p>
+  <table>
+    <tr><th>Метрика</th><th>Значение</th></tr>
+    <tr><td>Среднее число агентов в организации</td><td>50–200+</td></tr>
+    <tr><td>Компании, уже внедрившие AI-агентов</td><td>79% (PwC)</td></tr>
+    <tr><td>Из них: агенты с доступом к sensitive data</td><td>53%</td></tr>
+    <tr><td>Фоновые/автономные агенты</td><td>30–40% от всех</td></tr>
+    <tr><td>Компании с планами внедрения</td><td>78%</td></tr>
+    <tr><td>Готовность доверять агентам (финансы)</td><td>13.5% (Deloitte)</td></tr>
+  </table>
+</div>
+
+<h2>🔄 Фоновые задачи — инструменты</h2>
+<div class="section">
+  <table>
+    <tr><th>Инструмент</th><th>Тип</th><th>Особенности</th><th>Для AI агентов</th></tr>
+    <tr><td><strong>Cron</strong></td><td>OS-level</td><td>$ crontab -e, простота</td><td>Запуск shell-скриптов по расписанию</td></tr>
+    <tr><td><strong>systemd timer</strong></td><td>OS-level</td><td>systemd .timer + .service, логирование</td><td>Надёжный запуск AI-скриптов как systemd сервисов</td></tr>
+    <tr><td><strong>Webhooks</strong></td><td>Event-driven</td><td>HTTP POST → endpoint</td><td>GitHub push → CI → deploy агент</td></tr>
+    <tr><td><strong>Temporal Schedules</strong></td><td>Durable</td><td>Workflow-level CRON с гарантиями</td><td>Сложные AI-воркфлоу с retry, состояниями</td></tr>
+    <tr><td><strong>Apache Airflow</strong></td><td>DAG-based</td><td>Зависимости, retry, мониторинг</td><td>Data pipeline с AI-шагами</td></tr>
+    <tr><td><strong>Celery Beat</strong></td><td>Python</td><td>Periodic tasks + worker pool</td><td>Распределённые AI-задачи</td></tr>
+    <tr><td><strong>Kafka / RabbitMQ</strong></td><td>Message queue</td><td>Event streaming, pub/sub</td><td>Event-driven AI pipelines</td></tr>
+  </table>
+</div>
+
+<h2>🔄 Гибрид: Scheduled + Event-Driven</h2>
+<div class="section">
+  <p>Самый мощный паттерн — комбинация расписания и событий в одном workflow:</p>
+  <pre>
+  ┌──────────────────────────────────────────────┐
+  │           Temporal Workflow                   │
+  │                                              │
+  │  ⏰ Scheduled: каждые 15 минут → Check       │
+  │     └─→ Activity: проверить почту            │
+  │     └─→ Если есть важное → Signal → Agent    │
+  │                                              │
+  │  📩 Signal-driven: webhook → New Issue       │
+  │     └─→ Agent: проанализировать issue        │
+  │     └─→ Создать PR с фиксом                  │
+  │     └─→ Проверить CI/CD                      │
+  │                                              │
+  │  📊 Query: статус задач агента               │
+  │  ❤️ Heartbeat: каждые 30 сек "я жив"         │
+  └──────────────────────────────────────────────┘
+  </pre>
+  <p>Этот паттерн позволяет агенту быть <strong>проактивным</strong> (проверять почту самому) и <strong>реактивным</strong> (мгновенно реагировать на webhook), сохраняя полное состояние и контекст.</p>
+</div>
+
+<h2>🎯 Применимость к Jarvis</h2>
+<div class="section">
+  <h3>Jarvis Scheduler</h3>
+  <p>Текущие возможности Jarvis для фоновых задач:</p>
+  <ul>
+    <li><strong>systemd timer</strong> — уже используется для agentmemory.service, pc-control скриптов</li>
+    <li><strong>agentmemory signals</strong> — event-driven коммуникация между агентами</li>
+    <li><strong>Скиллы:</strong> pc-control может быть расширен scheduled-скиллами</li>
+  </ul>
+
+  <h3>Рекомендации</h3>
+  <ol>
+    <li><strong>Temporal для durable execution:</strong> Внедрить Temporal для сложных долгоживущих задач — фоновой обработки, multi-step автоматизации, гарантированного выполнения</li>
+    <li><strong>Signal-based triggers:</strong> Расширить agentmemory signals до полноценной event-driven архитектуры — file watchers, почтовые триггеры, webhook endpoint</li>
+    <li><strong>Proactive skills:</strong> Скиллы, которые запускаются по расписанию (каждое утро в 8:00), а не только по запросу</li>
+    <li><strong>Heartbeat мониторинг:</strong> Для фоновых агентов Jarvis — heartbeat проверка, что агент жив и выполняет задачу</li>
+    <li><strong>Scheduled + event-driven гибрид:</strong> Например: cron-проверка почты каждые 15 минут + мгновенная реакция на webhook для срочных задач</li>
+    <li><strong>Self-healing:</strong> Автоматический перезапуск упавших фоновых задач через systemd timer или Temporal</li>
+  </ol>
+</div>
+
+<hr>
+<p><em>Источники: Temporal.io blog & docs, OpenClaw Hooks documentation, arXiv heartbeat-driven agent scheduling, PwC AI Agent Survey 2025, Deloitte Agentic AI Trust, AgentCenter 2026, Master of Code AI Stats, Temporal SDK for Pydantic AI.</em></p>
+
+</body>
+</html>

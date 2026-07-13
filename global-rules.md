@@ -78,5 +78,5 @@
 
 ## MCP и инструменты
 - При удалении MCP серверов — чистить и opencode.json, и глобально (uninstall пакеты). Не оставлять осиротевшие пакеты.
-- У researcher'а приоритет searxng и web-search инструментов перед другими методами.
+- В permission имена MCP-инструментов начинаются с имени сервера, а не с mcp-: searxng_*, exa_*, crawl4ai_*, deepwiki_*, context7_*, web-research_*, youtube-transcript_*. Не используй префикс mcp-.
 

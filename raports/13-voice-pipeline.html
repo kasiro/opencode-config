@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Голосовой пайплайн STT/TTS — J.A.R.V.I.S. Research</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>Голосовой пайплайн STT/TTS</h1>
+<p>Исследование решений для Speech-to-Text и Text-to-Speech для J.A.R.V.I.S. Дата: июль 2026.</p>
+<p>
+  <span class="tag tag-green">stt</span>
+  <span class="tag tag-blue">tts</span>
+  <span class="tag tag-yellow">whisper</span>
+  <span class="tag tag-red">wake-word</span>
+  <span class="tag tag-blue">voice-pipeline</span>
+</p>
+
+<h2>1. Whisper large-v3 — золотой стандарт STT</h2>
+<div class="section">
+  <p><strong>OpenAI Whisper large-v3</strong> — самая точная модель STT на сегодняшний день.</p>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Параметры</td><td>1.54B (large-v3)</td></tr>
+    <tr><td>WER (Common Voice 15)</td><td>8.2% (английский), ~12% (русский)</td></tr>
+    <tr><td>Поддерживаемые языки</td><td>99 языков, включая русский</td></tr>
+    <tr><td>Формат</td><td>Multitask: transcription, translation, language detection</td></tr>
+    <tr><td>Лицензия</td><td>MIT</td></tr>
+    <tr><td>Аппаратные требования</td><td>10GB+ VRAM (GPU), ~6GB RAM (CPU, медленно)</td></tr>
+  </table>
+  <p><strong>Недостатки:</strong> большой (1.5B params), медленный на CPU, требует ~10GB VRAM для реального времени. Для edge-устройств не подходит.</p>
+</div>
+
+<h2>2. faster-whisper — оптимизированный Whisper</h2>
+<div class="section">
+  <p><strong>faster-whisper</strong> — реимплементация Whisper через CTranslate2. До 4x быстрее оригинала при сопоставимом WER.</p>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Механизм</td><td>CTranslate2 (C++ inference engine)</td></tr>
+    <tr><td>Ускорение</td><td>3-4x относительно оригинального Whisper</td></tr>
+    <tr><td>WER деградация</td><td>&lt; 10% relative (0.5-1% absolute)</td></tr>
+    <tr><td>INT8 квантизация</td><td>Поддерживается (ещё 2x ускорение)</td></tr>
+    <tr><td>VAD интеграция</td><td>Встроенный Silero VAD для детекции тишины</td></tr>
+    <tr><td>Память (large-v3, INT8)</td><td>~2.5GB VRAM</td></tr>
+    <tr><td>Установка</td><td><code>pip install faster-whisper</code></td></tr>
+  </table>
+  <p><strong>Преимущества:</strong> значительно быстрее, почти та же точность, VAD из коробки, поддержка INT8. Рекомендуется как основной STT-движок для edge/deployment.</p>
+</div>
+
+<h2>3. whisper.cpp — на C++</h2>
+<div class="section">
+  <p><strong>whisper.cpp</strong> — порт Whisper на C/C++ с использованием ggml. Оптимизирован для CPU, Apple Silicon (Metal), мобильных устройств.</p>
+  <ul>
+    <li><strong>Apple Metal:</strong> на M1/M2/M3 — в 2-3x быстрее CPU inference</li>
+    <li><strong>ARM NEON:</strong> оптимизация для ARM процессоров</li>
+    <li><strong>Отсутствие зависимостей:</strong> не требует Python, CUDA, PyTorch</li>
+    <li><strong>Размер бинарника:</strong> ~30MB + модель (2-3GB)</li>
+    <li><strong>Использование:</strong> <code>./main -m ggml-large-v3.bin -f audio.wav</code></li>
+  </ul>
+  <p><strong>Когда использовать:</strong> Apple Silicon, embedded системы, минимальные зависимости, production deployment на bare metal.</p>
+</div>
+
+<h2>4. Vosk — лёгкая альтернатива</h2>
+<div class="section">
+  <p><strong>Vosk</strong> — лёгкий STT без GPU. Модели от 50MB до 2GB. Работает в реальном времени на Raspberry Pi.</p>
+  <table>
+    <tr><th>Характеристика</th><th>Значение</th></tr>
+    <tr><td>Размер модели (русская)</td><td>~150MB (vosk-model-small-ru-0.22)</td></tr>
+    <tr><td>WER (русский)</td><td>~15-20% (зависит от шума)</td></tr>
+    <tr><td>Скорость</td><td>0.1x real-time на Raspberry Pi 4</td></tr>
+    <tr><td>Языки</td><td>20+ языков</td></tr>
+    <tr><td>Формат</td><td>Асинхронный streaming через WebSocket</td></tr>
+    <tr><td>Зависимости</td><td>Минимальные (libvosk)</td></tr>
+  </table>
+  <p><strong>Когда использовать:</strong> embedded системы, Raspberry Pi, офлайн-режим, где точность не критична.</p>
+</div>
+
+<h2>5. openWakeWord — wake-word детекция</h2>
+<div class="section">
+  <p><strong>openWakeWord</strong> — open-source библиотека для wake-word обнаружения. Разработана ESPHome. Производит ~200MB RAM, работает на Raspberry Pi.</p>
+  <ul>
+    <li><strong>Модели:</strong> "alexa", "hey_jarvis", "okay_google" — предобученные</li>
+    <li><strong>Кастомные:</strong> можно натренировать своё wake word</li>
+    <li><strong>Архитектура:</strong> lightweight CNN на MFCC features</li>
+    <li><strong>Точность:</strong> 95%+ recall при 1 false alarm/час</li>
+    <li><strong>API:</strong> Python <code>openwakeword.Model().predict(audio)</code></li>
+  </ul>
+  <p><strong>Совместимость:</strong> можно комбинировать с openWakeWord + RealtimeSTT для полного voice pipeline.</p>
+</div>
+
+<h2>6. RealtimeSTT — всё в одном</h2>
+<div class="section">
+  <p><strong>RealtimeSTT</strong> — Python-пакет, объединяющий STT + wake word + VAD (Voice Activity Detection) в одной библиотеке.</p>
+  <pre>
+from RealtimeSTT import AudioToTextRecorder
+
+recorder = AudioToTextRecorder(
+    model="large-v3",              # Whisper модель
+    wake_words="Jarvis",           # Wake word
+    wake_words_sensitivity=0.6,    # Чувствительность
+    silero_sensitivity=0.5,        # VAD чувствительность
+    post_speech_silence_duration=1.0  # Пауза после речи
+)
+
+while True:
+    text = recorder.text()  # Блокирует до получения текста
+    print(f"Распознано: {text}")
+  </pre>
+  <p><strong>Плюсы:</strong> минимальный код, всё включено, настраиваемые параметры VAD и wake word.</p>
+  <p><strong>Минусы:</strong> больше зависимостей, сложнее дебажить, менее гибкая конфигурация чем сборка отдельных компонентов.</p>
+</div>
+
+<h2>7. Kokoro TTS — лёгкий синтез речи</h2>
+<div class="section">
+  <p><strong>Kokoro TTS</strong> — ультра-лёгкая TTS модель (82M параметров) с лицензией Apache 2.0. Оптимальна для edge-развёртывания.</p>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Параметры</td><td>82M (в 50x меньше Tortoise TTS)</td></tr>
+    <tr><td>Скорость</td><td>~50x real-time (CPU), ~150x (GPU)</td></tr>
+    <tr><td>Лицензия</td><td>Apache 2.0</td></tr>
+    <tr><td>Голоса</td><td>8 предобученных (EN, JP, KR, ZH, FR, KO)</td></tr>
+    <tr><td>Качество</td><td>Высокое (MOS 3.8-4.1)</td></tr>
+    <tr><td>Память</td><td>~300MB RAM</td></tr>
+  </table>
+  <pre>
+from kokoro import KPipeline
+pipeline = KPipeline(lang_code='a')  # 'a' = American English
+for voice in pipeline("Hello world", voice='af_heart'):
+    audio = voice.audio  # numpy array
+  </pre>
+  <p><strong>Недостатки:</strong> нет русского языка (пока), ограниченный набор голосов.</p>
+</div>
+
+<h2>8. Chatterbox-Turbo TTS</h2>
+<div class="section">
+  <p><strong>Chatterbox-Turbo TTS</strong> — 350M параметров, MIT лицензия. Поддерживает emotion control, <200ms latency.</p>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Параметры</td><td>350M</td></tr>
+    <tr><td>Latency</td><td>&lt;200ms на GPU (T4)</td></tr>
+    <tr><td>Лицензия</td><td>MIT</td></tr>
+    <tr><td>Emotion Control</td><td>happy, sad, angry, neutral, whisper</td></tr>
+    <tr><td>Clone Voice</td><td>5-second sample для клонирования</td></tr>
+    <tr><td>Языки</td><td>EN, ZH, JP, KR, FR, DE</td></tr>
+    <tr><td>Память</td><td>~1.2GB RAM</td></tr>
+  </table>
+  <p><strong>Преимущество:</strong> emotion control — ключевое для создания «живого» голосового ассистента.</p>
+</div>
+
+<h2>9. MicOracle — wake-word trigger для Claude Code</h2>
+<div class="section">
+  <p><strong>MicOracle</strong> — open-source инструмент, реализующий wake-word triggered voice input для Claude Code. Архитектура: openWakeWord → запись → STT → отправка текста в LLM.</p>
+  <p>Паттерн, используемый MicOracle:</p>
+  <pre>
+┌────────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐
+│ openWakeWord│───▶│ Audio Buffer│───▶│ faster-    │───▶│ Prompt /   │
+│ (detection) │    │ (recording) │    │ whisper    │    │ Execute    │
+└────────────┘    └────────────┘    └────────────┘    └────────────┘
+  </pre>
+  <p>Этот паттерн идеально подходит для Jarvis: лёгкий wake word детектор постоянно слушает микрофон, при обнаружении триггера начинает запись, после паузы отправляет на STT, результат передаётся агенту.</p>
+</div>
+
+<h2>10. Сравнительная таблица STT решений</h2>
+<div class="section">
+  <table>
+    <tr><th>Решение</th><th>WER (EN)</th><th>WER (RU)</th><th>Скорость (RTF)</th><th>Память</th><th>Языки</th><th>Лицензия</th></tr>
+    <tr><td>Whisper large-v3</td><td>~8.2%</td><td>~12%</td><td>0.3x (GPU)</td><td>~10GB VRAM</td><td>99</td><td>MIT</td></tr>
+    <tr><td>faster-whisper (large-v3)</td><td>~8.5%</td><td>~12.5%</td><td>1.0x (GPU)</td><td>~2.5GB VRAM</td><td>99</td><td>MIT</td></tr>
+    <tr><td>whisper.cpp (large-v3)</td><td>~8.5%</td><td>~13%</td><td>0.5x (CPU M1)</td><td>~3GB RAM</td><td>99</td><td>MIT</td></tr>
+    <tr><td>faster-whisper (medium)</td><td>~11%</td><td>~16%</td><td>3.5x (GPU)</td><td>~1GB VRAM</td><td>99</td><td>MIT</td></tr>
+    <tr><td>Vosk (small-ru)</td><td>~10%</td><td>~18%</td><td>5x (CPU)</td><td>~150MB</td><td>20</td><td>Apache 2.0</td></tr>
+  </table>
+  <p><strong>RTF</strong> (Real-Time Factor): &lt;1 — медленнее реального времени, &gt;1 — быстрее.</p>
+</div>
+
+<h2>11. Сравнительная таблица TTS решений</h2>
+<div class="section">
+  <table>
+    <tr><th>Решение</th><th>Params</th><th>Скорость</th><th>Emotion</th><th>Voice Clone</th><th>Языки</th><th>Лицензия</th></tr>
+    <tr><td>Kokoro</td><td>82M</td><td>~50x RT (CPU)</td><td>Нет</td><td>Нет</td><td>8</td><td>Apache 2.0</td></tr>
+    <tr><td>Chatterbox-Turbo</td><td>350M</td><td>~200ms (GPU)</td><td>Да</td><td>Да (5s sample)</td><td>7</td><td>MIT</td></tr>
+    <tr><td>XTTS v2</td><td>1.1B</td><td>~1x RT (GPU)</td><td>Да</td><td>Да (3s sample)</td><td>17</td><td>CPML</td></tr>
+    <tr><td>Bark (Suno)</td><td>1.2B</td><td>~0.5x RT (GPU)</td><td>Да</td><td>Нет</td><td>12</td><td>MIT</td></tr>
+    <tr><td>Coqui TTS</td><td>~200M</td><td>~2x RT (GPU)</td><td>Нет</td><td>Да</td><td>14</td><td>MPL 2.0</td></tr>
+  </table>
+</div>
+
+<h2>12. Рекомендации для Jarvis</h2>
+<div class="section">
+  <h3>Оптимальный пайплайн:</h3>
+  <pre>
+┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+│ openWakeWord  │──▶│ faster-whisper│──▶│ LLM Agent    │──▶│ Kokoro TTS   │
+│ "Jarvis"      │   │ (medium, INT8)│   │ (OpenCode)   │   │ (or Chatterbox)│
+│ постоянно     │   │ ~1GB VRAM    │   │ обработка    │   │ ~300MB RAM   │
+└──────────────┘   └──────────────┘   └──────────────┘   └──────────────┘
+  </pre>
+  <ol>
+    <li><strong>Wake word:</strong> openWakeWord с кастомным "Hey Jarvis" — постоянно слушает, ~200MB RAM, 95%+ recall</li>
+    <li><strong>STT:</strong> faster-whisper medium (INT8) — хороший баланс скорости/точности, ~1GB VRAM, RTF &gt; 3x</li>
+    <li><strong>TTS:</strong> Kokoro TTS (если достаточно английского) или Chatterbox-Turbo (если нужны эмоции и voice clone)</li>
+    <li><strong>VAD:</strong> Silero VAD (встроен в faster-whisper) — детекция начала/конца речи</li>
+    <li><strong>Audio buffer:</strong> кольцевой буфер ~3 секунды для снижения latency</li>
+  </ol>
+  <p>Пайплайн реализуется как MCP-сервер на Python, который предоставляет Jarvis инструменты <code>listen()</code>, <code>speak()</code>, <code>wait_for_wake_word()</code>.</p>
+</div>
+
+<hr>
+<p style="color: #82aaff; text-align: center; font-size: 0.9em;">Отчёт 13 — Голосовой пайплайн STT/TTS | J.A.R.V.I.S. Research | июль 2026</p>
+
+</body>
+</html>

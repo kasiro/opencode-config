@@ -12,8 +12,6 @@ permission:
   read: allow
   glob: deny
   grep: deny
-  webfetch: deny
-  websearch: deny
   question: deny
   external_directory:
     "*": "allow"

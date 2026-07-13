@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MCP сервера и экосистема — J.A.R.V.I.S. Research</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>MCP сервера и экосистема</h1>
+<p>Обзор Model Context Protocol (MCP): архитектура, экосистема, топ серверы и применимость к J.A.R.V.I.S. Дата: июль 2026.</p>
+<p>
+  <span class="tag tag-green">mcp</span>
+  <span class="tag tag-blue">protocol</span>
+  <span class="tag tag-yellow">json-rpc</span>
+  <span class="tag tag-red">tools</span>
+  <span class="tag tag-blue">ecosystem</span>
+</p>
+
+<h2>1. Что такое MCP</h2>
+<div class="section">
+  <p><strong>Model Context Protocol (MCP)</strong> — открытый протокол, стандартизирующий взаимодействие между LLM-агентами и внешними инструментами/данными. Разработан Anthropic, передан Linux Foundation в декабре 2025.</p>
+  <h3>Базовые принципы:</h3>
+  <ul>
+    <li><strong>Транспорт:</strong> <code>stdio</code> (локальные процессы) или <code>SSE</code> (удалённые серверы)</li>
+    <li><strong>Формат:</strong> JSON-RPC 2.0 (request/response/notification)</li>
+    <li><strong>Три примитива:</strong> Tools, Resources, Prompts</li>
+    <li><strong>Безопасность:</strong> изолированные процессы, sandbox по умолчанию</li>
+    <li><strong>Стандартизация:</strong> единый интерфейс для всех LLM-клиентов</li>
+  </ul>
+  <table>
+    <tr><th>Примитив</th><th>Описание</th><th>Пример</th></tr>
+    <tr><td><strong>Tools</strong></td><td>Функции, которые может вызывать LLM</td><td><code>get_weather(city)</code>, <code>search_files(query)</code></td></tr>
+    <tr><td><strong>Resources</strong></td><td>Данные, которые может читать LLM</td><td><code>file:///logs/app.log</code>, <code>db://schema</code></td></tr>
+    <tr><td><strong>Prompts</strong></td><td>Готовые шаблоны промптов</td><td><code>analyze_logs</code>, <code>code_review</code></td></tr>
+  </table>
+</div>
+
+<h2>2. Экосистема MCP</h2>
+<div class="section">
+  <p>По состоянию на 2025 год насчитывается <strong>36,000+ MCP серверов</strong>. Экосистема растёт экспоненциально.</p>
+  <h3>Топ-категории серверов:</h3>
+  <table>
+    <tr><th>Категория</th><th>% серверов</th><th>Примеры</th></tr>
+    <tr><td>DevOps & Infrastructure</td><td>22%</td><td>Docker, Kubernetes, Terraform, Ansible</td></tr>
+    <tr><td>Databases</td><td>18%</td><td>PostgreSQL, MySQL, SQLite, Neon, Supabase</td></tr>
+    <tr><td>Browser & Web</td><td>14%</td><td>Playwright, Puppeteer, Browserbase, Firecrawl</td></tr>
+    <tr><td>Design & Creative</td><td>10%</td><td>Figma, Penpot, Excalidraw</td></tr>
+    <tr><td>Monitoring & Observability</td><td>8%</td><td>Sentry, Datadog, Grafana, Prometheus</td></tr>
+    <tr><td>Communication</td><td>7%</td><td>Slack, Discord, Telegram</td></tr>
+    <tr><td>File System & Storage</td><td>6%</td><td>Filesystem, S3, Google Drive, Dropbox</td></tr>
+    <tr><td>AI & ML</td><td>5%</td><td>HuggingFace, Ollama, LangChain</td></tr>
+    <tr><td>Financial & Payments</td><td>4%</td><td>Stripe, Plaid, QuickBooks</td></tr>
+    <tr><td>Other</td><td>6%</td><td>Spotify, Weather, News</td></tr>
+  </table>
+</div>
+
+<h2>3. Главные каталоги MCP серверов</h2>
+<div class="section">
+  <table>
+    <tr><th>Ресурс</th><th>Описание</th><th>Ссылка</th></tr>
+    <tr><td><strong>awesome-mcp-servers</strong></td><td>42k+ ★ на GitHub, главный курируемый каталог</td><td>github.com/punkpeye/awesome-mcp-servers</td></tr>
+    <tr><td><strong>Smithery.ai</strong></td><td>Реестр с автоматической установкой, 10k+ серверов</td><td>smithery.ai</td></tr>
+    <tr><td><strong>MCPHub</strong></td><td>GUI-браузер для MCP серверов</td><td>mcphub.io</td></tr>
+    <tr><td><strong>Glama.ai</strong></td><td>Каталог с рейтингами и отзывами</td><td>glama.ai/mcp/servers</td></tr>
+    <tr><td><strong>MCP.so</strong></td><td>Поисковик по MCP серверам</td><td>mcp.so</td></tr>
+  </table>
+</div>
+
+<h2>4. Топ-10 MCP серверов для разработчика</h2>
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Сервер</th><th>Категория</th><th>Ключевая возможность</th><th>Установка</th></tr>
+    <tr><td>1</td><td><strong>Firecrawl</strong></td><td>Web Scraping</td><td>Парсинг веб-страниц в Markdown, поиск</td><td><code>@anthropic/firecrawl-mcp</code></td></tr>
+    <tr><td>2</td><td><strong>GitHub</strong></td><td>DevOps</td><td>Управление репозиториями, PR, Issues, код</td><td><code>@modelcontextprotocol/server-github</code></td></tr>
+    <tr><td>3</td><td><strong>Browserbase</strong></td><td>Browser</td><td>Headless browser в облаке, скриншоты</td><td><code>@browserbase/mcp-server</code></td></tr>
+    <tr><td>4</td><td><strong>Exa Search</strong></td><td>Web Search</td><td>Семантический поиск по интернету</td><td><code>exa-mcp-server</code></td></tr>
+    <tr><td>5</td><td><strong>Neon (DB)</strong></td><td>Database</td><td>Serverless Postgres с schema introspection</td><td><code>@neondatabase/mcp-server</code></td></tr>
+    <tr><td>6</td><td><strong>Stripe</strong></td><td>Payments</td><td>API платежей, инвойсов, подписок</td><td><code>@stripe/mcp-server</code></td></tr>
+    <tr><td>7</td><td><strong>Slack</strong></td><td>Communication</td><td>Чтение/отправка сообщений, каналы</td><td><code>@modelcontextprotocol/server-slack</code></td></tr>
+    <tr><td>8</td><td><strong>Figma</strong></td><td>Design</td><td>Чтение дизайн-токенов, фреймов, компонентов</td><td><code>@anthropic/figma-mcp</code></td></tr>
+    <tr><td>9</td><td><strong>Sentry</strong></td><td>Monitoring</td><td>Просмотр ошибок, issues, stack traces</td><td><code>@getsentry/mcp-server</code></td></tr>
+    <tr><td>10</td><td><strong>Composio</strong></td><td>Platform</td><td>200+ интеграций через единый интерфейс</td><td><code>@composio/mcp-server</code></td></tr>
+  </table>
+</div>
+
+<h2>5. MCP Security: OWASP Top 10</h2>
+<div class="section">
+  <p>OWASP опубликовал <strong>MCP Top 10</strong> — категории уязвимостей, специфичных для MCP архитектуры:</p>
+  <table>
+    <tr><th>#</th><th>Уязвимость</th><th>Описание</th></tr>
+    <tr><td>MCP-1</td><td>Tool Injection</td><td>Злонамеренные аргументы в tool calls</td></tr>
+    <tr><td>MCP-2</td><td>Resource Leakage</td><td>Неавторизованный доступ к ресурсам</td></tr>
+    <tr><td>MCP-3</td><td>Prompt Injection</td><td>Внедрение инструкций через user input</td></tr>
+    <tr><td>MCP-4</td><td>Cross-MCP Scripting</td><td>Меж-серверные атаки</td></tr>
+    <tr><td>MCP-5</td><td>Data Exfiltration</td><td>Кража данных через MCP ответы</td></tr>
+    <tr><td>MCP-6</td><td>Tool Confusion</td><td>Провокация вызова опасного tool</td></tr>
+    <tr><td>MCP-7</td><td>Session Hijacking</td><td>Перехват SSE сессий</td></tr>
+    <tr><td>MCP-8</td><td>Unvalidated Input</td><td>Отсутствие валидации параметров</td></tr>
+    <tr><td>MCP-9</td><td>Resource Exhaustion</td><td>DoS через ресурсоёмкие операции</td></tr>
+    <tr><td>MCP-10</td><td>Insecure Transport</td><td>Незащищённые stdio/SSE каналы</td></tr>
+  </table>
+  <p><strong>Рекомендация:</strong> при разработке MCP-серверов следовать OWASP MCP Top 10. Использовать sandboxing для изоляции серверов, input validation для всех tool параметров, rate limiting для предотвращения resource exhaustion.</p>
+</div>
+
+<h2>6. Transfer в Linux Foundation</h2>
+<div class="section">
+  <p>В декабре 2025 Anthropic передал спецификацию MCP в <strong>Linux Foundation</strong>. Это ключевой момент для экосистемы:</p>
+  <ul>
+    <li><strong>Вендор-нейтральность:</strong> протокол не привязан к Anthropic/Claude</li>
+    <li><strong>Open Governance:</strong> управление через открытый комитет</li>
+    <li><strong>Enterprise adoption:</strong> крупные компании (Microsoft, Google, Meta) участвуют в развитии</li>
+    <li><strong>Стандартизация:</strong> MCP движется к статусу industry standard для AI-tool integration</li>
+  </ul>
+  <p>После передачи темп развития ускорился: за Q1 2026 количество серверов выросло на 200%, появились MCP Gateways, MCP Firewalls, managed MCP hosting.</p>
+</div>
+
+<h2>7. Применимость к OpenCode</h2>
+<div class="section">
+  <p>OpenCode уже поддерживает MCP — это основной механизм расширения функциональности. Каждый MCP сервер добавляется в <code>opencode.json</code>:</p>
+  <pre>{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "${GITHUB_TOKEN}" }
+    }
+  }
+}</pre>
+  <h3>Jarvis MCP Bundle — концепция</h3>
+  <p>Набор MCP серверов, оптимизированных для работы с Jarvis:</p>
+  <table>
+    <tr><th>Сервер</th><th>Назначение</th></tr>
+    <tr><td><code>jarvis-voice-mcp</code></td><td>STT (faster-whisper) + TTS (Kokoro) + Wake word (openWakeWord)</td></tr>
+    <tr><td><code>jarvis-pc-control-mcp</code></td><td>Управление ПК: окна, приложения, системные действия</td></tr>
+    <tr><td><code>jarvis-knowledge-mcp</code></td><td>Доступ к agentmemory и knowledge graph</td></tr>
+    <tr><td><code>jarvis-orchestrator-mcp</code></td><td>Оркестрация multi-agent workflows</td></tr>
+    <tr><td><code>jarvis-monitor-mcp</code></td><td>Мониторинг системы, MCP health checks</td></tr>
+  </table>
+</div>
+
+<h2>8. Рекомендации</h2>
+<div class="section">
+  <ol>
+    <li><strong>MCP Gateway:</strong> создать легковесный gateway для роутинга запросов между MCP серверами. Gateway обеспечивает единую точку входа, rate limiting, authentication и логирование всех MCP вызовов.</li>
+    <li><strong>Jarvis MCP Bundle:</strong> разработать и опубликовать набор MCP серверов для Jarvis (voice, pc-control, knowledge, orchestrator). Упаковать как npm-пакет <code>@jarvis/mcp-bundle</code>.</li>
+    <li><strong>MCP Health Dashboard:</strong> интегрировать Sentry или Prometheus для отслеживания состояния всех MCP серверов: latency, error rate, uptime.</li>
+    <li><strong>Security Audit:</strong> провести аудит текущих MCP серверов на соответствие OWASP MCP Top 10. Особое внимание — sandboxing и input validation.</li>
+    <li><strong>SSE Support:</strong> рассмотреть переход части MCP серверов на SSE транспорт для удалённого доступа (например, Jarvis на сервере → OpenCode на ноутбуке).</li>
+  </ol>
+</div>
+
+<hr>
+<p style="color: #82aaff; text-align: center; font-size: 0.9em;">Отчёт 14 — MCP сервера и экосистема | J.A.R.V.I.S. Research | июль 2026</p>
+
+</body>
+</html>

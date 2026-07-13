@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Agent-to-Agent (A2A) коммуникация — Отчёт 18</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .tag-purple { background: #aa00ff33; color: #aa00ff; border: 1px solid #aa00ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>🤝 Agent-to-Agent (A2A) коммуникация</h1>
+<p><span class="tag tag-green">v1.0</span> <span class="tag tag-blue">A2A Protocol</span> <span class="tag tag-purple">Interoperability</span> <span class="tag tag-yellow">Multi-Agent</span></p>
+
+<div class="section">
+  <h3>🔍 Обзор</h3>
+  <p>2025–2026 стали годами «протокольной войны» в AI-агентах. Четыре ключевых протокола — <strong>MCP, A2A, ACP и ANP</strong> — сформировали экосистему, где каждый решает свою задачу. Аналогия из веба: HTTP (передача данных), WebSocket (реалтайм) и gRPC (высокая производительность) — не конкуренты, а взаимодополняющие технологии.</p>
+</div>
+
+<h2>📊 Четыре протокола — сравнительная таблица</h2>
+<div class="section">
+  <table>
+    <tr><th>Характеристика</th><th>🔵 MCP</th><th>🟢 A2A</th><th>🟣 ACP</th><th>🟡 ANP</th></tr>
+    <tr><td><strong>Разработчик</strong></td><td>Anthropic</td><td>Google</td><td>IBM</td><td>Сообщество (open)</td></tr>
+    <tr><td><strong>Год</strong></td><td>2024</td><td>2025</td><td>2025</td><td>2025</td></tr>
+    <tr><td><strong>Назначение</strong></td><td>Tools → LLM</td><td>Agent → Agent</td><td>Multimodal Agent Comms</td><td>Decentralized Agent Network</td></tr>
+    <tr><td><strong>Архитектура</strong></td><td>Client-Server</td><td>Peer-to-Peer (with discovery)</td><td>Brokered (IBM ACE)</td><td>P2P (DID-based)</td></tr>
+    <tr><td><strong>Транспорт</strong></td><td>stdio / SSE / Streamable HTTP</td><td>HTTP(S) + SSE</td><td>HTTP REST + Async Streaming</td><td>P2P (WebRTC / direct TCP)</td></tr>
+    <tr><td><strong>Discovery</strong></td><td>.well-known/mcp</td><td>Agent Card (JSON)</td><td>ACP Registry / Broker</td><td>DID + IPFS / DHT</td></tr>
+    <tr><td><strong>Identity</strong></td><td>API Key</td><td>OAuth 2.0 / OIDC</td><td>Client Certificates</td><td>W3C DID</td></tr>
+    <tr><td><strong>State Management</strong></td><td>Stateless</td><td>Task lifecycle (агенты возобновляют)</td><td>Session-aware, run-state</td><td>Decentralized state</td></tr>
+    <tr><td><strong>SDK</strong></td><td>Python, TS, Java, Kotlin</td><td>Python, JS/TS, Go, Java, .NET</td><td>Python, Java</td><td>TS, Go, Rust</td></tr>
+    <tr><td><strong>Партнёры</strong></td><td>Широкая экосистема</td><td>50+ (AWS, MS, Salesforce, SAP)</td><td>IBM Ecosystem</td><td>Сообщество</td></tr>
+    <tr><td><strong>Использование</strong></td><td>LLM ↔ Tools / Data</td><td>Agent ↔ Agent (задачи)</td><td>Agent ↔ Agent (мультимодальные)</td><td>Agent ↔ Agent (децентрализованные)</td></tr>
+  </table>
+</div>
+
+<h2>🟢 Google A2A (Agent-to-Agent Protocol)</h2>
+<div class="section">
+  <p>Анонсирован Google Cloud Next '25 (апрель 2025). Открытый протокол для взаимодействия независимых AI-агентов, построенных на разных фреймворках и у разных вендоров.</p>
+
+  <h3>Agent Card — обнаружение возможностей</h3>
+  <p>Каждый агент публикует JSON-документ (Agent Card), описывающий:</p>
+  <ul>
+    <li>Capabilities — что агент умеет (skills, endpoints)</li>
+    <li>Authentication — как авторизоваться (OAuth 2.0, OIDC)</li>
+    <li>Rate limits — ограничения запросов</li>
+    <li>Pricing model — стоимость использования</li>
+    <li>Agent URL — конечная точка для A2A запросов</li>
+  </ul>
+
+  <h3>Task Lifecycle</h3>
+  <p>A2A определяет жизненный цикл задачи (Task) между агентами:</p>
+  <pre>
+  submitted ──→ working ──→ completed
+       │                    │
+       └──→ failed ─────────┘ (с причинами ошибки)
+         (retry возможен)
+  </pre>
+  <table>
+    <tr><th>Статус</th><th>Описание</th></tr>
+    <tr><td><code>submitted</code></td><td>Задача отправлена агенту-исполнителю</td></tr>
+    <tr><td><code>working</code></td><td>Агент выполняет задачу (может отправлять промежуточные результаты)</td></tr>
+    <tr><td><code>completed</code></td><td>Задача выполнена успешно</td></tr>
+    <tr><td><code>failed</code></td><td>Задача завершилась ошибкой (с кодом и описанием)</td></tr>
+  </table>
+
+  <h3>SDKs</h3>
+  <p>Google выпустил официальные SDK для:</p>
+  <ul>
+    <li><strong>Python</strong> — <code>pip install google-a2a</code></li>
+    <li><strong>JavaScript/TypeScript</strong> — <code>npm install @google/a2a</code></li>
+    <li><strong>Go</strong> — <code>go get github.com/google/a2a</code></li>
+    <li><strong>Java</strong> — Maven Central: <code>com.google.a2a</code></li>
+    <li><strong>.NET</strong> — NuGet: <code>Google.A2A</code></li>
+  </ul>
+
+  <h3>Партнёры</h3>
+  <p>50+ партнёров поддержали A2A на запуске, включая:</p>
+  <p><span class="tag tag-blue">AWS</span> <span class="tag tag-blue">Microsoft</span> <span class="tag tag-blue">Salesforce</span> <span class="tag tag-blue">SAP</span> <span class="tag tag-blue">ServiceNow</span> <span class="tag tag-blue">Atlassian</span> <span class="tag tag-blue">Box</span> <span class="tag tag-blue">Cohere</span> <span class="tag tag-blue">LangChain</span> <span class="tag tag-blue">CrewAI</span></p>
+</div>
+
+<h2>🟣 IBM ACP (Agent Communication Protocol)</h2>
+<div class="section">
+  <p>IBM представила ACP в 2025 как brokered-архитектуру для мультимодальной коммуникации агентов. Ключевое отличие от A2A — поддержка не только текста, но и аудио, видео, изображений.</p>
+  <p><strong>Архитектура:</strong></p>
+  <ul>
+    <li><strong>Broker (ACE):</strong> центральный диспетчер сообщений между агентами</li>
+    <li><strong>Session awareness:</strong> поддержка длительных multi-turn сессий с сохранением состояния</li>
+    <li><strong>REST-native:</strong> performative messaging layer с HTTP + async streaming</li>
+    <li><strong>Observability:</strong> встроенный мониторинг и трейсинг сообщений</li>
+  </ul>
+  <p><strong>Разница с A2A:</strong> A2A — peer-to-peer (агенты общаются напрямую), ACP — brokered (через центральный брокер). ACP также поддерживает мультимодальные форматы (аудио- и видеопотоки между агентами).</p>
+</div>
+
+<h2>🟡 ANP (Agent Network Protocol)</h2>
+<div class="section">
+  <p>Децентрализованный P2P-протокол от open-source сообщества. Полностью without центрального сервера.</p>
+  <p><strong>Ключевые особенности:</strong></p>
+  <ul>
+    <li><strong>P2P архитектура:</strong> каждый агент — равноправный узел сети</li>
+    <li><strong>DID Identity:</strong> децентрализованная идентификация через W3C DID</li>
+    <li><strong>IPFS / DHT:</strong> распределённое хранение Agent Cards и состояния</li>
+    <li><strong>WebRTC / direct TCP:</strong> прямой транспорт между узлами</li>
+    <li><strong>IETF draft:</strong> документ <code>draft-zyyhl-agent-networks-framework</code> на рассмотрении</li>
+  </ul>
+  <p><strong>Когда использовать:</strong> Если нужна полная децентрализация, приватность и отсутствие единой точки отказа. Подходит для p2p-рынков агентов, edge-сценариев.</p>
+</div>
+
+<h2>🔵 MCP — фундамент</h2>
+<div class="section">
+  <p>Model Context Protocol (MCP) от Anthropic остаётся стандартом для подключения <strong>инструментов и данных к LLM</strong>. В контексте A2A, MCP — это «руки и глаза» агента, а A2A — «голос для общения с другими агентами».</p>
+  <p><strong>Иерархия протоколов в multi-agent системе:</strong></p>
+  <pre>
+┌─────────────────────────────────────┐
+│         A2A / ACP / ANP             │ ← Agent-to-Agent коммуникация
+├─────────────────────────────────────┤
+│              Agent                   │ ← Логика, планирование, принятие решений
+├─────────────────────────────────────┤
+│              MCP                     │ ← Доступ к инструментам, данным, API
+├─────────────────────────────────────┤
+│     Filesystem / Browser / OS       │ ← Физический мир
+└─────────────────────────────────────┘
+  </pre>
+</div>
+
+<h2>🎯 Применимость к Jarvis</h2>
+<div class="section">
+  <div class="section">
+    <h3>AgentMemory Signals — уже свой A2A</h3>
+    <p>Jarvis использует <code>agentmemory_memory_signal_send/read</code> — это фактически собственный Agent-to-Agent протокол:</p>
+    <table>
+      <tr><th>agentmemory signal</th><th>A2A аналог</th></tr>
+      <tr><td><code>send(to="agent-id")</code></td><td>A2A Task Submit</td></tr>
+      <tr><td><code>read()</code></td><td>A2A Task Get / Poll</td></tr>
+      <tr><td><code>type="request|response|handoff"</code></td><td>A2A Message Types</td></tr>
+      <tr><td><code>replyTo</code></td><td>A2A Thread / Conversation ID</td></tr>
+      <tr><td><code>broadcast</code></td><td>A2A Agent Discovery</td></tr>
+    </table>
+  </div>
+
+  <h3>Рекомендации</h3>
+  <ol>
+    <li><strong>Agent Card для Jarvis:</strong> Создать JSON-документ, описывающий возможности Jarvis (skills, MCP серверы, permissions) — для обнаружения другими агентами</li>
+    <li><strong>Multi-protocol поддержка:</strong> Реализовать MCP для инструментов + агентmemory signals для внутренней A2A + факультативный A2A SDK для внешних агентов</li>
+    <li><strong>Signal → A2A bridge:</strong> Мост между agentmemory signals и A2A протоколом для взаимодействия с внешними агентами от Google, AWS и др.</li>
+    <li><strong>A2A Task Lifecycle:</strong> Использовать lifecycle (submitted→working→completed→failed) для трекинга задач между агентами Jarvis</li>
+    <li><strong>Hybrid discovery:</strong> Agent Card для публичных возможностей + agentmemory для внутреннего обнаружения агентов</li>
+  </ol>
+</div>
+
+<hr>
+<p><em>Источники: Google A2A Protocol Specification (a2a-protocol.org), Google A2A GitHub, Zylos Research A2A/MCP/ACP/ANP comparison, WWT A2A Deep Dive, Towards AI MCP/ACP/A2A/ANP guide, IBM ACP survey paper, ANP IETF draft, agent-network-protocol.com.</em></p>
+
+</body>
+</html>

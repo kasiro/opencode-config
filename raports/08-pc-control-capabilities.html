@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёт 8: Управление компьютером через pc-control скилл</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .diagram { background: #0d1117; padding: 20px; border-radius: 8px; border-left: 3px solid #e94560; font-family: monospace; white-space: pre; line-height: 1.5; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<h1>Отчёт 8: Управление компьютером через pc-control скилл</h1>
+<p><em>Дата: Июль 2026 | Статус: <span class="tag tag-green">Работает</span> | Скриптов: 32 | API файлов: 13</em></p>
+
+<h2>Расположение</h2>
+
+<div class="section">
+  <p><span class="path">~/.config/opencode/skills/pc-control/</span></p>
+  <table>
+    <tr><th>Директория</th><th>Содержимое</th><th>Кол-во</th></tr>
+    <tr><td><code class="path">scripts/</code></td><td>Python скрипты для прямого запуска</td><td>32 (31 .py + __init__.py)</td></tr>
+    <tr><td><code class="path">api/</code></td><td>Python API модули (ядро)</td><td>13 (12 .py + __init__.py)</td></tr>
+    <tr><td><code class="path">.</code> (корень)</td><td>SKILL.md + опциональные файлы</td><td>1+</td></tr>
+  </table>
+</div>
+
+<h2>Категории команд</h2>
+
+<div class="section">
+  <h3>1. Управление окнами (GNOME D-Bus, ydotool)</h3>
+  <table>
+    <tr><th>Команда</th><th>Скрипт</th><th>Технология</th></tr>
+    <tr><td>Свернуть все окна</td><td><code>scripts/roll_up_windows.py</code></td><td>D-Bus GNOME Shell</td></tr>
+    <tr><td>Сделать скриншот</td><td><code>scripts/screenshot.py</code></td><td>gnome-screenshot → flameshot → grim</td></tr>
+    <tr><td>Сменить раскладку</td><td><code>scripts/set_language.py</code></td><td>ydotool Super+Space / setxkbmap</td></tr>
+    <tr><td>Спящий режим</td><td><code>scripts/sleep.py</code></td><td>systemctl suspend</td></tr>
+    <tr><td>Очистить корзину</td><td><code>scripts/empty_trash.py</code></td><td>D-Bus Nautilus + rm -rf Trash</td></tr>
+    <tr><td>Показать буфер обмена</td><td><code>scripts/clipboard_show.py</code></td><td>wl-paste → xclip → xsel</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>2. Запуск приложений</h3>
+  <table>
+    <tr><th>Действие</th><th>Скрипт</th><th>Приложение</th></tr>
+    <tr><td>Калькулятор ВКЛ</td><td><code>scripts/calc_on.py</code></td><td>gnome-calculator</td></tr>
+    <tr><td>Калькулятор ВЫКЛ</td><td><code>scripts/calc_off.py</code></td><td>killall gnome-calculator</td></tr>
+    <tr><td>Терминал ВКЛ</td><td><code>scripts/open_console.py</code></td><td>kgx на workspace 2</td></tr>
+    <tr><td>Терминал ВЫКЛ</td><td><code>scripts/close_console.py</code></td><td>killall kgx</td></tr>
+    <tr><td>IDE ВКЛ</td><td><code>scripts/open_ide.py</code></td><td>Zed на workspace 3</td></tr>
+    <tr><td>IDE ВЫКЛ</td><td><code>scripts/close_ide.py</code></td><td>killall zed-editor</td></tr>
+    <tr><td>Браузер ВКЛ</td><td><code>scripts/open_browser.py</code></td><td>Brave на workspace 1</td></tr>
+    <tr><td>Браузер ВЫКЛ</td><td><code>scripts/browser_close.py</code></td><td>killall brave</td></tr>
+    <tr><td>Яндекс Карты</td><td><code>scripts/open_yandex_map.py</code></td><td>URL в браузере</td></tr>
+    <tr><td>Найти адрес</td><td><code>scripts/open_addr.py</code></td><td>Яндекс Карты {address}</td></tr>
+    <tr><td>Wildberries</td><td><code>scripts/open_wildberries.py</code></td><td>URL в браузере</td></tr>
+    <tr><td>Финансы ВКЛ</td><td><code>scripts/open_fin.py</code></td><td>Docker + WebApp (ezbookkeeping)</td></tr>
+    <tr><td>Финансы ВЫКЛ</td><td><code>scripts/close_fin.py</code></td><td>pkill WebApp</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>3. Системные действия</h3>
+  <table>
+    <tr><th>Действие</th><th>Скрипт</th><th>Описание</th></tr>
+    <tr><td>VPN ВКЛ</td><td><code>scripts/vpn_connect.py</code></td><td>AmneziaVPN, server_index=1</td></tr>
+    <tr><td>VPN ВЫКЛ</td><td><code>scripts/vpn_disconnect.py</code></td><td>Отключение AmneziaVPN</td></tr>
+    <tr><td>Разблокировать ПК</td><td><code>scripts/unlock.py</code></td><td>Ввод пароля (pass_.py)</td></tr>
+    <tr><td>Скриншот</td><td><code>scripts/screenshot.py</code></td><td>gnome-screenshot</td></tr>
+    <tr><td>Спящий режим</td><td><code>scripts/sleep.py</code></td><td>systemctl suspend</td></tr>
+    <tr><td>Ребут Jarvis</td><td><code>scripts/jarvis_reboot.py</code></td><td>Перезагрузка ассистента</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>4. Режимы (сценарии)</h3>
+  <table>
+    <tr><th>Режим</th><th>Скрипт</th><th>Последовательность</th></tr>
+    <tr><td>Детский ВКЛ</td><td><code>scripts/kid_mode_on.py</code></td><td>VPN → свернуть окна → YouTube Kids → "синий трактор"</td></tr>
+    <tr><td>Детский ВЫКЛ</td><td><code>scripts/kid_mode_off.py</code></td><td>Отключить VPN, закрыть YouTube Kids</td></tr>
+    <tr><td>Разработчик</td><td><code>scripts/dev_mode_on.py</code></td><td>Firefox → Консоль → Zed → YouGile по workspace'ам</td></tr>
+    <tr><td>Проверить режим</td><td><code>scripts/check_mode.py</code></td><td>Показать текущий в уведомлении</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>5. Клавиатурная эмуляция</h3>
+  <p>Через <code class="path">api/environment.py</code></p>
+  <table>
+    <tr><th>Метод</th><th>Описание</th><th>Технология</th></tr>
+    <tr><td><code>press_tab(count, delay)</code></td><td>Tab N раз</td><td>ydotool</td></tr>
+    <tr><td><code>press_enter()</code></td><td>Enter</td><td>ydotool</td></tr>
+    <tr><td><code>press_space()</code></td><td>Space</td><td>ydotool</td></tr>
+    <tr><td><code>press_number(n)</code></td><td>Цифра (0-4)</td><td>ydotool</td></tr>
+    <tr><td><code>press_super_number(n)</code></td><td>Super+цифра (workspace)</td><td>ydotool</td></tr>
+    <tr><td><code>type_text(text)</code></td><td>Ввод текста</td><td>wl-copy + ctrl+v</td></tr>
+    <tr><td><code>type_text_english(text, delay)</code></td><td>Ввод англ. текста</td><td>ydotool type_string</td></tr>
+  </table>
+</div>
+
+<h2>API-ядро (api/)</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Файл</th><th>Назначение</th><th>Ключевые классы/функции</th></tr>
+    <tr><td><code>__init__.py</code></td><td>Точка входа. Сборка Jarvis API.</td><td><code>Jarvis</code>, <code>init_jarvis()</code>, <code>get_jarvis()</code></td></tr>
+    <tr><td><code>environment.py</code></td><td>Управление окнами, клавиатура, запуск приложений</td><td><code>Environment</code> — 15+ методов</td></tr>
+    <tr><td><code>system.py</code></td><td>Системные вызовы: exec, notify, clipboard</td><td><code>System</code> — 6 методов</td></tr>
+    <tr><td><code>wayland.py</code></td><td>Wayland специфичные функции</td><td>ydotool сокет, wl-clipboard</td></tr>
+    <tr><td><code>wm_manager.py</code></td><td>Window Manager: GNOME Shell D-Bus</td><td>Поиск окон, фокус, workspace'ы</td></tr>
+    <tr><td><code>event_bus.py</code></td><td>Шина событий publish/subscribe</td><td><code>EventBus</code> — pub/sub + state</td></tr>
+    <tr><td><code>audio.py</code></td><td>Аудио: TTS заглушка, звуки</td><td><code>Audio</code> — say, play_sound</td></tr>
+    <tr><td><code>context.py</code></td><td>Контекст команды</td><td><code>Context</code> — phrase, language, slots</td></tr>
+    <tr><td><code>core.py</code></td><td>Базовые функции: log, print, sleep, speak</td><td>Вспомогательные утилиты</td></tr>
+    <tr><td><code>state.py</code></td><td>Управление состоянием (JSON persistence)</td><td><code>State</code> — get/set/save/load</td></tr>
+    <tr><td><code>modes.py</code></td><td>Режимы (детский, разработчик)</td><td><code>Modes</code> — mode management</td></tr>
+    <tr><td><code>vpn.py</code></td><td>VPN управление (AmneziaVPN)</td><td>connect, disconnect, status</td></tr>
+  </table>
+</div>
+
+<h2>Архитектурное улучшение: MCP сервер pc-control</h2>
+
+<div class="section">
+  <p>Текущий подход: OpenCode → subprocess → python3 script.py. Медленно, нет единого API.</p>
+  <p><strong>Предложение: MCP сервер pc-control с 12+ инструментами.</strong></p>
+
+  <pre>{
+  "mcpServers": {
+    "pc-control": {
+      "command": "python3",
+      "args": ["~/.config/opencode/mcp/pc_control_server.py"]
+    }
+  }
+}
+
+# Инструменты MCP pc-control:
+# 
+# 🪟 Окна:
+#   window_minimize_all() → void
+#   window_focus(wm_class: str) → void
+#   window_switch_workspace(number: int) → void
+#   window_get_list() → Window[]
+#
+# 🚀 Приложения:
+#   app_launch(name: str, wm_class: str, workspace: int) → void
+#   app_close(wm_class: str) → void
+#   app_is_running(wm_class: str) → bool
+#
+# 🎮 Клавиатура:
+#   keyboard_press(key: str) → void  
+#   keyboard_type(text: str) → void
+#   keyboard_tab(count: int) → void
+#
+# 🔐 Система:
+#   system_screenshot() → str (path)
+#   system_notify(title: str, message: str) → void
+#   system_sleep() → void
+#   system_clipboard_get() → str
+#   system_clipboard_set(text: str) → void
+#
+# 👶 Режимы:
+#   mode_set(mode: str) → void
+#   mode_get() → str
+#
+# 🔌 VPN:
+#   vpn_connect() → void
+#   vpn_disconnect() → void
+#   vpn_status() → str</pre>
+
+  <p><strong>Преимущества MCP подхода:</strong></p>
+  <ul>
+    <li>Один процесс, единое состояние (через EventBus)</li>
+    <li>Быстрее — нет накладных расходов на subprocess каждый раз</li>
+    <li>Типизированные аргументы и возвраты через MCP протокол</li>
+    <li>Возможность композиции: несколько инструментов в одном запросе</li>
+    <li>Автоматическая документация (list_tools)</li>
+  </ul>
+</div>
+
+<h2>Что можно добавить</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Категория</th><th>Что добавить</th><th>Сложность</th><th>Приоритет</th></tr>
+    <tr><td>🖱️ Мышь</td><td>click, move, drag, scroll (ydotool / libei)</td><td><span class="tag tag-yellow">Средняя</span></td><td><span class="tag tag-yellow">Средний</span></td></tr>
+    <tr><td>📊 Мониторинг</td><td>CPU, RAM, диск, сеть, температура (psutil)</td><td><span class="tag tag-green">Низкая</span></td><td><span class="tag tag-green">Высокий</span></td></tr>
+    <tr><td>🐳 Docker</td><td>контейнеры: ps, start, stop, logs, exec</td><td><span class="tag tag-green">Низкая</span></td><td><span class="tag tag-yellow">Средний</span></td></tr>
+    <tr><td>📸 OCR</td><td>скриншот → текст (tesseract / EasyOCR)</td><td><span class="tag tag-yellow">Средняя</span></td><td><span class="tag tag-yellow">Средний</span></td></tr>
+    <tr><td>📡 Bluetooth</td><td>сканирование, подключение, отключение</td><td><span class="tag tag-red">Высокая</span></td><td><span class="tag tag-red">Низкий</span></td></tr>
+    <tr><td>📶 WiFi</td><td>список сетей, подключение, отключение</td><td><span class="tag tag-yellow">Средняя</span></td><td><span class="tag tag-red">Низкий</span></td></tr>
+    <tr><td>🔊 Громкость</td><td>get/set volume, mute, список устройств</td><td><span class="tag tag-green">Низкая</span></td><td><span class="tag tag-green">Высокий</span></td></tr>
+    <tr><td>🖥️ Дисплеи</td><td>список мониторов, разрешение, DPI</td><td><span class="tag tag-yellow">Средняя</span></td><td><span class="tag tag-yellow">Средний</span></td></tr>
+    <tr><td>📁 Файлы</td><td>list, read, write, move, search (частично уже есть)</td><td><span class="tag tag-green">Низкая</span></td><td><span class="tag tag-green">Высокий</span></td></tr>
+    <tr><td>🔄 Автоматизация</td><td>макросы, запись/воспроизведение действий</td><td><span class="tag tag-red">Высокая</span></td><td><span class="tag tag-red">Низкий</span></td></tr>
+  </table>
+</div>
+
+<h2>Полная таблица скриптов</h2>
+
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Скрипт</th><th>Команда запуска</th><th>Категория</th></tr>
+    <tr><td>1</td><td><code>calc_on.py</code></td><td><code>python3 scripts/calc_on.py</code></td><td>Приложения</td></tr>
+    <tr><td>2</td><td><code>calc_off.py</code></td><td><code>python3 scripts/calc_off.py</code></td><td>Приложения</td></tr>
+    <tr><td>3</td><td><code>open_console.py</code></td><td><code>python3 scripts/open_console.py</code></td><td>Приложения</td></tr>
+    <tr><td>4</td><td><code>close_console.py</code></td><td><code>python3 scripts/close_console.py</code></td><td>Приложения</td></tr>
+    <tr><td>5</td><td><code>open_ide.py</code></td><td><code>python3 scripts/open_ide.py</code></td><td>Приложения</td></tr>
+    <tr><td>6</td><td><code>close_ide.py</code></td><td><code>python3 scripts/close_ide.py</code></td><td>Приложения</td></tr>
+    <tr><td>7</td><td><code>open_browser.py</code></td><td><code>python3 scripts/open_browser.py</code></td><td>Приложения</td></tr>
+    <tr><td>8</td><td><code>browser_close.py</code></td><td><code>python3 scripts/browser_close.py</code></td><td>Приложения</td></tr>
+    <tr><td>9</td><td><code>open_yandex_map.py</code></td><td><code>python3 scripts/open_yandex_map.py</code></td><td>Приложения</td></tr>
+    <tr><td>10</td><td><code>open_addr.py</code></td><td><code>python3 scripts/open_addr.py</code></td><td>Приложения</td></tr>
+    <tr><td>11</td><td><code>open_wildberries.py</code></td><td><code>python3 scripts/open_wildberries.py</code></td><td>Приложения</td></tr>
+    <tr><td>12</td><td><code>open_fin.py</code></td><td><code>python3 scripts/open_fin.py</code></td><td>Приложения</td></tr>
+    <tr><td>13</td><td><code>close_fin.py</code></td><td><code>python3 scripts/close_fin.py</code></td><td>Приложения</td></tr>
+    <tr><td>14</td><td><code>roll_up_windows.py</code></td><td><code>python3 scripts/roll_up_windows.py</code></td><td>Окна</td></tr>
+    <tr><td>15</td><td><code>screenshot.py</code></td><td><code>python3 scripts/screenshot.py</code></td><td>Система</td></tr>
+    <tr><td>16</td><td><code>set_language.py</code></td><td><code>python3 scripts/set_language.py</code></td><td>Система</td></tr>
+    <tr><td>17</td><td><code>sleep.py</code></td><td><code>python3 scripts/sleep.py</code></td><td>Система</td></tr>
+    <tr><td>18</td><td><code>empty_trash.py</code></td><td><code>python3 scripts/empty_trash.py</code></td><td>Система</td></tr>
+    <tr><td>19</td><td><code>clipboard_show.py</code></td><td><code>python3 scripts/clipboard_show.py</code></td><td>Система</td></tr>
+    <tr><td>20</td><td><code>vpn_connect.py</code></td><td><code>python3 scripts/vpn_connect.py</code></td><td>Система</td></tr>
+    <tr><td>21</td><td><code>vpn_disconnect.py</code></td><td><code>python3 scripts/vpn_disconnect.py</code></td><td>Система</td></tr>
+    <tr><td>22</td><td><code>unlock.py</code></td><td><code>python3 scripts/unlock.py</code></td><td>Система</td></tr>
+    <tr><td>23</td><td><code>jarvis_reboot.py</code></td><td><code>python3 scripts/jarvis_reboot.py</code></td><td>Система</td></tr>
+    <tr><td>24</td><td><code>kid_mode_on.py</code></td><td><code>python3 scripts/kid_mode_on.py</code></td><td>Режимы</td></tr>
+    <tr><td>25</td><td><code>kid_mode_off.py</code></td><td><code>python3 scripts/kid_mode_off.py</code></td><td>Режимы</td></tr>
+    <tr><td>26</td><td><code>dev_mode_on.py</code></td><td><code>python3 scripts/dev_mode_on.py</code></td><td>Режимы</td></tr>
+    <tr><td>27</td><td><code>check_mode.py</code></td><td><code>python3 scripts/check_mode.py</code></td><td>Режимы</td></tr>
+    <tr><td>28</td><td><code>pass_.py</code></td><td><code>python3 scripts/pass_.py</code></td><td>Система (внутренний)</td></tr>
+    <tr><td>29</td><td><code>_firefox_clean.py</code></td><td><code>python3 scripts/_firefox_clean.py</code></td><td>Утилита</td></tr>
+  </table>
+  <p><em>Примечание: скрипты без main() требуют API-контекст и запускаются через SKILL.md</em></p>
+</div>
+
+<h2>Как скрипты взаимодействуют с OpenCode</h2>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                     OpenCode (LLM + Tools)                       │
+│                                                                  │
+│  Пользователь: "открой калькулятор"                              │
+│       │                                                          │
+│       ▼                                                          │
+│  SKILL.md: pc-control активируется                               │
+│       │                                                          │
+│       ▼                                                          │
+│  Формируется команда:                                            │
+│    python3 ~/.config/opencode/skills/pc-control/scripts/calc_on.py│
+│       │                                                          │
+│       ▼                                                          │
+│  subprocess.run([...]) → скрипт выполняется                      │
+│       │                                                          │
+│       ▼                                                          │
+│  Результат: stdout/returncode → OpenCode → ответ пользователю    │
+└─────────────────────────────────────────────────────────────────┘
+
+# Время выполнения: ~200-500ms на subprocess + Python import
+# MCP версия: ~5-10ms на инструмент (одна Python сессия)
+</div>
+
+<h2>Зависимости</h2>
+
+<div class="section">
+  <pre># Python (опционально, через uv):
+uv add pydotool     # эмуляция клавиатуры (Wayland)
+uv add docker-py    # управление Docker (open_fin.py)
+
+# Системные (Arch Linux):
+doas pacman -S ydotool        # эмуляция ввода
+doas pacman -S wl-clipboard   # буфер обмена (Wayland)
+doas pacman -S libnotify      # уведомления
+doas pacman -S gnome-screenshot grim flameshot  # скриншоты
+
+# GNOME Shell расширение:
+# window-calls@domandoman.xyz — управление окнами через D-Bus</pre>
+</div>
+
+<hr />
+
+<p><em>Резюме: pc-control — самый зрелый компонент экосистемы. 32 скрипта, 13 API-файлов, 6 категорий команд. Архитектурное улучшение — MCP сервер вместо subprocess. Это даст 10-50x ускорение и единый интерфейс для всех инструментов.</em></p>
+
+</body>
+</html>

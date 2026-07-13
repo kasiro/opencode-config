@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Desktop Automation и Computer Use — Отчёт 16</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .tag-purple { background: #aa00ff33; color: #aa00ff; border: 1px solid #aa00ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .metric { font-size: 1.8em; font-weight: bold; color: #e94560; }
+  .metric-label { font-size: 0.85em; color: #82aaff; }
+</style>
+</head>
+<body>
+
+<h1>🖥️ Desktop Automation и Computer Use</h1>
+<p><span class="tag tag-green">v1.0</span> <span class="tag tag-blue">Desktop Agents</span> <span class="tag tag-red">GUI Automation</span> <span class="tag tag-yellow">Computer Use</span></p>
+
+<div class="section">
+  <h3>🔍 Обзор</h3>
+  <p>Desktop automation и Computer Use — одна из самых горячих областей AI в 2025–2026. Ведущие лаборатории (Anthropic, OpenAI, Google, Microsoft) и open-source сообщество (Simular AI, Browser Use) соревнуются в создании агентов, которые могут <strong>видеть экран, кликать, печатать и выполнять сложные многошаговые задачи</strong> на любом GUI — браузере, десктопе, терминале.</p>
+  <p>Ключевой прорыв: Agent S3 от Simular AI впервые превзошёл человека на бенчмарке OSWorld (72.6%), а Browser Use собрал 40k+★ на GitHub.</p>
+</div>
+
+<h2>🏆 Agent S3 (Simular AI)</h2>
+<div class="section">
+  <p><strong>Agent S3</strong> — open-source фреймворк для Computer Use, разработанный Simular AI (Xin Eric Wang). Первый агент в мире, превзошедший человека на OSWorld.</p>
+  <table>
+    <tr><th>Метрика</th><th>Значение</th></tr>
+    <tr><td>OSWorld (100-step)</td><td><span class="metric">72.6%</span> <span class="tag-green">Human-level: 72.1%</span></td></tr>
+    <tr><td>OSWorld (w/ GTA1 + GPT-5)</td><td>69.9% (previously SOTA 63.4%)</td></tr>
+    <tr><td>Дата релиза</td><td>Октябрь 2025</td></tr>
+    <tr><td>Лицензия</td><td>MIT (полностью open-source)</td></tr>
+    <tr><td>GitHub</td><td><code>github.com/simular-ai/agent-s</code></td></tr>
+  </table>
+  <p><strong>Ключевые особенности:</strong></p>
+  <ul>
+    <li>Agent-Computer Interface (ACI) — упрощённый набор действий</li>
+    <li>Hierarchical Agent-Computer (HiAC) — иерархическое планирование</li>
+    <li>Self-Reflection — самокоррекция после ошибок</li>
+    <li>Поддержка OSWorld, WindowsAgentArena, WebArena</li>
+  </ul>
+</div>
+
+<h2>🤖 Anthropic Computer Use API</h2>
+<div class="section">
+  <p>Запущен в октябре 2024 с Claude 3.5 Sonnet. Первый production-ready Computer Use API от frontier AI компании.</p>
+  <table>
+    <tr><th>Core Tool</th><th>Описание</th></tr>
+    <tr><td><strong>Computer Tool</strong></td><td>Скриншоты экрана → координаты кликов → клавиатурный ввод. Поддерживает hold_key, left_mouse_down/up, scroll, triple_click, wait</td></tr>
+    <tr><td><strong>Text Editor Tool</strong></td><td>Чтение, создание, редактирование файлов с line-level precision</td></tr>
+    <tr><td><strong>Bash Tool</strong></td><td>Выполнение shell-команд, скриптов, управление процессами</td></tr>
+  </table>
+  <p><strong>Технические детали:</strong></p>
+  <ul>
+    <li>Требует заголовок <code>anthropic-beta: computer-use-2025-01-24</code></li>
+    <li>Скриншоты конвертируются в base64, каждый скриншот ~1k токенов</li>
+    <li>Рекомендуется запуск в изолированной VM/Docker</li>
+    <li>Sonnet 4.5 показал значительный прирост на OSWorld</li>
+  </ul>
+</div>
+
+<h2>🟢 OpenAI CUA / Operator</h2>
+<div class="section">
+  <p>OpenAI Computer-Using Agent (CUA) — основа Operator, запущенного в январе 2025.</p>
+  <table>
+    <tr><th>Бенчмарк</th><th>Результат</th></tr>
+    <tr><td>WebVoyager (JS-heavy сайты)</td><td><span class="metric">87%</span></td></tr>
+    <tr><td>WebArena</td><td>58.1%</td></tr>
+    <tr><td>OSWorld</td><td>38.1% (state: click coordinates)</td></tr>
+  </table>
+  <p><strong>Эволюция:</strong> Operator (январь 2025) → деприкейшен (август 2025) → CUA мигрировал в OpenAI Agents SDK как computer-use harness. Теперь доступен как <code>computer_use</code> инструмент для любого агента на платформе OpenAI, с поддержкой реального браузера или десктопа.</p>
+</div>
+
+<h2>🔵 Google Project Mariner</h2>
+<div class="section">
+  <p>Экспериментальный Chrome-extension агент от Google DeepMind на базе Gemini 2.0.</p>
+  <table>
+    <tr><th>Бенчмарк</th><th>Результат</th></tr>
+    <tr><td>ScreenSpot (UI element detection)</td><td><span class="metric">84%</span></td></tr>
+    <tr><td>WebVoyager (end-to-end web tasks)</td><td><span class="metric">83.5%</span></td></tr>
+    <tr><td>Параллельные задачи</td><td>До 10 одновременных</td></tr>
+  </table>
+  <p><strong>Особенности:</strong> Работает как Chrome Extension, Gemini 2.0 (позже Gemini 3.5 Flash с native computer use). В мае 2026 Project Mariner был закрыт, но его технологии перешли в Gemini Computer Use — нативную возможность модели напрямую управлять браузером и десктопом.</p>
+</div>
+
+<h2>🟣 Microsoft UFO² / UFO³ Galaxy</h2>
+<div class="section">
+  <p>Microsoft UFO (UI-Focused Agent) — open-source фреймворк для Windows OS automation, эволюционировавший в multi-agent платформу.</p>
+  <table>
+    <tr><th>Версия</th><th>Описание</th></tr>
+    <tr><td><strong>UFO</strong></td><td>GPT-Vision + Windows UI automation. HostAgent + AppAgent архитектура</td></tr>
+    <tr><td><strong>UFO²</strong></td><td>Multi-agent: HostAgent координирует специализированных агентов</td></tr>
+    <tr><td><strong>UFO³ Galaxy</strong></td><td>Constellation framework: гетерогенные агенты, multi-device оркестрация, AgentOS</td></tr>
+  </table>
+  <p><strong>AgentOS концепция:</strong> UFO³ Galaxy вводит операционную систему для агентов — с запуском, мониторингом, очередями и приоритизацией задач. Гибридный подход: vision-based понимание UI + HTML-экстракция для веб-элементов.</p>
+</div>
+
+<h2>🌐 Browser Use</h2>
+<div class="section">
+  <p><strong>Browser Use</strong> — самый популярный open-source фреймворк для browser automation (40k+ ★ на GitHub, 97k+ по некоторым данным в 2026).</p>
+  <table>
+    <tr><th>Характеристика</th><th>Значение</th></tr>
+    <tr><td>★ GitHub</td><td>40,000+ (по основному репозиторию)</td></tr>
+    <tr><td>Язык</td><td>Python (Rust core в v0.13 beta)</td></tr>
+    <tr><td>Vision</td><td>Да — интеграция visual understanding</td></tr>
+    <tr><td>HTML extraction</td><td>Да — извлечение DOM-структуры</td></tr>
+    <tr><td>Multi-tab</td><td>Да — управление несколькими вкладками</td></tr>
+    <tr><td>Cloud</td><td>Browser Use Cloud для production</td></tr>
+  </table>
+  <p><strong>Возможности:</strong> автовход на сайты, заполнение форм, навигация, скроллинг, работа с iframe, stealth-режим (антидетект). Интегрируется с LangChain, CrewAI, AutoGen.</p>
+</div>
+
+<h2>📚 ACU (Awesome Computer Use)</h2>
+<div class="section">
+  <p>Курированный список <strong>30+ статей</strong> и <strong>20+ проектов</strong> по Computer Use от trycua/acu на GitHub. Включает:</p>
+  <ul>
+    <li><strong>Research papers:</strong> OSWorld, ScreenSpot, WebVoyager, WebArena, SynthCLIP, SeeClick</li>
+    <li><strong>Frameworks:</strong> Browser Use, Playwright, Puppeteer, Selenium</li>
+    <li><strong>Models:</strong> ShowUI, UI-TARS, CogAgent, SeeClick, Qwen2-VL</li>
+    <li><strong>Benchmarks:</strong> OSWorld, WindowsAgentArena, Mobile-Env, WebCanvas</li>
+  </ul>
+</div>
+
+<h2>📊 Сравнительная таблица фреймворков</h2>
+<div class="section">
+  <table>
+    <tr><th>Фреймворк</th><th>Тип</th><th>Open Source</th><th>Vision</th><th>Desktop</th><th>Web</th><th>★ GitHub</th></tr>
+    <tr><td><strong>Agent S3</strong></td><td>Computer Use</td><td><span class="tag tag-green">MIT</span></td><td>✅</td><td>✅</td><td>✅</td><td>~5k</td></tr>
+    <tr><td><strong>Anthropic Computer Use</strong></td><td>API</td><td><span class="tag tag-yellow">API</span></td><td>✅</td><td>✅</td><td>✅</td><td>—</td></tr>
+    <tr><td><strong>OpenAI CUA</strong></td><td>API/SDK</td><td><span class="tag tag-yellow">SDK</span></td><td>✅</td><td>✅</td><td>✅</td><td>—</td></tr>
+    <tr><td><strong>Google Mariner</strong></td><td>Extension</td><td><span class="tag tag-red">Closed</span></td><td>✅</td><td>❌</td><td>✅</td><td>—</td></tr>
+    <tr><td><strong>UFO³ Galaxy</strong></td><td>AgentOS</td><td><span class="tag tag-green">MIT</span></td><td>✅</td><td>✅</td><td>✅</td><td>~8k</td></tr>
+    <tr><td><strong>Browser Use</strong></td><td>Framework</td><td><span class="tag tag-green">MIT</span></td><td>✅</td><td>❌</td><td>✅</td><td>40k+</td></tr>
+    <tr><td><strong>Playwright MCP</strong></td><td>MCP Server</td><td><span class="tag tag-green">Open</span></td><td>✅</td><td>❌</td><td>✅</td><td>~3k</td></tr>
+    <tr><td><strong>Crawl4AI</strong></td><td>Crawler</td><td><span class="tag tag-green">Open</span></td><td>❌</td><td>❌</td><td>✅</td><td>~25k</td></tr>
+    <tr><td><strong>OpenClaw</strong></td><td>Personal AI</td><td><span class="tag tag-green">Open</span></td><td>⚠️</td><td>⚠️</td><td>✅</td><td>~7k</td></tr>
+  </table>
+</div>
+
+<h2>🔗 Интеграция с OpenCode / Jarvis</h2>
+<div class="section">
+  <p>Для OpenCode и Jarvis Computer Use может быть интегрирован через <strong>MCP как «руки»</strong> для GUI-автоматизации:</p>
+  <ul>
+    <li><strong>Playwright MCP Server</strong> — browser automation через MCP-инструменты</li>
+    <li><strong>Browser Use + MCP bridge</strong> — управление браузером через Python-скрипты</li>
+    <li><strong>Agent S3 как сабагент</strong> — делегирование десктоп-задач специализированному агенту</li>
+    <li><strong>UFO³</strong> — для Windows-специфичной автоматизации (UIA, WinAppDriver)</li>
+    <li><strong>pc-control skill</strong> — расширение через Computer Use API для сложных GUI-сценариев</li>
+  </ul>
+</div>
+
+<h2>🎯 Рекомендации для Jarvis</h2>
+<div class="section">
+  <p>На основе анализа текущего ландшафта:</p>
+  <ol>
+    <li><strong>Vision-based desktop agent:</strong> Интегрировать Browser Use или Agent S3 как MCP-инструмент для pc-control — это даст Jarvis возможность «видеть» экран и выполнять сложные GUI-действия</li>
+    <li><strong>Гибридный подход:</strong> Использовать HTML-экстракцию для веба + vision для десктопа — лучший баланс скорости и точности</li>
+    <li><strong>Safety first:</strong> Все Computer Use операции должны проходить через permission-модель Jarvis с подтверждением опасных действий (клики, отправка форм)</li>
+    <li><strong>Sandbox:</strong> Запускать Computer Use агентов в изолированном Docker/VM контейнере</li>
+    <li><strong>Проактивные сценарии:</strong> scheduled + event-driven триггеры для фоновой автоматизации (например, «запусти Agent S3 каждое утро для проверки почты»)</li>
+  </ol>
+</div>
+
+<hr>
+<p><em>Источники: Anthropic Computer Use docs, OSWorld benchmark, Agent S3 GitHub, Browser Use GitHub, Google Project Mariner, Microsoft UFO³, trycua/ACU, OpenAI CUA/Operator.</em></p>
+
+</body>
+</html>

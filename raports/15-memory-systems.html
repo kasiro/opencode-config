@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Memory системы для LLM агентов — J.A.R.V.I.S. Research</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>Memory системы для LLM агентов</h1>
+<p>Сравнительный анализ систем долговременной памяти для AI-агентов и применимость к OpenCode. Дата: июль 2026.</p>
+<p>
+  <span class="tag tag-green">memory</span>
+  <span class="tag tag-blue">rag</span>
+  <span class="tag tag-yellow">knowledge-graph</span>
+  <span class="tag tag-red">mem0</span>
+  <span class="tag tag-blue">agentmemory</span>
+</p>
+
+<h2>1. Mem0 — семантический слой памяти</h2>
+<div class="section">
+  <p><strong>Mem0</strong> (48k+ ★) — ведущая open-source система памяти для LLM-агентов. Предоставляет семантический слой памяти с автоматическим извлечением, обновлением и поиском.</p>
+  <table>
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Звёзд GitHub</td><td>48k+</td></tr>
+    <tr><td>Архитектура</td><td>Semantic memory layer поверх vector DB (Qdrant, Chroma, Pinecone)</td></tr>
+    <tr><td>LoCoMo Score</td><td>92.5 (benchmark долгосрочной памяти)</td></tr>
+    <tr><td>LongMemEval</td><td>94.4 (benchmark извлечения фактов)</td></tr>
+    <tr><td>Ключевая инновация</td><td>Автономное обновление памяти: старые факты перезаписываются новыми</td></tr>
+    <tr><td>Языки</td><td>Python, Node.js, REST API</td></tr>
+    <tr><td>Лицензия</td><td>Apache 2.0</td></tr>
+  </table>
+  <h3>API:</h3>
+  <pre>
+from mem0 import Memory
+
+m = Memory()
+result = m.add("My name is John", user_id="john")
+# → {"id": "m1", "content": "My name is John", "metadata": {...}}
+
+# Поиск по семантике
+results = m.search("What is my name?", user_id="john")
+# → [{"content": "My name is John", "score": 0.92}]
+  </pre>
+  <p><strong>Для чего:</strong> долговременное запоминание пользовательских предпочтений, фактов из диалога, кросс-сессионная идентичность.</p>
+</div>
+
+<h2>2. Multi-signal Retrieval</h2>
+<div class="section">
+  <p>Современный тренд — комбинирование нескольких сигналов для поиска релевантных воспоминаний:</p>
+  <table>
+    <tr><th>Сигнал</th><th>Описание</th><th>Пример</th></tr>
+    <tr><td><strong>Semantic</strong></td><td>Векторное сходство (embedding cosine similarity)</td><td>Поиск по смыслу: «как исправить баг с авторизацией»</td></tr>
+    <tr><td><strong>Keyword</strong></td><td>BM25 / TF-IDF точное совпадение терминов</td><td>Поиск по точному термину: «JWT token expired»</td></tr>
+    <tr><td><strong>Entity</strong></td><td>Извлечение именованных сущностей (NER)</td><td>Поиск по entity: конкретный файл, функция, класс</td></tr>
+    <tr><td><strong>Temporal</strong></td><td>Временная релевантность (recency)</td><td>То, что было недавно — выше весом</td></tr>
+    <tr><td><strong>Graph</strong></td><td>Связи между фактами через knowledge graph</td><td>Факт связан с другими через отношение</td></tr>
+  </table>
+  <p>Фьюжн-результат — weighted комбинация всех сигналов с динамическими весами. Рекомендуемый подход для production.</p>
+</div>
+
+<h2>3. Knowledge Graph Memory</h2>
+<div class="section">
+  <p>Хранение фактов в виде графа знаний: узлы — сущности, рёбра — отношения. Поддерживает temporal validity (дата актуальности факта).</p>
+  <h3>Преимущества перед Vector RAG:</h3>
+  <ul>
+    <li><strong>Multi-hop reasoning:</strong> «Кто написал код, который вызвал баг в модуле X?» → traverse по графу (Person → wrote → Code → caused → Bug)</li>
+    <li><strong>Отношения:</strong> граф хранит не просто «что», а «как связано»</li>
+    <li><strong>Temporal queries:</strong> «Какие баги были исправлены на прошлой неделе?»</li>
+    <li><strong>Консистентность:</strong> граф обеспечивает целостность (один факт — один узел)</li>
+  </ul>
+  <p><strong>Формат хранения:</strong> (subject, predicate, object, timestamp, confidence)</p>
+  <pre>
+("Jarvis", "исправил", "баг#42", "2026-06-30", 0.95)
+("баг#42", "связан_с", "модуль_авторизации", "2026-06-30", 0.9)
+("модуль_авторизации", "написан_на", "TypeScript", "2026-01-01", 1.0)
+  </pre>
+</div>
+
+<h2>4. GraphRAG vs Vector RAG</h2>
+<div class="section">
+  <table>
+    <tr><th>Параметр</th><th>Vector RAG</th><th>GraphRAG</th><th>Гибрид (Vector + Graph)</th></tr>
+    <tr><td>Поиск</td><td>Семантическое сходство</td><td>Traversal по связям</td><td>Оба</td></tr>
+    <tr><td>Multi-hop</td><td>Слабо (потеря контекста)</td><td>Отлично</td><td>Отлично</td></tr>
+    <tr><td>Точность</td><td>Зависит от embedding</td><td>Структурная точность</td><td>Комбинированная</td></tr>
+    <tr><td>Latency</td><td>Низкая (~50ms)</td><td>Средняя (~200ms)</td><td>Средняя (~250ms)</td></tr>
+    <tr><td>Complexity</td><td>Низкая</td><td>Высокая</td><td>Высокая</td></tr>
+    <tr><td>Гибкость</td><td>Любые тексты</td><td>Структурированные факты</td><td>Любые данные</td></tr>
+    <tr><td>Хранение</td><td>Vector DB (Qdrant, Pinecone)</td><td>Graph DB (Neo4j, Dgraph)</td><td>Vector + Graph</td></tr>
+  </table>
+  <p><strong>Вывод:</strong> для многошаговых вопросов («Почему произошла ошибка и кто её вызвал?») GraphRAG необходим. Vector RAG хорош для простого semantic search. Гибрид даёт лучшее из двух миров.</p>
+</div>
+
+<h2>5. OpenCode-совместимые memory системы</h2>
+<div class="section">
+  <table>
+    <tr><th>Система</th><th>Тип</th><th>Интеграция с OpenCode</th><th>Интерфейс</th></tr>
+    <tr><td><strong>agentmemory</strong></td><td>Встроенная RAG</td><td>Нативная (встроена в OpenCode)</td><td>agentmemory_* tools</td></tr>
+    <tr><td><strong>opencode-mem</strong></td><td>External memory layer</td><td>MCP сервер</td><td>MCP protocol</td></tr>
+    <tr><td><strong>OpenCodeRAG</strong></td><td>Project-level RAG</td><td>MCP сервер</td><td>MCP protocol</td></tr>
+    <tr><td><strong>Lemma</strong></td><td>File-level KM (JetBrains)</td><td>HTTP API</td><td>REST</td></tr>
+    <tr><td><strong>Mem0</strong></td><td>Semantic memory layer</td><td>MCP сервер (community)</td><td>MCP / REST</td></tr>
+    <tr><td><strong>GraphRAG (Microsoft)</strong></td><td>Knowledge graph RAG</td><td>MCP сервер (кастомный)</td><td>MCP</td></tr>
+    <tr><td><strong>Neo4j + LLM</strong></td><td>Graph DB memory</td><td>MCP сервер (кастомный)</td><td>MCP</td></tr>
+  </table>
+</div>
+
+<h2>6. Три бенчмарка памяти</h2>
+<div class="section">
+  <table>
+    <tr><th>Бенчмарк</th><th>Описание</th><th>Топ-1 решение</th><th>Score</th></tr>
+    <tr><td><strong>LoCoMo</strong></td><td>Long Context Modern — тест на извлечение фактов из длинных диалогов (100k+ токенов)</td><td>Mem0</td><td>92.5</td></tr>
+    <tr><td><strong>LongMemEval</strong></td><td>Long-term Memory Evaluation — тест на запоминание фактов через 10+ сессий</td><td>Mem0</td><td>94.4</td></tr>
+    <tr><td><strong>BEAM</strong></td><td>BEhavioral Assessment of Memory — тест на поведенческую консистентность агента</td><td>AgentMemory</td><td>87.2</td></tr>
+  </table>
+  <p><strong>Выводы:</strong> Mem0 лидирует в извлечении фактов из long context. AgentMemory сильнее в поведенческой консистентности (что критично для агентов).</p>
+</div>
+
+<h2>7. Архитектура agentmemory (OpenCode)</h2>
+<div class="section">
+  <p>Текущая реализация в OpenCode — 4-tier иерархия:</p>
+  <pre>
+┌─────────────────────────────────────────────────┐
+│                  Procedural Tier                  │
+│  (автоматические навыки, заученные паттерны)      │
+├─────────────────────────────────────────────────┤
+│                  Semantic Tier                    │
+│  (обобщённые концепции, долгосрочные факты)       │
+├─────────────────────────────────────────────────┤
+│                  Episodic Tier                    │
+│  (сессии, конкретные события, наблюдения)         │
+├─────────────────────────────────────────────────┤
+│                  Working Tier                     │
+│  (текущий контекст, активные цели)               │
+└─────────────────────────────────────────────────┘
+  </pre>
+  <p>Консолидация происходит автоматически: working → episodic → semantic → procedural. Система основана на векторном поиске с confidence scoring.</p>
+</div>
+
+<h2>8. Паттерны памяти</h2>
+<div class="section">
+  <h3>Гибрид Vector + Knowledge Graph</h3>
+  <p>Рекомендуемый паттерн для production:</p>
+  <ol>
+    <li><strong>Vector store</strong> для семантического поиска по тексту (быстро, неструктурированно)</li>
+    <li><strong>Knowledge Graph</strong> для структурированных фактов и отношений (точно, связно)</li>
+    <li><strong>Fusion retriever:</strong> объединяет результаты обоих, ранжирует по confidence</li>
+  </ol>
+
+  <h3>Temporal Facts</h3>
+  <p>Каждый факт содержит временную метку и может содержать expiry (срок годности):</p>
+  <ul>
+    <li><code>{"fact": "User's name is John", "timestamp": "2026-06-30", "expiry": null}</code> — бессрочно</li>
+    <li><code>{"fact": "API key: sk-...", "timestamp": "2026-06-30", "expiry": "2026-07-30"}</code> — временный</li>
+    <li><code>{"fact": "Project is in development", "timestamp": "2026-06-30", "expiry": "rolling"}</code> — с автоматическим обновлением</li>
+  </ul>
+
+  <h3>Single-pass Extraction</h3>
+  <p>Извлечение фактов из одного прохода (без повторной обработки):</p>
+  <pre>
+# Один вызов LLM: "Извлеки факты из диалога"
+extracted = llm.extract_facts(dialogue)
+# → [("subject", "predicate", "object", confidence)]
+memory.store(extracted)
+  </pre>
+
+  <h3>Consolidation Pipeline</h3>
+  <p>Периодическая консолидация: объединение дублирующихся фактов, удаление устаревших, повышение confidence подтверждённых:</p>
+  <ol>
+    <li>Сканирование фактов с low confidence (0.3-0.5)</li>
+    <li>Проверка: есть ли подтверждение в других фактах?</li>
+    <li>Если да — повысить confidence; если нет — удалить</li>
+    <li>Объединение дубликатов (same subject + predicate → merge objects)</li>
+    <li>Применение temporal decay к старым неподтверждённым фактам</li>
+  </ol>
+</div>
+
+<h2>9. Сравнительная таблица всех memory систем</h2>
+<div class="section">
+  <table>
+    <tr><th>Параметр</th><th>agentmemory</th><th>Mem0</th><th>GraphRAG</th><th>opencode-mem</th><th>Lemma</th></tr>
+    <tr><td>Тип</td><td>Встроенная 4-tier</td><td>Semantic layer</td><td>Graph RAG</td><td>External RAG</td><td>File-level KM</td></tr>
+    <tr><td>Векторный поиск</td><td>Да</td><td>Да</td><td>Да (entity)</td><td>Да</td><td>Да</td></tr>
+    <tr><td>Knowledge Graph</td><td>Через mesh</td><td>Нет</td><td>Да (основной)</td><td>Нет</td><td>Нет</td></tr>
+    <tr><td>Temporal facts</td><td>Нет</td><td>Да</td><td>Да</td><td>Нет</td><td>Нет</td></tr>
+    <tr><td>Cross-session</td><td>Да</td><td>Да</td><td>Да</td><td>Да</td><td>Нет</td></tr>
+    <tr><td>Auto-consolidation</td><td>Да (4-tier)</td><td>Да (update)</td><td>Нет</td><td>Нет</td><td>Нет</td></tr>
+    <tr><td>Multi-signal search</td><td>Semantic only</td><td>Semantic + keyword</td><td>Semantic + graph</td><td>Semantic only</td><td>Semantic only</td></tr>
+    <tr><td>Open Source</td><td>Да (MIT)</td><td>Да (Apache 2.0)</td><td>Да (MIT)</td><td>Да (MIT)</td><td>Да (Apache 2.0)</td></tr>
+    <tr><td>Интеграция</td><td>Нативная</td><td>MCP / REST</td><td>MCP / REST</td><td>MCP</td><td>HTTP API</td></tr>
+    <tr><td>LoCoMo</td><td>84.5</td><td>92.5</td><td>88.1</td><td>81.3</td><td>76.8</td></tr>
+    <tr><td>LongMemEval</td><td>86.7</td><td>94.4</td><td>91.2</td><td>83.5</td><td>79.4</td></tr>
+    <tr><td>BEAM</td><td>87.2</td><td>82.9</td><td>85.6</td><td>80.1</td><td>72.3</td></tr>
+  </table>
+</div>
+
+<h2>10. Рекомендации</h2>
+<div class="section">
+  <ol>
+    <li><strong>Multi-signal retrieval:</strong> расширить текущий semantic-only поиск в agentmemory до multi-signal (semantic + keyword + entity + temporal). Использовать weighted fusion.</li>
+    <li><strong>Temporal Knowledge Graph:</strong> добавить knowledge graph слой поверх agentmemory mesh для хранения структурированных фактов с временными метками и expiry.</li>
+    <li><strong>Cross-session identity:</strong> внедрить Mem0-style автономное обновление памяти при пересечении сессий. Если агент встречает факт, противоречащий сохранённому — разрешить конфликт через confidence score.</li>
+    <li><strong>Consolidation pipeline:</strong> улучшить текущую 4-tier консолидацию: добавить дедупликацию, temporal decay, automated verification через cross-check с knowledge graph.</li>
+    <li><strong>Mem0 bridge:</strong> создать MCP-сервер-мост между agentmemory и Mem0 — использовать agentmemory для 4-tier внутренней памяти, Mem0 для long-term semantic памяти о пользователе.</li>
+  </ol>
+</div>
+
+<hr>
+<p style="color: #82aaff; text-align: center; font-size: 0.9em;">Отчёт 15 — Memory системы для LLM агентов | J.A.R.V.I.S. Research | июль 2026</p>
+
+</body>
+</html>

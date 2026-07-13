@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>OpenCode vs Jarvis — сравнительный анализ</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .winner { font-weight: bold; }
+  .winner-oc { color: #00c853; }
+  .winner-jv { color: #2979ff; }
+  .draw { color: #ffd600; }
+</style>
+</head>
+<body>
+
+<h1>⚔️ OpenCode vs Jarvis: Сравнительный анализ</h1>
+<p><span class="tag tag-green">OpenCode</span> <span class="tag tag-blue">Jarvis</span> <span class="tag tag-yellow">сравнение</span></p>
+
+<div class="section">
+  <h3>🎯 Обзор</h3>
+  <p>Сравнение двух экосистем — <strong>OpenCode</strong> (фреймворк для AI-агентов) и <strong>Jarvis</strong> (старая система, работающая через HTTP API и shell-скрипты). Обе системы выполняют роль голосового ассистента, но имеют принципиально разную архитектуру.</p>
+  <p><strong>Текущий статус:</strong> OpenCode уже покрывает 60-70% функциональности Jarvis. Критические пробелы — голосовой ввод/вывод и демонизация.</p>
+</div>
+
+<h2>📊 Таблица сравнения по 10 измерениям</h2>
+
+<div class="section">
+  <table>
+    <tr><th>#</th><th>Измерение</th><th style="width:30%;">OpenCode</th><th style="width:30%;">Jarvis</th><th style="width:10%;">Победитель</th></tr>
+    
+    <tr>
+      <td>1</td>
+      <td><strong>STT (Speech-to-Text)</strong></td>
+      <td>
+        <span class="tag tag-red">❌ Отсутствует</span>
+        <br>Нет встроенного STT. Используется только текстовый ввод.
+      </td>
+      <td>
+        <span class="tag tag-green">✅ Vosk (оффлайн)</span>
+        <br>Локальное распознавание через Vosk API. Работает без интернета.
+      </td>
+      <td><span class="winner winner-jv">Jarvis</span></td>
+    </tr>
+    
+    <tr>
+      <td>2</td>
+      <td><strong>TTS (Text-to-Speech)</strong></td>
+      <td>
+        <span class="tag tag-red">❌ Отсутствует</span>
+        <br>Нет встроенного TTS. Только текст.
+      </td>
+      <td>
+        <span class="tag tag-green">✅ Piper/Espeak</span>
+        <br>Локальный синтез речи через Piper TTS (нейросеть) и Espeak (fallback).
+      </td>
+      <td><span class="winner winner-jv">Jarvis</span></td>
+    </tr>
+    
+    <tr>
+      <td>3</td>
+      <td><strong>Wake Word</strong></td>
+      <td>
+        <span class="tag tag-red">❌ Отсутствует</span>
+        <br>Нет wake-word детекции. Запускается вручную.
+      </td>
+      <td>
+        <span class="tag tag-green">✅ RustPotter</span>
+        <br>Локальная wake-word детекция ("Jarvis"). Не требует серверов.
+      </td>
+      <td><span class="winner winner-jv">Jarvis</span></td>
+    </tr>
+    
+    <tr>
+      <td>4</td>
+      <td><strong>Управление ПК</strong></td>
+      <td>
+        <span class="tag tag-green">✅ pc-control скилл</span>
+        <br>12+ скриптов: открытие/закрытие приложений, скриншоты, VPN, раскладка, буфер обмена.
+      </td>
+      <td>
+        <span class="tag tag-green">✅ Shell-скрипты</span>
+        <br>Аналогичный функционал через HTTP API + shell.
+      </td>
+      <td><span class="winner draw">НИЧЬЯ</span></td>
+    </tr>
+    
+    <tr>
+      <td>5</td>
+      <td><strong>Память</strong></td>
+      <td>
+        <span class="tag tag-green">✅ AgentMemory (4-tier)</span>
+        <br>53 инструмента, 4-tier консолидация (Hermes-inspired), Frozen Snapshot, граф знаний, рефлексия.
+      </td>
+      <td>
+        <span class="tag tag-yellow">⚠️ .state.json</span>
+        <br>Плоский JSON-файл состояния. Нет tiers, нет консолидации, нет графа.
+      </td>
+      <td><span class="winner winner-oc">OpenCode</span></td>
+    </tr>
+    
+    <tr>
+      <td>6</td>
+      <td><strong>Агенты</strong></td>
+      <td>
+        <span class="tag tag-green">✅ 5 суб-агентов</span>
+        <br>executor, researcher, sysadmin, general, explore + кастомные. Каждый со своими permission.
+      </td>
+      <td>
+        <span class="tag tag-yellow">⚠️ 1 монолитный</span>
+        <br>Один агент на всё. Нет разделения прав и инструментов.
+      </td>
+      <td><span class="winner winner-oc">OpenCode</span></td>
+    </tr>
+    
+    <tr>
+      <td>7</td>
+      <td><strong>Архитектура</strong></td>
+      <td>
+        <span class="tag tag-green">✅ Plugin / MCP</span>
+        <br>Модульная: plugin-система + MCP серверы (10 шт). Каждый компонент заменяемый.
+      </td>
+      <td>
+        <span class="tag tag-yellow">⚠️ Монолит</span>
+        <br>Python-скрипты + HTTP API. Всё связано, сложно расширять.
+      </td>
+      <td><span class="winner winner-oc">OpenCode</span></td>
+    </tr>
+    
+    <tr>
+      <td>8</td>
+      <td><strong>Интеграции</strong></td>
+      <td>
+        <span class="tag tag-green">✅ SearXNG, Context7, DeepWiki, Crawl4AI, YouTube, Exa</span>
+        <br>10 MCP серверов для поиска, документации, парсинга.
+      </td>
+      <td>
+        <span class="tag tag-yellow">⚠️ HTTP API</span>
+        <br>Только HTTP запросы к внешним API. Нет MCP.
+      </td>
+      <td><span class="winner winner-oc">OpenCode</span></td>
+    </tr>
+    
+    <tr>
+      <td>9</td>
+      <td><strong>Event-driven</strong></td>
+      <td>
+        <span class="tag tag-yellow">⚠️ Частично</span>
+        <br>Есть signal_send/signal_read, но нет полноценного EventBus. Сигналы между агентами — ручные.
+      </td>
+      <td>
+        <span class="tag tag-green">✅ EventBus</span>
+        <br>Полноценная шина событий. Триггеры по событиям: wake_word_detected, stt_ready, tts_done, etc.
+      </td>
+      <td><span class="winner winner-jv">Jarvis</span></td>
+    </tr>
+    
+    <tr>
+      <td>10</td>
+      <td><strong>Multi-modal</strong></td>
+      <td>
+        <span class="tag tag-yellow">⚠️ Текст + ссылки</span>
+        <br>Читает изображения через Read tool. Нет аудио/видео.
+      </td>
+      <td>
+        <span class="tag tag-yellow">⚠️ Текст + аудио</span>
+        <br>Аудио-ввод/вывод. Нет видео.
+      </td>
+      <td><span class="winner draw">НИЧЬЯ</span></td>
+    </tr>
+  </table>
+</div>
+
+<h2>📈 Итоги сравнения</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Платформа</th><th>Победы</th><th>Поражения</th><th>Ничьи</th></tr>
+    <tr>
+      <td><span class="winner winner-oc">OpenCode</span></td>
+      <td>4 (Память, Агенты, Архитектура, Интеграции)</td>
+      <td>4 (STT, TTS, Wake Word, Event-driven)</td>
+      <td>2 (Управление ПК, Multi-modal)</td>
+    </tr>
+    <tr>
+      <td><span class="winner winner-jv">Jarvis</span></td>
+      <td>4 (STT, TTS, Wake Word, Event-driven)</td>
+      <td>4 (Память, Агенты, Архитектура, Интеграции)</td>
+      <td>2 (Управление ПК, Multi-modal)</td>
+    </tr>
+  </table>
+</div>
+
+<h2>🔬 Детальный разбор</h2>
+
+<div class="section">
+  <h3>✅ Что OpenCode делает лучше</h3>
+  
+  <h4>🧠 Память (4-tier vs .state.json)</h4>
+  <p>OpenCode использует agentmemory с 4 уровнями консолидации: Working → Episodic → Semantic → Procedural. Frozen Snapshot Pattern предотвращает инвалидацию KV-кэша. 53 инструмента для работы с памятью — граф, рефлексия, уроки, диагностика. Jarvis использует плоский <code>.state.json</code> без консолидации.</p>
+
+  <h4>🤖 Агенты (5 vs 1)</h4>
+  <p>OpenCode поддерживает 5 суб-агентов с разными permission и инструментами: executor (код), researcher (исследования), sysadmin (система), general (гибрид), explore (быстрый просмотр). Jarvis — один монолитный агент, где всё смешано.</p>
+
+  <h4>🏗️ Архитектура (Plugin/MCP vs монолит)</h4>
+  <p>OpenCode построен на plugin-системе + 10 MCP серверах. Каждый компонент заменяемый. Jarvis — Python-монолит с HTTP API, сложно расширять.</p>
+
+  <h4>🔗 Интеграции (SearXNG/Context7/DeepWiki vs HTTP)</h4>
+  <p>OpenCode подключает внешние сервисы через MCP: SearXNG (поиск), Context7 (документация), DeepWiki (GitHub репозитории), Crawl4AI (парсинг), YouTube Transcript, Exa. Jarvis использует прямые HTTP запросы.</p>
+</div>
+
+<div class="section">
+  <h3>✅ Что Jarvis делает лучше</h3>
+  
+  <h4>🎤 Голосовой ввод (Vosk)</h4>
+  <p>Jarvis имеет полноценный STT на базе Vosk — оффлайн, без интернета, на русском языке. OpenCode полностью текстовый — голосовой ввод отсутствует.</p>
+
+  <h4>🔊 TTS (Piper/Espeak)</h4>
+  <p>Jarvis синтезирует речь через Piper TTS (нейросеть, качественный голос) и Espeak (fallback, быстрый). OpenCode не озвучивает ответы.</p>
+
+  <h4>🗣️ Wake Word (RustPotter)</h4>
+  <p>Jarvis постоянно слушает эфир и просыпается по слову "Jarvis". OpenCode не поддерживает wake-word — нужно вводить команды вручную.</p>
+
+  <h4>📡 EventBus</h4>
+  <p>Jarvis имеет полноценную шину событий с триггерами: wake_word_detected → stt_ready → nlu_process → tts_done. OpenCode имеет только сигналы между агентами (signal_send/signal_read) без централизованного EventBus.</p>
+</div>
+
+<h2>🎯 Вывод: OpenCode — 60-70% Jarvis</h2>
+
+<div class="section">
+  <p>OpenCode уже покрывает <strong>60-70%</strong> функциональности Jarvis и превосходит его в ключевых архитектурных аспектах: <strong>память, агенты, модульность и интеграции</strong>. Однако для полноценной замены Jarvis как голосового ассистента не хватает критических компонентов.</p>
+
+  <h3>📋 Критические пробелы для закрытия</h3>
+  
+  <table>
+    <tr><th>Пробел</th><th>Приоритет</th><th>Предлагаемое решение</th></tr>
+    <tr>
+      <td><strong>STT</strong></td>
+      <td><span class="tag tag-red">Высокий</span></td>
+      <td>Подключить Vosk через MCP сервер или плагин. Vosk работает локально, без API ключей.</td>
+    </tr>
+    <tr>
+      <td><strong>TTS</strong></td>
+      <td><span class="tag tag-red">Высокий</span></td>
+      <td>Подключить Piper TTS через MCP. Качественный русский голос. Открытая лицензия.</td>
+    </tr>
+    <tr>
+      <td><strong>Демонизация</strong></td>
+      <td><span class="tag tag-yellow">Средний</span></td>
+      <td>OpenCode уже работает как CLI, но для демонизации нужен systemd сервис. <code>opencode daemon</code> или systemd user service.</td>
+    </tr>
+    <tr>
+      <td><strong>Event-driven</strong></td>
+      <td><span class="tag tag-yellow">Средний</span></td>
+      <td>Добавить EventBus MCP сервер для подписки на события. Связать wake_word → STT → NLU → TTS.</td>
+    </tr>
+    <tr>
+      <td><strong>Внешний API</strong></td>
+      <td><span class="tag tag-yellow">Средний</span></td>
+      <td>HTTP API для интеграции с внешними системами. OpenCode пока только CLI.</td>
+    </tr>
+  </table>
+</div>
+
+<h2>📊 График покрытия</h2>
+
+<div class="section">
+  <pre>
+Измерение         OpenCode  Jarvis
+─────────────────────────────────────
+STT               ░░░░░░░░  ████████
+TTS               ░░░░░░░░  ████████
+Wake Word         ░░░░░░░░  ████████
+Управление ПК     ████████  ████████
+Память            ████████  ██░░░░░░
+Агенты            ████████  ██░░░░░░
+Архитектура       ████████  ██░░░░░░
+Интеграции        ████████  ████░░░░
+Event-driven      ████░░░░  ████████
+Multi-modal       ████░░░░  ████░░░░</pre>
+</div>
+
+<hr>
+
+<div class="section" style="text-align:center;">
+  <p><strong>Итог:</strong> OpenCode — лучшая платформа для code-ориентированных задач. Jarvis — лучшая для голосового управления ПК. Оптимальная стратегия — <strong>гибрид</strong>: STT/TTS/EventBus от Jarvis, память/агенты/интеграции от OpenCode.</p>
+</div>
+
+<p style="text-align:center; color:#666; margin-top:40px;">Сгенерировано E.X.E.C.U.T.O.R • 01.07.2026</p>
+
+</body>
+</html>

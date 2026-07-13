@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Отчёт 6: Голосовое управление (STT/TTS) для OpenCode</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+  .diagram { background: #0d1117; padding: 20px; border-radius: 8px; border-left: 3px solid #e94560; font-family: monospace; white-space: pre; line-height: 1.5; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<h1>Отчёт 6: Голосовое управление (STT/TTS) для OpenCode</h1>
+<p><em>Дата: Июль 2026 | Статус: <span class="tag tag-yellow">Исследование</span></em></p>
+
+<h2>Текущее состояние</h2>
+
+<div class="section">
+  <h3>OpenCode (сегодня)</h3>
+  <table>
+    <tr><th>Компонент</th><th>Статус</th><th>Описание</th></tr>
+    <tr><td>STT (Speech-to-Text)</td><td><span class="tag tag-red">Нет</span></td><td>Распознавание речи не встроено. Нет встроенного микрофонного ввода.</td></tr>
+    <tr><td>TTS (Text-to-Speech)</td><td><span class="tag tag-yellow">Через плагины</span></td><td>Доступен <code>opencode-voice-plugin</code> (EdgeTTS) и <code>agent-tts</code> (Kokoro, ElevenLabs, gTTS).</td></tr>
+    <tr><td>Wake Word</td><td><span class="tag tag-red">Нет</span></td><td>Нет механизма пробуждения по ключевому слову.</td></tr>
+    <tr><td>VAD (Voice Activity Detection)</td><td><span class="tag tag-red">Нет</span></td><td>Детекция голосовой активности отсутствует.</td></tr>
+    <tr><td>Микрофонный плагин</td><td><span class="tag tag-yellow">Концепт</span></td><td>Существует в виде предложений, но не реализован.</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>Jarvis (референс)</h3>
+  <table>
+    <tr><th>Компонент</th><th>Технология</th><th>Описание</th></tr>
+    <tr><td>STT</td><td>Vosk (офлайн)</td><td>Лёгкая модель русского/английского языка. Работает без GPU. Качество среднее.</td></tr>
+    <tr><td>Wake Word</td><td>RustPotter</td><td>Лёгкий wake-word детектор на Rust. Ключевое слово: "Jarvis". CPU-only.</td></tr>
+    <tr><td>VAD</td><td>Silero VAD</td><td>Детекция голосовой активности от Silero. Отсекает тишину.</td></tr>
+    <tr><td>TTS</td><td>Заглушка / pyttsx3</td><td>Базовая заглушка для TTS. В реальном использовании — EdgeTTS или Kokoro.</td></tr>
+    <tr><td>Аудио-поток</td><td>sounddevice / PyAudio</td><td>Захват с микрофона через sounddevice (PortAudio).</td></tr>
+  </table>
+</div>
+
+<h2>Варианты интеграции STT в OpenCode</h2>
+
+<div class="section">
+  <h3>A. Whisper MCP сервер <span class="tag tag-green">Рекомендуется</span></h3>
+  <p><strong>Плюсы:</strong> Лучшее качество распознавания (OpenAI Whisper Large-v3). Поддержка 99+ языков. Работает через MCP — нативно для OpenCode.</p>
+  <p><strong>Минусы:</strong> Требует GPU для реального времени. Без GPU — задержка 5-15 сек на CPU. Модель ~3 ГБ.</p>
+  <p><strong>Схема работы:</strong></p>
+  <pre># MCP сервер whisper
+# opencode.json → mcpServers.whisper
+# Инструменты:
+# - transcribe(audio_data: base64) → text
+# - transcribe_file(path: str) → text
+
+# Псевдо-конфиг:
+{
+  "mcpServers": {
+    "whisper": {
+      "command": "python3",
+      "args": ["/home/kasiro/.config/opencode/mcp/whisper_server.py"],
+      "env": {
+        "WHISPER_MODEL": "large-v3",
+        "WHISPER_DEVICE": "cuda"  # или cpu
+      }
+    }
+  }
+}</pre>
+</div>
+
+<div class="section">
+  <h3>B. Vosk MCP сервер</h3>
+  <p><strong>Плюсы:</strong> Быстро (реальное время даже на CPU). Офлайн. Лёгкий (~50 МБ модель). Простая интеграция через MCP.</p>
+  <p><strong>Минусы:</strong> Качество хуже Whisper (особенно шум, акценты, специфическая лексика). Модели ограничены по языкам.</p>
+  <p><strong>Использование:</strong> Для базовых команд (включить/выключить, открыть приложение) — достаточно. Для сложных диалогов — нет.</p>
+</div>
+
+<div class="section">
+  <h3>C. Whisper.cpp</h3>
+  <p><strong>Плюсы:</strong> Работает на CPU с хорошей скоростью. Оптимизирован (GGML/GGUF, квантование). Можно запустить как подпроцесс или MCP.</p>
+  <p><strong>Минусы:</strong> Требует компиляции C++ кода. Интеграция сложнее, чем чистый Python.</p>
+  <p><strong>Компромисс:</strong> Лучший вариант для CPU-only систем. Качество между Vosk и Whisper full.</p>
+</div>
+
+<div class="section">
+  <h3>D. Плагин OpenCode + внешняя программа</h3>
+  <p>OpenCode плагин на TypeScript, который вызывает внешнюю STT программу через subprocess (например, <code>whisper-cli</code> или <code>vosk-cli</code>).</p>
+  <p><strong>Плюсы:</strong> Гибкость. Можно переключать бэкенд.</p>
+  <p><strong>Минусы:</strong> Дополнительный слой абстракции. Не использует нативный MCP протокол.</p>
+</div>
+
+<h2>Архитектура голосового пайплайна</h2>
+
+<div class="diagram">
+┌─────────────┐    ┌──────────┐    ┌────────────┐    ┌──────────┐    ┌──────────┐
+│  Микрофон   │───→│   VAD    │───→│  WakeWord  │───→│   STT    │───→│ OpenCode │
+│ (sounddevice│    │ (Silero) │    │ (RustPotter│    │ (Whisper/│    │ (MCP     │
+│  / PyAudio) │    │          │    │  / Porcup.)│    │  Vosk)   │    │  server) │
+└─────────────┘    └──────────┘    └────────────┘    └──────────┘    └──────────┘
+       │                │               │                │               │
+       │ Отсекает       │ Только        │ Только         │ Транскрипция  │ LLM /
+       │ тишину и шум   │ голос         │ после "Jarvis" │ текста        │ tools
+       │                │               │                │               │
+       ▼                ▼               ▼                ▼               ▼
+  Буфер 1s        Буфер 30ms       Буфер 2s         Результат:     Интент + 
+                                                      "открой         действие
+                                                       браузер"
+
+  # Фазы обработки:
+  # 1. Микрофон постоянно слушает (буфер 1 секунда)
+  # 2. VAD определяет, что человек говорит (отсекает тишину)
+  # 3. WakeWord детектирует "Jarvis" или другой триггер
+  # 4. STT конвертирует аудио в текст
+  # 5. OpenCode получает текст и выполняет команду
+  # 6. TTS отвечает пользователю голосом
+</div>
+
+<h2>TTS (Text-to-Speech)</h2>
+
+<div class="section">
+  <table>
+    <tr><th>Плагин/Система</th><th>Движок</th><th>Голоса</th><th>Качество</th><th>Статус</th></tr>
+    <tr>
+      <td><code>opencode-voice-plugin</code></td>
+      <td>EdgeTTS</td>
+      <td>Microsoft Neural (50+)</td>
+      <td><span class="tag tag-green">Отличное</span></td>
+      <td>Работает, требует интернет</td>
+    </tr>
+    <tr>
+      <td><code>agent-tts</code></td>
+      <td>Kokoro / ElevenLabs</td>
+      <td>Kokoro 8 / ElevenLabs кастом</td>
+      <td><span class="tag tag-green">Отличное</span></td>
+      <td>Работает, Kokoro офлайн</td>
+    </tr>
+    <tr>
+      <td>pyttsx3 (Jarvis legacy)</td>
+      <td>espeak / Festival</td>
+      <td>Системные</td>
+      <td><span class="tag tag-yellow">Среднее</span></td>
+      <td>Офлайн, роботизированный</td>
+    </tr>
+    <tr>
+      <td>piper-tts</td>
+      <td>Piper (VITS)</td>
+      <td>Много языков</td>
+      <td><span class="tag tag-yellow">Хорошее</span></td>
+      <td>Офлайн, легковесный</td>
+    </tr>
+  </table>
+</div>
+
+<h2>Пошаговый план внедрения</h2>
+
+<div class="section">
+  <h3>День 1 — Микрофонный плагин</h3>
+  <ul>
+    <li>Создать MCP сервер <code>microphone</code> для захвата аудио с микрофона</li>
+    <li>Инструменты: <code>start_listening()</code>, <code>stop_listening()</code>, <code>get_audio_chunk()</code></li>
+    <li>Использовать <code>sounddevice</code> для PortAudio</li>
+    <li>Тест: захват 5 секунд и сохранение в WAV</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>День 2 — STT ядро</h3>
+  <ul>
+    <li>Выбрать бэкенд: Whisper MCP (если GPU) или Vosk MCP (если CPU)</li>
+    <li>Создать MCP сервер <code>stt</code> с инструментом <code>transcribe(audio: base64) → text</code></li>
+    <li>Интегрировать VAD (Silero VAD через <code>silero-vad</code> pip пакет)</li>
+    <li>Тест: WAV → STT → текст</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>День 3 — Wake Word</h3>
+  <ul>
+    <li>Выбрать: RustPotter (лёгкий) или Porcupine (Picovoice, точный)</li>
+    <li>Создать MCP сервер <code>wakeword</code> с инструментом <code>detect(audio: base64) → bool</code></li>
+    <li>Настроить ключевое слово: "OpenCode" или "Jarvis"</li>
+    <li>Тест: пайплайн микрофон → VAD → WakeWord → логирование</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>День 4 — TTS и аудио-выход</h3>
+  <ul>
+    <li>Интегрировать <code>opencode-voice-plugin</code> как MCP сервер TTS</li>
+    <li>Инструменты: <code>say(text: str) → void</code> (воспроизвести), <code>save(text: str, path: str) → file</code></li>
+    <li>Добавить звуки: начало прослушивания (beep), конец (double-beep), ошибка</li>
+    <li>Тест: полный цикл "Скажи привет" → TTS → динамики</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>День 5 — Интеграция и тестирование</h3>
+  <ul>
+    <li>Соединить все MCP сервера в OpenCode конфиг</li>
+    <li>Создать голосовой loop: Listen → VAD → WakeWord → STT → OpenCode → TTS</li>
+    <li>Тест: "Jarvis, открой браузер" → полный цикл</li>
+    <li>Оптимизация: пороги VAD, таймауты, буферизация</li>
+  </ul>
+</div>
+
+<h2>Итоговая архитектура MCP серверов</h2>
+
+<pre>opencode.json — добавление в mcpServers:
+
+{
+  "mcpServers": {
+    "microphone": {                // День 1: захват аудио
+      "command": "python3",
+      "args": ["mcp/microphone_server.py"]
+    },
+    "vad": {                        // День 2: детекция голоса
+      "command": "python3",
+      "args": ["mcp/vad_server.py"]
+    },
+    "wakeword": {                   // День 3: "Jarvis" / "OpenCode"
+      "command": "python3",
+      "args": ["mcp/wakeword_server.py"]
+    },
+    "stt": {                        // День 2: Whisper или Vosk
+      "command": "python3",
+      "args": ["mcp/whisper_server.py"]
+    },
+    "tts": {                        // День 4: озвучка ответа
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-tts"]
+    }
+  }
+}</pre>
+
+<hr />
+
+<p><em>Резюме: OpenCode сегодня — "немой" инструмент. Голос — самое слабое место. Но MCP архитектура позволяет добавить голос как набор серверов без изменения ядра. 5 дней на базовую интеграцию.</em></p>
+
+</body>
+</html>

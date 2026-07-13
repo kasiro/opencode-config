@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>OpenCode community и расширения — Отчёт 20</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .tag-purple { background: #aa00ff33; color: #aa00ff; border: 1px solid #aa00ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>🧩 OpenCode community и расширения</h1>
+<p><span class="tag tag-green">v1.0</span> <span class="tag tag-blue">Plugins</span> <span class="tag tag-purple">Community</span> <span class="tag tag-yellow">Ecosystem</span> <span class="tag tag-red">Skills</span></p>
+
+<div class="section">
+  <h3>🔍 Обзор</h3>
+  <p>OpenCode — не просто AI coding agent, а <strong>целая экосистема</strong> с активно растущим сообществом. На июль 2026: <strong>70+ плагинов</strong> в awesome-opencode (1k+ ★), marketplace opencode.cafe, активный Discord и GitHub. Система скиллов (SKILL.md) и плагинов делает OpenCode одной из самых расширяемых платформ для AI-разработки.</p>
+</div>
+
+<h2>📦 awesome-opencode — 70+ плагинов</h2>
+<div class="section">
+  <p><strong>awesome-opencode/awesome-opencode</strong> — курированный список плагинов, тем, агентов и проектов для OpenCode, набравший 1,000+ ★ на GitHub.</p>
+
+  <h3>Топ voice-плагины</h3>
+  <table>
+    <tr><th>Плагин</th><th>STT</th><th>TTS</th><th>Особенности</th></tr>
+    <tr><td><strong>@renjfk/opencode-voice</strong></td><td>Whisper.cpp (локально)</td><td>Piper TTS</td><td>Полностью локальный, без интернета, < 1GB RAM</td></tr>
+    <tr><td><strong>Smart Voice Notify</strong></td><td>—</td><td>ElevenLabs / Edge TTS / SAPI</td><td>Умные уведомления, несколько TTS-движков, очередь сообщений</td></tr>
+    <tr><td><strong>opencode-voice-mode</strong></td><td>Whisper API</td><td>OpenAI TTS</td><td>Режим голосового ввода/вывода с push-to-talk</td></tr>
+  </table>
+
+  <h3>Топ memory-плагины</h3>
+  <table>
+    <tr><th>Плагин</th><th>База данных</th><th>Особенности</th></tr>
+    <tr><td><strong>opencode-mem</strong></td><td>Vector DB (Supermemory)</td><td>Persistent memory между сессиями, семантический поиск</td></tr>
+    <tr><td><strong>harness-memory</strong></td><td>AgentMemory / Hermes</td><td>4-tier consolidation pipeline, Frozen Snapshot Pattern</td></tr>
+    <tr><td><strong>OpenCodeRAG</strong></td><td>LanceDB</td><td>Local-first RAG, tree-sitter чанкинг кода, семантический поиск</td></tr>
+    <tr><td><strong>opencode-supermemory</strong></td><td>Supermemory</td><td>Cross-session persistent memory с API</td></tr>
+    <tr><td><strong>Memory LanceDB</strong></td><td>LanceDB (columnar)</td><td>Высокая производительность, оптимизирован для больших корпусов</td></tr>
+  </table>
+
+  <h3>Топ оркестрация</h3>
+  <table>
+    <tr><th>Плагин</th><th>Агентов</th><th>Архитектура</th></tr>
+    <tr><td><strong>FlowDeck</strong></td><td>25+</td><td>discuss → plan → implement → review (4-phase цикл)</td></tr>
+    <tr><td><strong>Mission Control</strong></td><td>Произвольное</td><td>DAG (directed acyclic graph) — параллельные задачи с зависимостями</td></tr>
+    <tr><td><strong>Ensemble</strong></td><td>5-10</td><td>Мульти-модельный, ensemble voting для критических решений</td></tr>
+    <tr><td><strong>opencode-workspace</strong></td><td>16</td><td>Bundled multi-agent orchestration — 16 компонентов, одна установка</td></tr>
+    <tr><td><strong>Oh My OpenCode Slim</strong></td><td>Переменное</td><td>Лёгкая оркестрация + фоновые задачи + LSP/AST + MCP</td></tr>
+  </table>
+</div>
+
+<h2>🏢 Официальные плагины</h2>
+<div class="section">
+  <table>
+    <tr><th>Плагин</th><th>Описание</th><th>Статус</th></tr>
+    <tr><td><strong>Daytone</strong></td><td>Sandboxed окружение для OpenCode — изолированные сессии</td><td><span class="tag tag-green">Official</span></td></tr>
+    <tr><td><strong>Helicone</strong></td><td>Мониторинг и observability LLM-запросов</td><td><span class="tag tag-green">Official</span></td></tr>
+    <tr><td><strong>VibeGuard</strong></td><td>Redact секретов перед отправкой в LLM</td><td><span class="tag tag-green">Official</span></td></tr>
+    <tr><td><strong>WebSearch</strong></td><td>Веб-поиск через MCP инструменты</td><td><span class="tag tag-green">Official</span></td></tr>
+    <tr><td><strong>Wakatime</strong></td><td>Трекинг времени кодирования с AI-метаданными</td><td><span class="tag tag-green">Official</span></td></tr>
+    <tr><td><strong>OrgX Connector</strong></td><td>Подключение к OrgX execution control plane</td><td><span class="tag tag-green">Official</span></td></tr>
+  </table>
+</div>
+
+<h2>📚 Skills система</h2>
+<div class="section">
+  <p>Система скиллов OpenCode — ключевой механизм расширения возможностей агента:</p>
+  <table>
+    <tr><th>Компонент</th><th>Описание</th></tr>
+    <tr><td><strong>SKILL.md</strong></td><td>Markdown-файл с frontmatter: name, description, triggers. Определяет, когда и как скилл загружается</td></tr>
+    <tr><td><strong>Auto-discovery</strong></td><td>Скиллы автоматически обнаруживаются в <code>~/.config/opencode/skills/</code> и <code>~/.agents/skills/</code></td></tr>
+    <tr><td><strong>Permissions</strong></td><td>Каждый скилл может требовать определённые разрешения (bash, fs, network)</td></tr>
+    <tr><td><strong>Lazy Loading</strong></td><td>Скиллы загружаются только при совпадении описания с запросом пользователя</td></tr>
+    <tr><td><strong>Scripts/References</strong></td><td>Скилл может содержать Python-скрипты, JSON-файлы, любые ресурсы</td></tr>
+  </table>
+  <p><strong>Примеры установленных skills:</strong> pc-control, auth-guide, task-decomposition, evaluate-premortem, agent-architect, mcp-installer, plugin-creator, intellisearch, modern-web-guidance, hallmark, find-skills, gh-cli, open-source-guide-coach и другие.</p>
+</div>
+
+<h2>🧑‍🤝‍🧑 Сообщество</h2>
+<div class="section">
+  <table>
+    <tr><th>Платформа</th><th>Адрес</th><th>Описание</th></tr>
+    <tr><td><strong>opencode.cafe</strong></td><td>opencode.cafe</td><td>Маркетплейс плагинов, тем и агентов (экспериментальный)</td></tr>
+    <tr><td><strong>awesome-opencode</strong></td><td>github.com/awesome-opencode/awesome-opencode</td><td>Курированный список 70+ плагинов</td></tr>
+    <tr><td><strong>Discord</strong></td><td>OpenCode community Discord</td><td>Основное место общения, поддержка, обсуждение плагинов</td></tr>
+    <tr><td><strong>GitHub</strong></td><td>github.com/anomalyco/opencode</td><td>Основной репозиторий, issues, discussions, PR</td></tr>
+    <tr><td><strong>Reddit</strong></td><td>r/opencodeCLI</td><td>Сообщество пользователей OpenCode CLI</td></tr>
+    <tr><td><strong>X / Twitter</strong></td><td>@opencode</td><td>Новости и анонсы</td></tr>
+  </table>
+</div>
+
+<h2>📊 Сравнительные таблицы плагинов</h2>
+<div class="section">
+  <h3>Voice / STT / TTS</h3>
+  <table>
+    <tr><th>Плагин</th><th>STT</th><th>TTS</th><th>Локально</th><th>★</th></tr>
+    <tr><td>@renjfk/opencode-voice</td><td>Whisper.cpp</td><td>Piper TTS</td><td><span class="tag tag-green">Да</span></td><td>Высоко</td></tr>
+    <tr><td>Smart Voice Notify</td><td>—</td><td>ElevenLabs/Edge/SAPI</td><td><span class="tag tag-yellow">Частично</span></td><td>Высоко</td></tr>
+    <tr><td>opencode-voice-mode</td><td>Whisper API</td><td>OpenAI TTS</td><td><span class="tag tag-red">Нет</span></td><td>Средне</td></tr>
+  </table>
+
+  <h3>Memory</h3>
+  <table>
+    <tr><th>Плагин</th><th>DB</th><th>Semantic Search</th><th>Cross-session</th></tr>
+    <tr><td>opencode-mem</td><td>Supermemory</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td></tr>
+    <tr><td>harness-memory</td><td>AgentMemory</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td></tr>
+    <tr><td>OpenCodeRAG</td><td>LanceDB</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td></tr>
+    <tr><td>opencode-supermemory</td><td>Supermemory</td><td><span class="tag tag-green">✅</span></td><td><span class="tag tag-green">✅</span></td></tr>
+  </table>
+
+  <h3>Auth / Provider</h3>
+  <p>10+ плагинов для аутентификации и провайдеров: OpenCode auth system, OAuth 2.0, API key manager, провайдеры для OpenAI, Anthropic, Google, AWS Bedrock, Azure, Ollama, vLLM, OpenRouter и других.</p>
+
+  <h3>Notification</h3>
+  <p>8+ плагинов: Smart Voice Notify, Slack notify, Discord webhook, Email notify, Desktop notify (libnotify), Telegram bot, Пуш-уведомления через ntfy.</p>
+
+  <h3>Monitoring</h3>
+  <p>10+ плагинов: Helicone (official), LangFuse, OpenTelemetry, Wakatime, Custom logger, Token counter, Cost tracker, Prompt inspector, Cache monitor.</p>
+</div>
+
+<h2>🎯 Для Jarvis — план действий</h2>
+<div class="section">
+  <table>
+    <tr><th>Шаг</th><th>Действие</th><th>Описание</th></tr>
+    <tr><td><strong>1</strong></td><td>Конвертировать pc-control в skill</td><td>Оформить pc-control как OpenCode-совместимый skill с SKILL.md, frontmatter, permissions</td></tr>
+    <tr><td><strong>2</strong></td><td>Опубликовать на opencode.cafe</td><td>Сделать pc-control доступным для сообщества</td></tr>
+    <tr><td><strong>3</strong></td><td>Создать Jarvis plugin</td><td>Плагин для бесшовной интеграции Jarvis (agentmemory + MCP + skills + voice)</td></tr>
+    <tr><td><strong>4</strong></td><td>Интегрировать Context7</td><td>MCP-сервер для актуальной документации библиотек — расширить возможности Jarvis в research</td></tr>
+    <tr><td><strong>5</strong></td><td>VibeGuard для Jarvis</td><td>Внедрить redact секретов перед отправкой в LLM провайдер</td></tr>
+    <tr><td><strong>6</strong></td><td>Daytone sandbox</td><td>Изолированные окружения для pc-control и опасных операций</td></tr>
+  </table>
+</div>
+
+<h2>📌 Ключевые выводы</h2>
+<div class="section">
+  <ol>
+    <li><strong>70+ плагинов</strong> и растущая экосистема — одна из сильнейших сторон OpenCode</li>
+    <li>Система <strong>скиллов (SKILL.md)</strong> — простой и мощный способ расширения возможностей агента</li>
+    <li><strong>Voice, Memory и Orchestration</strong> — три самые популярные категории плагинов</li>
+    <li><strong>Официальные плагины</strong> (Daytone, Helicone, VibeGuard) задают стандарт качества</li>
+    <li><strong>Для Jarvis:</strong> естественный следующий шаг — конвертировать pc-control в skill и опубликовать</li>
+    <li><strong>Интеграция с Context7</strong> даст Jarvis доступ к актуальной документации тысяч библиотек</li>
+  </ol>
+</div>
+
+<hr>
+<p><em>Источники: awesome-opencode GitHub (70+ plugins), opencode.ai/docs/ecosystem, Composio Best OpenCode Plugins 2026, opencode.cafe, OpenCode GitHub, Reddit r/opencodeCLI, Discord community, LanceDB blog, Harness Memory docs.</em></p>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Multi-agent оркестрация — J.A.R.V.I.S. Research</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #e0e0e0; background: #1a1a2e; }
+  h1 { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #0f3460; background: #e94560; display: inline-block; padding: 5px 15px; border-radius: 4px; margin-top: 40px; }
+  h3 { color: #e94560; margin-top: 25px; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; background: #16213e; }
+  th, td { border: 1px solid #0f3460; padding: 8px 12px; text-align: left; }
+  th { background: #0f3460; color: #e94560; }
+  code { background: #0f3460; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: #82aaff; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; border-left: 3px solid #e94560; }
+  .path { font-family: monospace; color: #82aaff; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin: 2px; }
+  .tag-green { background: #00c85333; color: #00c853; border: 1px solid #00c853; }
+  .tag-yellow { background: #ffd60033; color: #ffd600; border: 1px solid #ffd600; }
+  .tag-red { background: #ff174433; color: #ff1744; border: 1px solid #ff1744; }
+  .tag-blue { background: #2979ff33; color: #2979ff; border: 1px solid #2979ff; }
+  .section { background: #16213e; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  hr { border: none; border-top: 1px solid #0f3460; margin: 30px 0; }
+  ul { padding-left: 20px; }
+  li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>Multi-agent оркестрация</h1>
+<p>Сравнительный анализ фреймворков для multi-agent orchestration и применимость к J.A.R.V.I.S. Дата: июль 2026.</p>
+<p>
+  <span class="tag tag-green">orchestration</span>
+  <span class="tag tag-blue">langgraph</span>
+  <span class="tag tag-yellow">crewai</span>
+  <span class="tag tag-red">autogen</span>
+  <span class="tag tag-blue">openai-agents</span>
+</p>
+
+<h2>1. LangGraph</h2>
+<div class="section">
+  <p><strong>LangGraph</strong> (LangChain) — графовая оркестрация с максимальным контролем. Агенты представлены как узлы (nodes) графа, а переходы между ними — как рёбра (edges).</p>
+  <h3>Ключевые возможности:</h3>
+  <ul>
+    <li><strong>Stateful графы:</strong> каждый узел получает и модифицирует общее состояние (state)</li>
+    <li><strong>Условные переходы:</strong> маршрутизация на основе содержимого state (if-else, switch)</li>
+    <li><strong>Циклы и рекурсия:</strong> поддержка циклов в графе для итеративных процессов</li>
+    <li><strong>Human-in-the-loop:</strong> возможность приостановить выполнение для ручного ввода</li>
+    <li><strong>Checkpointing:</strong> сохранение состояния для отладки и восстановления</li>
+    <li><strong>Streaming:</strong> пошаговый вывод результатов</li>
+  </ul>
+  <h3>Пример простого графа:</h3>
+  <pre>
+graph = StateGraph(AgentState)
+graph.add_node("planner", plan_task)
+graph.add_node("solver", solve_task)
+graph.add_node("critic", critique_result)
+graph.add_edge("planner", "solver")
+graph.add_conditional_edges("solver", should_retry, {
+    True: "critic",
+    False: END
+})
+graph.add_edge("critic", "solver")  # loop back
+  </pre>
+  <p><strong>Когда использовать:</strong> когда нужен максимальный контроль над потоком, сложная логика ветвления, отладка каждого шага, stateful взаимодействие между агентами.</p>
+  <p><strong>Минусы:</strong> высокий порог входа, много boilerplate кода, сложно быстро прототипировать.</p>
+</div>
+
+<h2>2. CrewAI</h2>
+<div class="section">
+  <p><strong>CrewAI</strong> — фреймворк для role-based команд агентов. Быстрый старт, декларативная конфигурация.</p>
+  <h3>Концепции:</h3>
+  <ul>
+    <li><strong>Agent:</strong> роль, цель, бэкстори (backstory), модель, allow_delegation</li>
+    <li><strong>Task:</strong> описание, ожидаемый результат, ассигнованный агент</li>
+    <li><strong>Crew:</strong> группа агентов + процесс (sequential/hierarchical/consensual)</li>
+    <li><strong>Process:</strong> sequential — по цепочке, hierarchical — менеджер назначает</li>
+    <li><strong>Tools:</strong> интеграции (поиск, API, файлы), наследуются от LangChain</li>
+  </ul>
+  <h3>Пример команды:</h3>
+  <pre>
+researcher = Agent(role="Исследователь", goal="Найти информацию", backstory="Эксперт по поиску")
+writer = Agent(role="Писатель", goal="Написать пост", backstory="Креативный копирайтер")
+crew = Crew(agents=[researcher, writer], tasks=[research_task, write_task], process=Process.sequential)
+result = crew.kickoff()
+  </pre>
+  <p><strong>Когда использовать:</strong> быстрый прототип, стандартные workflows (research → write → review), малые и средние проекты.</p>
+  <p><strong>Минусы:</strong> ограниченный контроль, сложно кастомизировать логику маршрутизации, проблемы с масштабированием при 10+ агентах.</p>
+</div>
+
+<h2>3. AutoGen / AG2 (Microsoft)</h2>
+<div class="section">
+  <p><strong>AutoGen</strong> (переименован в AG2 в 2025) — conversational group chat архитектура. Агенты общаются друг с другом как участники чата.</p>
+  <h3>Ключевые особенности:</h3>
+  <ul>
+    <li><strong>GroupChat:</strong> несколько агентов в одной комнате, сообщения видны всем</li>
+    <li><strong>Round-robin:</strong> агенты выступают по очереди или по выбору спикера</li>
+    <li><strong>Handoffs:</strong> явная передача управления («передаю эстафету Агенту Б»)</li>
+    <li><strong>Nested Chats:</strong> чат внутри чата (подзадача выделяется в отдельный диалог)</li>
+    <li><strong>Termination:</strong> условия завершения (по достижению цели, по лимиту сообщений)</li>
+    <li><strong>Code Execution:</strong> встроенный sandbox для выполнения кода</li>
+  </ul>
+  <h3>Пример:</h3>
+  <pre>
+assistant = GPTAssistantAgent("assistant")
+user_proxy = UserProxyAgent("user", code_execution_config={"work_dir": "coding"})
+groupchat = GroupChat(agents=[assistant, user_proxy], messages=[], max_round=10)
+manager = GroupChatManager(groupchat=groupchat)
+await manager.a_initiate_chat("Напиши скрипт для парсинга CSV")
+  </pre>
+  <p><strong>Когда использовать:</strong> задачи, требующие multi-turn диалога между агентами, code generation с execution, исследовательские задачи.</p>
+  <p><strong>Минусы:</strong> overhead на коммуникацию, сложно отлаживать длинные对话, latency при большом числе агентов.</p>
+</div>
+
+<h2>4. OpenAI Agents SDK</h2>
+<div class="section">
+  <p><strong>OpenAI Agents SDK</strong> — легковесный SDK от OpenAI для построения multi-agent систем. Explicit handoffs + guardrails.</p>
+  <h3>Архитектура:</h3>
+  <ul>
+    <li><strong>Agent:</strong> инструкции (system prompt), модели, tools, handoffs</li>
+    <li><strong>Handoff:</strong> явная передача управления другому агенту через <code>agent.transfer()</code></li>
+    <li><strong>Guardrails:</strong> валидация входа/выхода агента (input guardrails, output guardrails)</li>
+    <li><strong>Runner:</strong> исполняет агента до завершения или handoff</li>
+    <li><strong>Tracing:</strong> встроенное логирование всех шагов</li>
+  </ul>
+  <h3>Пример:</h3>
+  <pre>
+triage_agent = Agent(
+    name="Triage",
+    instructions="Определи, к какому специалисту направить запрос",
+    handoffs=[billing_agent, support_agent, sales_agent]
+)
+result = await Runner.run(triage_agent, "У меня проблема с оплатой")
+  </pre>
+  <p><strong>Когда использовать:</strong> проекты на OpenAI, быстрая интеграция с GPT-4o, нужны guardrails из коробки.</p>
+  <p><strong>Минусы:</strong> Vendor lock-in (OpenAI), не поддерживает другие LM провайдеры, меньше гибкости чем LangGraph.</p>
+</div>
+
+<h2>5. Google ADK (Agent Development Kit)</h2>
+<div class="section">
+  <p><strong>Google ADK</strong> — фреймворк для иерархических multi-agent систем с поддержкой протокола A2A (Agent-to-Agent).</p>
+  <h3>Ключевые концепции:</h3>
+  <ul>
+    <li><strong>Hierarchical Agent Tree:</strong> родительский агент делегирует подзадачи дочерним агентам</li>
+    <li><strong>A2A Protocol:</strong> открытый протокол для взаимодействия агентов (JSON-RPC, capabilities discovery)</li>
+    <li><strong>Built-in Tools:</strong> search, code execution, data analysis, MCP integration</li>
+    <li><strong>Multi-modal:</strong> текст, изображения, аудио, видео</li>
+    <li><strong>Evaluation:</strong> встроенные метрики для оценки качества агентов</li>
+  </ul>
+  <p><strong>Когда использовать:</strong> enterprise с Google Cloud, сложные иерархические workflows, кросс-платформенная оркестрация через A2A.</p>
+  <p><strong>Минусы:</strong> привязка к экосистеме Google, относительно новый, меньше сообщества.</p>
+</div>
+
+<h2>6. Сравнительная таблица</h2>
+<div class="section">
+  <table>
+    <tr><th>Параметр</th><th>LangGraph</th><th>CrewAI</th><th>AutoGen/AG2</th><th>OpenAI SDK</th><th>Google ADK</th></tr>
+    <tr><td>Тип оркестрации</td><td>Графовая</td><td>Role-based</td><td>Conversational</td><td>Handoff-based</td><td>Иерархическая</td></tr>
+    <tr><td>Контроль потока</td><td>Максимальный</td><td>Средний</td><td>Средний</td><td>Средний</td><td>Высокий</td></tr>
+    <tr><td>Скорость старта</td><td>Низкая</td><td>Высокая</td><td>Средняя</td><td>Высокая</td><td>Средняя</td></tr>
+    <tr><td>Multi-LLM</td><td>Да</td><td>Да</td><td>Да</td><td>Нет (только OpenAI)</td><td>Да (Vertex AI)</td></tr>
+    <tr><td>Human-in-loop</td><td>Встроенный</td><td>Через инструменты</td><td>UserProxy</td><td>Guardrails</td><td>Через A2A</td></tr>
+    <tr><td>State management</td><td>StateGraph</td><td>Внутренний</td><td>GroupChat history</td><td>Runner context</td><td>Agent state</td></tr>
+    <tr><td>Сообщество</td><td>55k+ ★</td><td>28k+ ★</td><td>40k+ ★</td><td>15k+ ★</td><td>10k+ ★</td></tr>
+    <tr><td>Документация</td><td>Отличная</td><td>Хорошая</td><td>Средняя</td><td>Хорошая</td><td>Хорошая</td></tr>
+    <tr><td>OpenCode-совместимость</td><td>MCP-плагин</td><td>Python bridge</td><td>Python bridge</td><td>MCP-плагин</td><td>A2A через HTTP</td></tr>
+  </table>
+</div>
+
+<h2>7. Когда что использовать</h2>
+<div class="section">
+  <table>
+    <tr><th>Сценарий</th><th>Рекомендуемый фреймворк</th></tr>
+    <tr><td>Сложная бизнес-логика с ветвлениями</td><td>LangGraph</td></tr>
+    <tr><td>Быстрый прототип простой команды</td><td>CrewAI</td></tr>
+    <tr><td>Итеративный code generation с execution</td><td>AutoGen/AG2</td></tr>
+    <tr><td>Enterprise с guardrails и compliance</td><td>OpenAI Agents SDK + Guardrails</td></tr>
+    <tr><td>Иерархическая enterprise оркестрация</td><td>Google ADK + A2A</td></tr>
+    <tr><td>Микросервисная архитектура агентов</td><td>OpenAI SDK handoffs</td></tr>
+    <tr><td>Исследовательская multi-turn задача</td><td>AutoGen GroupChat</td></tr>
+  </table>
+</div>
+
+<h2>8. Применимость к OpenCode</h2>
+<div class="section">
+  <p>Текущая архитектура OpenCode использует <strong>agentmemory signals</strong> как примитив оркестрации: <code>signal_send</code> / <code>signal_read</code> для меж-агентской коммуникации.</p>
+  <h3>Сравнение с фреймворками:</h3>
+  <ul>
+    <li><strong>LangGraph:</strong> сигналы — аналог рёбер графа, но без централизованного state. Можно построить граф поверх signals + agentmemory_state.</li>
+    <li><strong>CrewAI:</strong> роли в OpenCode — subagent_type. Handoffs — через signal_send(type=handoff). Ближе всего по духу.</li>
+    <li><strong>AutoGen:</strong> group chat — через broadcast signal. Но нет round-robin и ротации спикера.</li>
+    <li><strong>OpenAI SDK:</strong> explicit handoffs — эквивалент signal_send(type=handoff, to=agent_id).</li>
+  </ul>
+  <h3>Чего не хватает в OpenCode:</h3>
+  <ol>
+    <li><strong>Оркестратор:</strong> центральный компонент, который управляет очередью задач, маршрутизацией и мониторингом агентов</li>
+    <li><strong>Agent Handoffs:</strong> стандартизированный протокол передачи управления между агентами с контекстом</li>
+    <li><strong>Group Chat / Broadcast:</strong> механизм multi-agent дискуссии</li>
+    <li><strong>Global State:</strong> общее состояние, доступное всем агентам (shared context)</li>
+  </ol>
+</div>
+
+<h2>9. Рекомендации</h2>
+<div class="section">
+  <ol>
+    <li><strong>Добавить agent handoffs в OpenCode:</strong> стандартизировать протокол передачи управления между subagent'ами через signal_send(type="handoff", to=agent_id, context={...}). Принимающий агент получает контекст + точку входа.</li>
+    <li><strong>Оркестратор поверх signals:</strong> создать специального агента-оркестратора, который слушает все сигналы, управляет очередью и принимает решения о маршрутизации. Использовать agentmemory_frontier для выбора следующего действия.</li>
+    <li><strong>Shared State:</strong> добавить глобальное состояние (через agentmemory или отдельный MCP сервер), доступное всем агентам. Это позволит реализовать паттерн «blackboard architecture».</li>
+    <li><strong>Адаптер для популярных фреймворков:</strong> создать MCP-мост для LangGraph/CrewAI — чтобы можно было запустить граф из LangGraph внутри OpenCode через tool call.</li>
+  </ol>
+</div>
+
+<hr>
+<p style="color: #82aaff; text-align: center; font-size: 0.9em;">Отчёт 12 — Multi-agent оркестрация | J.A.R.V.I.S. Research | июль 2026</p>
+
+</body>
+</html>
