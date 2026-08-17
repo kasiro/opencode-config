@@ -1,0 +1,162 @@
+[
+  {
+    "role": "user",
+    "time": 1784796521523,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are a research sub-agent. Today is 2026-07-23.\n\nResearch context: We are investigating alternative techniques for controlling LLM behavior without embedding markup/tags in the prompt. Audience is technical AI engineers. Date: 2026-07-23.\n\nYour ONLY task — research this single angle, nothing else:\nTool/function calling with strict schemas as a behavior control mechanism — how specifying required function signatures constrains LLM outputs and prevents undesired free-form text generation.\n\nRules:\n1. Run up to 6 web searches. Start with 2-3 differently-phrased queries in parallel; refine based on what comes back. Prefer primary sources (official docs, papers, original announcements) over aggregators and SEO farms.\n2. WebFetch the 3-6 most promising results to read actual content. Do not cite a page you did not fetch.\n3. Judge each source: official/primary > reputable media/peer-reviewed > forums/blogs > content farms. Discard low-quality sources rather than citing them.\n4. Extract findings as information-dense claims: include exact entities, numbers, dates, versions. One claim per finding.\n5. Write your findings to /home/kasiro/research/llm-control-alt/findings/F2.md in EXACTLY this format:\n\n# F2: Tool/function calling with strict schemas\n\n## Findings\n\n### [1] <one-sentence claim>\n- quote: \"<short verbatim supporting quote>\"\n- url: <source URL>\n- source_type: primary | secondary | community\n- published: <date if known, else unknown>\n- confidence: high | medium | low\n\n### [2] ...\n\n## Dead ends\n- <queries or sources that yielded nothing useful, one line each>\n\n## Suggested follow-ups\n- <at most 3 narrower questions worth a deeper look, or \"none\">\n\n6. Aim for 5-12 findings. Depth beats breadth: 6 solid sourced claims beat 15 vague ones.\n7. If the angle turns out unanswerable or results are thin, still write the file with whatever you found and say so under Dead ends.\n\nReturn to the orchestrator ONLY:\n- 3-5 line summary of your strongest findings\n- the file path you wrote\n- number of findings and your overall confidence\nDo NOT return raw page content or the full findings list.\n\n<dcp-message-id>m0075</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0075</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796521539,
+    "tokens": {
+      "input": 738,
+      "output": 269,
+      "reasoning": 55,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research the angle of tool/function calling with strict schemas as a behavior control mechanism for LLMs. Let me start by running several parallel web searches with different phrasings to find relevant information.\n\nLet me run 3 parallel searches to start."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_4CvAK7MgRHGv57T3bgyz0632",
+        "status": "completed",
+        "input": {
+          "query": "tool calling strict JSON schema constrains LLM output prevents freeform text",
+          "language": "en",
+          "num_results": 10
+        },
+        "output": "Title: Tool (band) - Wikipedia\nDescription: Tool is an American rock band formed in Los Angeles in 1990. The group consists of vocalist Maynard James Keenan, guitarist Adam …\nURL: https://en.wikipedia.org/wiki/Tool_(band)\nRelevance Score: 1.000\n\nTitle: TOOL - YouTube Music\nDescription: Tool is an American rock band formed in Los Angeles in 1990. The group consists of vocalist Maynard James Keenan, guitarist Adam …\nURL: https://music.youtube.com/channel/UCW6FSIkA04g7pBvMXlnaKqg\nRelevance Score: 0.500\n\nTitle: Tool Army\nDescription: Get exclusive content, ticket presales, VIP packages and access to the community.\nURL: https://www.toolband.com/\nRelevance Score: 0.333\n\nTitle: TOOL Greatest Hits - YouTube Music\nDescription: Listen to TOOL Greatest Hits on YouTube Music - a dedicated music app with official songs, music videos, remixes, covers, and more.\nURL: https://music.youtube.com/playlist?list=PL5yGB_eqIALRfoednx480iOjvXjmIG1Em\nRelevance Score: 0.250\n\nTitle: Tool – Wikipedia, wolna encyklopedia\nDescription: Skład zespołu Tool był już kompletny, kiedy Jones zaprosił do niego basistę, Paula D’Amoura. Adam Jones jako ideologię leżącą u …\nURL: https://pl.wikipedia.org/wiki/Tool\nRelevance Score: 0.200\n\nTitle: F O U R T H E Y E - Tool new album, Tool news, information and tours\nDescription: Jul 10, 2026 · Backed by one of the largest and friendliest Tool communities on the planet, Fourtheye is a Tool blog that reports all …\nURL: https://www.fourtheye.net/\nRelevance Score: 0.167\n\nTitle: Tool Official Store | Shop for Tool Band Merchandise\nDescription: Welcome to the Tool Official Store! Shop for officially licensed Tool band merchandise, tour gear, apparel, accessories, and the Fear …\nURL: https://store.toolband.com/\nRelevance Score: 0.143\n\nTitle: Tool Tickets, 2026 Concert Tour Dates | Ticketmaster\nDescription: May 17, 2026 · Buy Tool tickets from the official Ticketmaster.com site. Find Tool tour schedule, concert details, reviews and photos.\nURL: https://www.ticketmaster.com/tool-tickets/artist/720703?msockid=2e8ca31ca43960521f33b483a516618d\nRelevance Score: 0.125\n\nTitle: Buy tools on Tool.com, Tools Wholesale | Tool.com\nDescription: Buy tools on Tool.com, an online store with all kinds of tools at wholesale price, large selection of hand tools, power tools, garden …\nURL: https://www.tool.com/\nRelevance Score: 0.111\n\nTitle: TOOL Announce First New Album in 7 Years, Due Summer 2026\nDescription: Mar 10, 2026 · TOOL have officially announced their sixth studio album, their first new record in seven years since the release of …\nURL: https://themetallist.com/en/news/2026/03/tool-new-album-first-in-7-years-summer-2026/\nRelevance Score: 0.100\n<dcp-message-id>m0080</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_RmiAmeKOp3fBDs1wmBi12584",
+        "status": "completed",
+        "input": {
+          "query": "function calling API structured output mechanism control LLM behavior schema",
+          "language": "en",
+          "num_results": 10
+        },
+        "output": "Title: Function (mathematics) - Wikipedia\nDescription: In mathematics, a function from a set X to a set Y assigns to each element of X exactly one element of Y. [1] The set X is called the domain of the function [2] and the set Y is called the codomain of the …\nURL: https://en.wikipedia.org/wiki/Function_(mathematics)\nRelevance Score: 1.000\n\nTitle: What is a Function - Math is Fun\nDescription: A function relates an input to an output. It is like a machine that has an input and an output. And the output is related somehow to the input.\nURL: https://www.mathsisfun.com/sets/function.html\nRelevance Score: 0.500\n\nTitle: JavaScript Functions - W3Schools\nDescription: Function Input and Output The most useful functions work like this: Parameters - some values are sent to the function Arguments - some values are received by the function Function Code - some work is …\nURL: https://www.w3schools.com/JS/js_function_intro.asp\nRelevance Score: 0.333\n\nTitle: Introduction to Function - GeeksforGeeks\nDescription: Jul 8, 2026 · A function is a special type of relation that assigns each element of a set A to exactly one element of a set B. Here, set A is called the domain, and set B is called the codomain. A function is …\nURL: https://www.geeksforgeeks.org/maths/what-is-a-function/\nRelevance Score: 0.250\n\nTitle: Function | Definition, Types, Examples, & Facts | Britannica\nDescription: Jun 8, 2026 · Function, in mathematics, an expression, rule, or law that defines a relationship between one variable (the independent variable) and another variable (the dependent variable). Functions are …\nURL: https://www.britannica.com/science/function-mathematics\nRelevance Score: 0.200\n\nTitle: FUNCTION Definition & Meaning - Merriam-Webster\nDescription: 3 days ago · The meaning of FUNCTION is professional or official position : occupation. How to use function in a sentence. Synonym Discussion of Function.\nURL: https://www.merriam-webster.com/dictionary/function\nRelevance Score: 0.167\n\nTitle: Function -- from Wolfram MathWorld\nDescription: 2 days ago · A function is a relation that uniquely associates members of one set with members of another set. More formally, a function from A to B is an object f such that every a in A is uniquely …\nURL: https://mathworld.wolfram.com/Function.html\nRelevance Score: 0.143\n\nTitle: javascript - What does $ (function () {} ); do? - Stack Overflow\nDescription: A function of that nature can be called at any time, anywhere. jQuery (a library built on Javascript) has built in functions that generally required the DOM to be fully rendered before being called.\nURL: https://stackoverflow.com/questions/7642442/what-does-function-do\nRelevance Score: 0.125\n\nTitle: Functions | Algebra 1 | Math | Khan Academy\nDescription: A function is like a machine that takes an input and gives an output. Let's explore how we can graph, analyze, and create different types of functions. Unit guides are here! Power up your classroom with …\nURL: https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:functions\nRelevance Score: 0.111\n\nTitle: Function in Maths - GeeksforGeeks\nDescription: Jul 3, 2026 · Your All-in-One Learning Portal: GeeksforGeeks is a comprehensive educational platform that empowers learners across domains-spanning computer science and programming, school …\nURL: https://www.geeksforgeeks.org/maths/function-in-maths/\nRelevance Score: 0.100\n<dcp-message-id>m0080</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_NMg54PE0YMmQCcNBVEIm1205",
+        "status": "completed",
+        "input": {
+          "query": "OpenAI structured output JSON schema function calling jailbreak prevention 2024 2025",
+          "language": "en",
+          "num_results": 10
+        },
+        "output": "Title: OpenAI | Research & Deployment\nDescription: We believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems. Building …\nURL: https://openai.com/\nRelevance Score: 1.000\n\nTitle: Introducing ChatGPT - OpenAI\nDescription: Nov 30, 2022 · We’ve trained a model called ChatGPT which interacts in a conversational way. The dialogue format makes it …\nURL: https://openai.com/index/chatgpt/\nRelevance Score: 0.500\n\nTitle: ChatGPT\nDescription: Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or download …\nURL: https://chatgpt.com/\nRelevance Score: 0.333\n\nTitle: OpenAI - Wikipedia\nDescription: OpenAI is an American artificial intelligence (AI) research organization headquartered in San Francisco, consisting of OpenAI Group …\nURL: https://en.wikipedia.org/wiki/OpenAI\nRelevance Score: 0.250\n\nTitle: ChatGPT | AI Chatbot to Discover, Learn & Create\nDescription: For completing work tasks from start to finish. ChatGPT Work can create and edit docs, slide decks, spreadsheets, charts, PDFs, …\nURL: https://chatgpt.com/overview/\nRelevance Score: 0.200\n\nTitle: OpenAI\nDescription: OpenAI’s mission is to ensure that artificial general intelligence (AGI) benefits all of humanity. In service of that mission, we …\nURL: https://openai.smapply.org/\nRelevance Score: 0.167\n\nTitle: OpenAI · GitHub\nDescription: OpenAI has 265 repositories available. Follow their code on GitHub.\nURL: https://github.com/openai/\nRelevance Score: 0.143\n\nTitle: OpenAI (@OpenAI) / Posts / X - Twitter\nDescription: Dec 6, 2015 · OpenAI’s Joyce Ruffell and @RaceTekSystems co-founder @GarageGuyChase discuss with @AndrewMayne how …\nURL: https://x.com/OpenAI\nRelevance Score: 0.125\n\nTitle: OpenAI - LinkedIn\nDescription: OpenAI | 11,327,987 followers on LinkedIn. OpenAI is an AI research and deployment company dedicated to ensuring that general …\nURL: https://www.linkedin.com/company/openai\nRelevance Score: 0.111\n\nTitle: OpenAI.fm\nDescription: Hello, and welcome to your moment of mindfulness. I'm so glad you're here. Let's begin by closing your eyes and taking a deep, …\nURL: https://www.openai.fm/\nRelevance Score: 0.100\n<dcp-message-id>m0080</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796526084,
+    "tokens": {
+      "input": 2232,
+      "output": 272,
+      "reasoning": 19,
+      "cache": {
+        "write": 0,
+        "read": 53120
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The searches didn't return relevant results. Let me try better search queries with more specific terms."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_i6KGkqlEmhfMMixu7qCX6698",
+        "status": "completed",
+        "input": {
+          "query": "\"structured output\" \"function calling\" LLM constrain output schema 2024",
+          "language": "en",
+          "num_results": 10
+        },
+        "output": "Title: Structured — Daily Planner\nDescription: Structured combines all your tasks, calendar events, and focus sessions in one beautifully designed timeline.\nURL: https://structured.app/\nRelevance Score: 1.000\n\nTitle: Structured Web\nDescription: Web App: Structured online planner for streamlined task management. Sync your daily planner across devices.\nURL: https://web.structured.app/landing\nRelevance Score: 0.500\n\nTitle: Structured - Daily Planner - Apps on Google Play\nDescription: Structured is a daily planner that helps you stay organized and focused. It combines the simplicity of a to-do list with the clarity of a …\nURL: https://play.google.com/store/apps/details?id=io.unorderly.structured&hl=en-US\nRelevance Score: 0.333\n\nTitle: Cross-Platform Planning – Access Schedules Anytime, Anywhere — Structured\nDescription: Available on iOS, Mac, Web, and Android. Keep your schedules up-to-date and access your plans anytime, anywhere.\nURL: https://structured.app/access-everywhere\nRelevance Score: 0.250\n\nTitle: STRUCTURED | English meaning - Cambridge Dictionary\nDescription: STRUCTURED definition: 1. organized so that the parts relate well to each other; having a clear structure: 2. Structured…. Learn more.\nURL: https://dictionary.cambridge.org/dictionary/english/Structured\nRelevance Score: 0.200\n\nTitle: Structured Web\nDescription: Structured Web is compatible with almost every device's browser, such as Safari, Google Chrome, Firefox, or Microsoft Edge. It …\nURL: https://help.structured.app/en/articles/2050050\nRelevance Score: 0.167\n\nTitle: Structured: Daily Planner Todo - App Store\nDescription: Download Structured: Daily Planner Todo by unorderly GmbH on the App Store. See screenshots, ratings and reviews, user tips, and …\nURL: https://apps.apple.com/us/app/structured-daily-planner-todo/id1499198946\nRelevance Score: 0.143\n\nTitle: STRUCTURED Definition & Meaning - Merriam-Webster\nDescription: The meaning of STRUCTURED is of, relating to, or being a method of computer programming in which each step of the solution to a …\nURL: https://www.merriam-webster.com/dictionary/structured\nRelevance Score: 0.125\n\nTitle: Structured - Information Technology Solutions & Systems Integration\nDescription: Structured is an award-winning solution provider delivering secure, cloud-connected digital infrastructure and managed IT services. …\nURL: https://structured.com/\nRelevance Score: 0.111\n\nTitle: STRUCTURED Synonyms: 96 Similar and Opposite Words - Merriam-Webster\nDescription: 1 day ago · Synonyms for STRUCTURED: standardized, detailed, specific, regularized, ordered, organized, systematic, methodical; …\nURL: https://www.merriam-webster.com/thesaurus/structured\nRelevance Score: 0.100\n<dcp-message-id>m0086</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_lgibc6cpGGyEcTxKOLAg7132",
+        "status": "completed",
+        "input": {
+          "query": "LLM function calling as guardrail constrained decoding structured generation technique",
+          "language": "en",
+          "num_results": 10
+        },
+        "output": "Title: Large Language Model (LLM) - GeeksforGeeks\nDescription: May 2, 2026 · Your All-in-One Learning Portal: GeeksforGeeks is a comprehensive educational platform that empowers learners …\nURL: https://www.geeksforgeeks.org/artificial-intelligence/large-language-model-llm/\nRelevance Score: 1.000\n\nTitle: Large language model - Wikipedia\nDescription: A large language model (LLM) is an AI model (typically a neural network) trained on a vast amount of text for natural language …\nURL: https://en.wikipedia.org/wiki/Large_language_model\nRelevance Score: 0.500\n\nTitle: AI Leaderboard 2026: Compare & Rank 300+ Top AI Models by …\nDescription: The AI Leaderboard — independent rankings of GPT, Claude, Gemini, Llama, DeepSeek and 300+ AI models by intelligence, speed …\nURL: https://llm-stats.com/\nRelevance Score: 0.333\n\nTitle: What is an LLM? A Super Simple Guide for Beginners (Even If You’ve ...\nDescription: Sep 16, 2025 · A single app you download from the App Store ( Apps calls other LLM apps are wrapper around them for a easy user …\nURL: https://suneelk.medium.com/what-is-an-llm-a-super-simple-guide-for-beginners-even-if-youve-never-coded-b4c1b2adaf78\nRelevance Score: 0.250\n\nTitle: Large Language Models (LLMs) with Google AI | Google Cloud\nDescription: A large language model (LLM) is a statistical language model, trained on a massive amount of data, that can be used to generate and …\nURL: https://cloud.google.com/ai/llms\nRelevance Score: 0.200\n\nTitle: LLM Fundamentals | Microsoft Learn\nDescription: Apr 10, 2026 · The LLM never executes anything. It only generates the request. Your application code (or an agent framework) is …\nURL: https://learn.microsoft.com/en-us/agent-framework/journey/llm-fundamentals\nRelevance Score: 0.167\n\nTitle: LLM Leaderboard 2026\nDescription: The LLM Leaderboard — independent ranking of GPT, Claude, Gemini, Llama, DeepSeek and 300+ AI models by intelligence, speed …\nURL: https://llm-stats.com/leaderboards/llm-leaderboard\nRelevance Score: 0.143\n\nTitle: Large Language Model (LLM) Tutorial - GeeksforGeeks\nDescription: Mar 2, 2026 · Your All-in-One Learning Portal: GeeksforGeeks is a comprehensive educational platform that empowers learners …\nURL: https://www.geeksforgeeks.org/deep-learning/large-language-model-llm-tutorial/\nRelevance Score: 0.125\n\nTitle: Large Language Model – Wikipedia\nDescription: Ein Large Language Model (kurz LLM, englisch), übertragen großes Sprachmodell, ist die softwaretechnische Realisierung eines …\nURL: https://de.wikipedia.org/wiki/Large_Language_Model\nRelevance Score: 0.111\n\nTitle: What is a Large Language Model (LLM)? | Stanford HAI\nDescription: A Large Language Model is an AI system trained on massive amounts of text data to understand and generate human-like language. …\nURL: https://hai.stanford.edu/ai-definitions/what-is-a-llm\nRelevance Score: 0.100\n<dcp-message-id>m0086</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_Ffm2o2X8hkZUh7hLbuWX3057",
+        "status": "completed",
+        "input": {
+          "query": "OpenAI structured outputs constrained by JSON schema prevent hallucination 2024 2025",
+          "language": "en",
+          "num_results": 10
+        },
+        "output": "Title: OpenAI | Research & Deployment\nDescription: We believe our research will eventually lead to artificial general intelligence, a system that can solve human-level problems. Building …\nURL: https://openai.com/\nRelevance Score: 1.000\n\nTitle: Introducing ChatGPT - OpenAI\nDescription: Nov 30, 2022 · We’ve trained a model called ChatGPT which interacts in a conversational way. The dialogue format makes it …\nURL: https://openai.com/index/chatgpt/\nRelevance Score: 0.500\n\nTitle: ChatGPT\nDescription: Use ChatGPT to answer questions, write, create images, complete work, and code—all in one place. Get started for free or download …\nURL: https://chatgpt.com/\nRelevance Score: 0.333\n\nTitle: OpenAI - Wikipedia\nDescription: OpenAI is an American artificial intelligence (AI) research organization headquartered in San Francisco, consisting of OpenAI Group …\nURL: https://en.wikipedia.org/wiki/OpenAI\nRelevance Score: 0.250\n\nTitle: ChatGPT | AI Chatbot to Discover, Learn & Create\nDescription: For completing work tasks from start to finish. ChatGPT Work can create and edit docs, slide decks, spreadsheets, charts, PDFs, …\nURL: https://chatgpt.com/overview/\nRelevance Score: 0.200\n\nTitle: OpenAI\nDescription: OpenAI’s mission is to ensure that artificial general intelligence (AGI) benefits all of humanity. In service of that mission, we …\nURL: https://openai.smapply.org/\nRelevance Score: 0.167\n\nTitle: OpenAI · GitHub\nDescription: OpenAI has 265 repositories available. Follow their code on GitHub.\nURL: https://github.com/openai/\nRelevance Score: 0.143\n\nTitle: OpenAI (@OpenAI) / Posts / X - Twitter\nDescription: Dec 6, 2015 · OpenAI’s Joyce Ruffell and @RaceTekSystems co-founder @GarageGuyChase discuss with @AndrewMayne how …\nURL: https://x.com/OpenAI\nRelevance Score: 0.125\n\nTitle: OpenAI - LinkedIn\nDescription: OpenAI | 11,327,987 followers on LinkedIn. OpenAI is an AI research and deployment company dedicated to ensuring that general …\nURL: https://www.linkedin.com/company/openai\nRelevance Score: 0.111\n\nTitle: OpenAI.fm\nDescription: Hello, and welcome to your moment of mindfulness. I'm so glad you're here. Let's begin by closing your eyes and taking a deep, …\nURL: https://www.openai.fm/\nRelevance Score: 0.100\n<dcp-message-id>m0086</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

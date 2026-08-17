@@ -1,0 +1,160 @@
+[
+  {
+    "role": "user",
+    "time": 1784794185962,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are a research sub-agent. Today is 2026-07-23. Research context: Production guardrails for AI. Your ONLY task: research NeMo Guardrails, Guardrails AI, LangChain guardrails — how they work, where they sit in architecture, limitations. Rules: (1) Run up to 6 web searches, start with 2-3 parallel queries. (2) WebFetch 3-6 most promising results. (3) Write findings to /home/kasiro/research/ai-control/findings/F1.md in this exact format:\n\n# F1: Production guardrails\n## Findings\n### [1] <one-sentence claim>\n- quote: \"...\"\n- url: <URL>\n- source_type: primary|secondary|community\n- published: <date if known>\n- confidence: high|medium|low\n\nAim for 5-12 findings. Return a 3-5 line summary of what you found.\n\n<dcp-message-id>m0048</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0048</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794185981,
+    "tokens": {
+      "input": 447,
+      "output": 216,
+      "reasoning": 43,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research production guardrails for AI - specifically NeMo Guardrails, Guardrails AI, and LangChain guardrails. Let me start with 2-3 parallel web searches to gather information."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_8o8Qsedd1MGqYVdPIz5p1842",
+        "status": "completed",
+        "input": {
+          "query": "NeMo Guardrails architecture production deployment 2024 2025",
+          "num_results": 10
+        },
+        "output": "Title: Nemo.kz — Дискаунтер Электроники в Казахстане | Широкий …\nDescription: Nemo.kz — розничная сеть электроники с магазинами и складами в 8 городах Казахстана: Алматы, Астана, Караганда и другие.\nURL: https://nemo.kz/ru/o-kompanii\nRelevance Score: 1.000\n\nTitle: В поисках Немо (2003) / Finding Nemo - Rutube\nDescription: Смотрите видео онлайн «В поисках Немо (2003) / Finding Nemo» на канале «СМОТРИ МУЛЬТФИЛЬМЫ!» в хорошем качестве …\nURL: https://rutube.ru/video/726b695a10eb0213f2262f9924cd74f7/\nRelevance Score: 0.500\n\nTitle: В поисках Немо | Finding Nemo (2003) — Видео от КИНОБРО\nDescription: Apr 27, 2023 · Смотрите онлайн В поисках Немо | Finding Nemo (2003) 1 ч 40 мин 58 с. Видео от 27 апреля 2023 в хорошем …\nURL: https://vkvideo.ru/video-220018529_456239349\nRelevance Score: 0.333\n\nTitle: В поисках Немо (мультфильм, 2003)\nDescription: После потери своей супруги Корал Марлин в одиночестве воспитывает сына Немо, который с детства «хромает» — …\nURL: https://rutube.ru/video/312d587243b4ac0f170537b38e76f245/\nRelevance Score: 0.250\n\nTitle: FINDING NEMO All Movie Clips (2003) - YouTube\nDescription: Aug 30, 2020 · Watch the official clip compilation for Finding Nemo, an animation movie starring Alexander Gould, Albert Brooks and …\nURL: https://www.youtube.com/watch?v=UDEGqKJVt9k\nRelevance Score: 0.200\n\nTitle: Nemo's First Day At School | Finding Nemo - YouTube\nDescription: Nov 17, 2024 · Nemo’s first day at fish school is full of adventure! 🌊 Follow him as he navigates the drop-off, learns marine science fun …\nURL: https://www.youtube.com/watch?v=cpZ_zG9fJhw\nRelevance Score: 0.167\n\nTitle: Лучший дискаунтер электроники в Казахстане Nemo.kz - nemo.kz\nDescription: Для связи +7 (776)-695-05-77 manager@nemo.kz Гарантия и сервис Доставка и оплата Магазины Вакансии Пользовательское …\nURL: https://nemo.kz/\nRelevance Score: 0.143\n\nTitle: «В поисках Немо» (Finding Nemo, 2003) - Кинопоиск\nDescription: Nov 27, 2012 · - Вставляй в DVD диск 'Finding Nemo'! Удовольствие гарантировано по всем названным пунктам. …\nURL: https://www.kinopoisk.ru/film/7908/\nRelevance Score: 0.125\n\nTitle: Nemo (певец) — Википедия\nDescription: В 2015 году вышел дебютный альбом Nemo — Clownfisch, достигший 95-го места в швейцарских чартах. В 2017 году вышел …\nURL: https://ru.wikipedia.org/wiki/Nemo_(%D0%BF%D0%B5%D0%B2%D0%B5%D1%86)\nRelevance Score: 0.111\n\nTitle: В поисках Немо — Википедия\nDescription: Finding Nemo) — американский компьютерно-анимационный комедийно-драматический приключенческий фильм [4] 2003 …\nURL: https://ru.wikipedia.org/wiki/%D0%92_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0%D1%85_%D0%9D%D0%B5%D0%BC%D0%BE\nRelevance Score: 0.100\n<dcp-message-id>m0051</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_oKB2Mt1lYTsKNUAo5qBi6928",
+        "status": "completed",
+        "input": {
+          "query": "Guardrails AI production guardrails architecture limitations",
+          "num_results": 10
+        },
+        "output": "Title: De'Longhi FR | Machines a Café Expresso et Petit Èlectroménagers\nDescription: Votre coffee shop, seulement 24.5cm de large Format compact , exploration infinie. Sublimez votre rituel café avec des bacs à grains interchangeables et une mousse de lait dense et onctueuse.\nURL: https://www.delonghi.com/fr-fr\nRelevance Score: 1.000\n\nTitle: De'Longhi ES | Cafeteras, Aire Acondicionado y Electrodomésticos de …\nDescription: De'Longhi es líder mundial en cafeteras, aparatos de cocina y aire acondicionado portátil.\nURL: https://www.delonghi.com/es-es\nRelevance Score: 0.500\n\nTitle: Machines à café à grains avec broyeur | De'Longhi FR\nDescription: Les machines à café à grains De'Longhi ont été conçues pour maximiser les arômes de votre café. Achetez-les sur notre site !\nURL: https://www.delonghi.com/fr-fr/c/cafe/machines-a-cafe/expresso-broyeurs\nRelevance Score: 0.333\n\nTitle: De'Longhi PT | Homepage New\nDescription: Troque os seus grãos de café, sem mudar a sua rotina. Perfetto. Experimente a variedade sem esforço do grão à chávena, adaptada aos seus gostos.\nURL: https://www.delonghi.com/pt-pt\nRelevance Score: 0.250\n\nTitle: Machines à café | De'Longhi FR\nDescription: Machines à cappuccino Si vous aimez les cappuccinos gourmands et crémeux, une machine à café avec mousseur à lait intégré, dotés de la Technologie LatteCrema, ou des buses à vapeur, …\nURL: https://www.delonghi.com/fr-fr/c/cafe/machines-a-cafe\nRelevance Score: 0.200\n\nTitle: Product Registration | DeLonghi\nDescription: Enregistrez-vous une machine à café ? Si vous enregistrez une machine à café, vous pouvez commencer l’enregistrement du produit en scannant le code QR d’enregistrement du produit sur …\nURL: https://www.delonghi.com/fr-fr/product-registration\nRelevance Score: 0.167\n\nTitle: Manuels produits | De'Longhi FR\nDescription: Découvrez toutes les informations sur les produits De'Longhi et leurs manuels d'utilisation, consultables en ligne sur delonghi.com ou en PDF.\nURL: https://www.delonghi.com/fr-fr/manuals\nRelevance Score: 0.143\n\nTitle: De'Longhi BE\nDescription: Ton bar à café, tout simplement chez toi. Design compact, expérience grandiose. Savoure ton café comme tu l’aimes grâce à ses réservoirs à grains interchangeables et à une mousse de lait onctueuse.\nURL: https://www.delonghi.com/fr-be\nRelevance Score: 0.125\n\nTitle: Machines à café et cafetières manuelles | De'Longhi FR\nDescription: La machine à café manuelle, comme son nom l'indique, est une machine dont le processus de préparation du café est mené par l'utilisateur. Le porte-filtre est rempli de café moulu, pressé …\nURL: https://www.delonghi.com/fr-fr/c/cafe/machines-a-cafe/machines-expresso\nRelevance Score: 0.111\n\nTitle: Sign in | Retail React App - De'Longhi UK\nDescription: Vos avantages Rejoignez la famille De’Longhi pour profiter d’offres exclusives et d’une expérience plus personnalisée.\nURL: https://www.delonghi.com/fr-fr/login\nRelevance Score: 0.100\n<dcp-message-id>m0051</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_vzd7iaKIKdqhap2kAGrS8741",
+        "status": "completed",
+        "input": {
+          "query": "LangChain guardrails LLM safety comparison NeMo Guardrails vs Guardrails AI",
+          "num_results": 10
+        },
+        "output": "Title: LangChain: Observe, Evaluate, and Deploy Reliable AI Agents\nDescription: LangChain provides the engineering platform and open source frameworks developers use to build, test, and deploy reliable AI agents.\nURL: https://www.langchain.com/\nRelevance Score: 1.000\n\nTitle: LangChain: Open Source AI Agent Framework | Build Agents Faster\nDescription: LangChain is an open source framework with a pre-built agent architecture and integrations for any model or tool, so you can build …\nURL: https://www.langchain.com/langchain\nRelevance Score: 0.500\n\nTitle: GitHub - langchain-ai/langchain: The agent engineering platform.\nDescription: Mar 12, 2023 · LangChain is a framework for building agents and LLM-powered applications. It helps you chain together interoperable …\nURL: https://github.com/langchain-ai/langchain\nRelevance Score: 0.333\n\nTitle: Как LangChain и LangGraph упрощают жизнь разработчика ИИ …\nDescription: Feb 11, 2025 · LangChain позволяет легко логировать шаги агента, а LangGraph – контролировать каждое действие агента …\nURL: https://habr.com/ru/articles/881372/\nRelevance Score: 0.250\n\nTitle: Home - Docs by LangChain\nDescription: The platform for agent engineering One platform to improve every step of the agent development lifecycle, so you can ship reliable …\nURL: https://docs.langchain.com/\nRelevance Score: 0.200\n\nTitle: LangChain overview - Docs by LangChain\nDescription: LangChain’s agents are built on top of LangGraph. This allows us to take advantage of LangGraph’s durable execution, human-in-the …\nURL: https://docs.langchain.com/oss/python/langchain/overview\nRelevance Score: 0.167\n\nTitle: LangChain — Википедия\nDescription: LangChain — фреймворк (программная среда или оболочка) и библиотека программных инструментов с открытым исходным …\nURL: https://ru.wikipedia.org/wiki/LangChain\nRelevance Score: 0.143\n\nTitle: LangChain - Wikipedia\nDescription: LangChain is a software framework that helps facilitate the integration of large language models (LLMs) into applications. As a …\nURL: https://en.wikipedia.org/wiki/LangChain\nRelevance Score: 0.125\n\nTitle: LangChain для бывалых: память и агенты. часть 1 / Хабр\nDescription: May 4, 2023 · В своей предыдущей статье я написал о многообещающем фреймворке LangChain. Туториал был достаточно …\nURL: https://habr.com/ru/articles/733262/\nRelevance Score: 0.111\n\nTitle: Introduction to LangChain - GeeksforGeeks\nDescription: Jun 11, 2026 · LangChain is an open-source framework that simplifies building applications using large language models. It helps …\nURL: https://www.geeksforgeeks.org/artificial-intelligence/introduction-to-langchain/\nRelevance Score: 0.100\n<dcp-message-id>m0051</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794190857,
+    "tokens": {
+      "input": 2662,
+      "output": 236,
+      "reasoning": 46,
+      "cache": {
+        "write": 0,
+        "read": 52736
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The search results weren't great - the first two queries returned irrelevant results. Let me try better search queries with more specific terms. The LangChain query returned the LangChain homepage which could be useful. Let me refine my searches."
+      },
+      {
+        "type": "text",
+        "text": "Searches weren't targeted enough. Let me refine with better queries."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_K6WMx7vxY9ITfrYXMgRe1746",
+        "status": "completed",
+        "input": {
+          "query": "\"NeMo Guardrails\" NVIDIA architecture colang rails production",
+          "num_results": 10
+        },
+        "output": "Title: Nemo.kz — Дискаунтер Электроники в Казахстане | Широкий …\nDescription: Nemo.kz — розничная сеть электроники с магазинами и складами в 8 городах Казахстана: Алматы, Астана, Караганда и другие.\nURL: https://nemo.kz/ru/o-kompanii\nRelevance Score: 1.000\n\nTitle: В поисках Немо (2003) / Finding Nemo - Rutube\nDescription: Смотрите видео онлайн «В поисках Немо (2003) / Finding Nemo» на канале «СМОТРИ МУЛЬТФИЛЬМЫ!» в хорошем качестве …\nURL: https://rutube.ru/video/726b695a10eb0213f2262f9924cd74f7/\nRelevance Score: 0.500\n\nTitle: В поисках Немо | Finding Nemo (2003) — Видео от КИНОБРО\nDescription: Apr 27, 2023 · Смотрите онлайн В поисках Немо | Finding Nemo (2003) 1 ч 40 мин 58 с. Видео от 27 апреля 2023 в хорошем …\nURL: https://vkvideo.ru/video-220018529_456239349\nRelevance Score: 0.333\n\nTitle: В поисках Немо (мультфильм, 2003)\nDescription: После потери своей супруги Корал Марлин в одиночестве воспитывает сына Немо, который с детства «хромает» — …\nURL: https://rutube.ru/video/312d587243b4ac0f170537b38e76f245/\nRelevance Score: 0.250\n\nTitle: FINDING NEMO All Movie Clips (2003) - YouTube\nDescription: Aug 30, 2020 · Watch the official clip compilation for Finding Nemo, an animation movie starring Alexander Gould, Albert Brooks and …\nURL: https://www.youtube.com/watch?v=UDEGqKJVt9k\nRelevance Score: 0.200\n\nTitle: Nemo's First Day At School | Finding Nemo - YouTube\nDescription: Nov 17, 2024 · Nemo’s first day at fish school is full of adventure! 🌊 Follow him as he navigates the drop-off, learns marine science fun …\nURL: https://www.youtube.com/watch?v=cpZ_zG9fJhw\nRelevance Score: 0.167\n\nTitle: Лучший дискаунтер электроники в Казахстане Nemo.kz - nemo.kz\nDescription: Для связи +7 (776)-695-05-77 manager@nemo.kz Гарантия и сервис Доставка и оплата Магазины Вакансии Пользовательское …\nURL: https://nemo.kz/\nRelevance Score: 0.143\n\nTitle: «В поисках Немо» (Finding Nemo, 2003) - Кинопоиск\nDescription: Nov 27, 2012 · - Вставляй в DVD диск 'Finding Nemo'! Удовольствие гарантировано по всем названным пунктам. …\nURL: https://www.kinopoisk.ru/film/7908/\nRelevance Score: 0.125\n\nTitle: Nemo (певец) — Википедия\nDescription: В 2015 году вышел дебютный альбом Nemo — Clownfisch, достигший 95-го места в швейцарских чартах. В 2017 году вышел …\nURL: https://ru.wikipedia.org/wiki/Nemo_(%D0%BF%D0%B5%D0%B2%D0%B5%D1%86)\nRelevance Score: 0.111\n\nTitle: В поисках Немо — Википедия\nDescription: Finding Nemo) — американский компьютерно-анимационный комедийно-драматический приключенческий фильм [4] 2003 …\nURL: https://ru.wikipedia.org/wiki/%D0%92_%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0%D1%85_%D0%9D%D0%B5%D0%BC%D0%BE\nRelevance Score: 0.100\n<dcp-message-id>m0058</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_867o0PqqEmmSySmVCaDe2986",
+        "status": "completed",
+        "input": {
+          "query": "\"Guardrails AI\" guardrails hub production deployment limitations",
+          "num_results": 10
+        },
+        "output": "Title: Pic & Movie Post - XNXX Adult Forum\nDescription: 1 day ago · Post pics or clips of yourself, wife, girlfriend, models, anything you like.\nURL: https://forum.xnxx.com/forums/pic-movie-post.8/\nRelevance Score: 1.000\n\nTitle: Young, Sweet and Tasty | Page 416 | XNXX Adult Forum\nDescription: Jun 3, 2025 · Hello, You can now get verified on forum. The way it's gonna work is that you can send me a PM with a verification …\nURL: https://forum.xnxx.com/threads/young-sweet-and-tasty.636445/page-416\nRelevance Score: 0.500\n\nTitle: My wife and the donkey - XNXX Adult Forum\nDescription: Dec 9, 2016 · A week later my little Asian named Kasha called me up and wondered if she could come over. She was interested in …\nURL: https://forum.xnxx.com/threads/my-wife-and-the-donkey.424231/\nRelevance Score: 0.333\n\nTitle: Help - XNXX Adult Forum\nDescription: Cookie Usage This page explains how this site uses cookies. Terms and Rules You must agree to these terms and rules before using …\nURL: https://forum.xnxx.com/help/\nRelevance Score: 0.250\n\nTitle: Amateur Mature , Milfs hardcore sex and naked photos\nDescription: Jul 9, 2015 · Hello, Personal info as kik, email, skype etc. is not allowed (\"email is.....\"; “kik is same as my username”) on our forum. …\nURL: https://forum.xnxx.com/threads/amateur-mature-milfs-hardcore-sex-and-naked-photos.368038/page-4\nRelevance Score: 0.200\n\nTitle: Vintage Porn II | Page 16 | XNXX Adult Forum\nDescription: Aug 12, 2025 · Hello, You can now get verified on forum. The way it's gonna work is that you can send me a PM with a verification …\nURL: https://forum.xnxx.com/threads/vintage-porn-ii.327547/page-16\nRelevance Score: 0.167\n\nTitle: Sign up | XNXX Adult Forum\nDescription: Hello, New users on the forum won't be able to send PM untill certain criteria are met (you need to have at least 6 posts in any sub …\nURL: https://forum.xnxx.com/login/login\nRelevance Score: 0.143\n\nTitle: Old men fuck young women | Page 209 | XNXX Adult Forum\nDescription: May 22, 2025 · Hello, You can now get verified on forum. The way it's gonna work is that you can send me a PM with a verification …\nURL: https://forum.xnxx.com/threads/old-men-fuck-young-women.238589/page-209\nRelevance Score: 0.125\n\nTitle: Tan line beauties - XNXX Adult Forum\nDescription: Dec 29, 2016 · Tan lines are so damn sexy. Feel free to add your own[ATTACH] [ATTACH] [ATTACH] [ATTACH] [ATTACH] …\nURL: https://forum.xnxx.com/threads/tan-line-beauties.450909/\nRelevance Score: 0.111\n\nTitle: MILFs, GILFs, and Wives - XNXX Adult Forum\nDescription: May 19, 2015 · While I have nothing against younger ladies, I prefer my women a bit older and experienced. I love a woman who …\nURL: https://forum.xnxx.com/threads/milfs-gilfs-and-wives.370840/\nRelevance Score: 0.100\n<dcp-message-id>m0058</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_MiHrqa9c9fST2XjOgIJS2048",
+        "status": "completed",
+        "input": {
+          "query": "LLM guardrails comparison NeMo Guardrails Guardrails AI LangChain 2024 2025",
+          "num_results": 10
+        },
+        "output": "Title: LLM — что это в IT и как работают языковые модели\nDescription: Jun 18, 2025 · Что такое LLM в программировании, какие задачи решают большие языковые модели и как они работают. Объясняем простыми словами, как устроены LLM-системы, в чём …\nURL: https://timeweb.cloud/blog/llm-chto-eto-v-programmirovanii\nRelevance Score: 1.000\n\nTitle: Большая языковая модель — Википедия\nDescription: Безопасность больших языковых моделей (LLM) представляет собой комплексную область исследований, посвященную анализу потенциальных рисков и разработке стратегий их …\nURL: https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%B0%D1%8F_%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2%D0%B0%D1%8F_%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C\nRelevance Score: 0.500\n\nTitle: Large language model - Wikipedia\nDescription: An LLM is given some examples where the \"assistant\" verbally breaks down the thought process before arriving at an answer. The LLM mimics these examples and also tries to spend some time generating …\nURL: https://en.wikipedia.org/wiki/Large_language_model\nRelevance Score: 0.333\n\nTitle: Large Language Model (LLM) - GeeksforGeeks\nDescription: May 2, 2026 · LLM Working of LLM LLMs are primarily based on the Transformer architecture which enables them to learn long range dependencies and contextual meaning in text. At a high level, they …\nURL: https://www.geeksforgeeks.org/artificial-intelligence/large-language-model-llm/\nRelevance Score: 0.250\n\nTitle: Раскрывая секреты LLM: руководство по основным понятиям …\nDescription: Dec 14, 2023 · С помощью LLM вы можете создавать тексты, которые автоматически обобщают длинные документы, исследовательские работы, заметки и статьи со встреч, делая …\nURL: https://habr.com/ru/articles/768844/\nRelevance Score: 0.200\n\nTitle: Все, что нужно знать для разработки с использованием LLM\nDescription: Nov 23, 2023 · Create a Clone of Yourself With a Fine-tuned LLM — моя статья, в которой я написал о сборе данных, использовании параметров и дал полезные советы по fine-tuning.\nURL: https://habr.com/ru/articles/775842/\nRelevance Score: 0.167\n\nTitle: LLM Arena: Бенчмарк LLM моделей на русском языке\nDescription: LLM Arena — это открытая краудсорсинговая платформа для оценки больших языковых моделей (LLM) на русском языке.\nURL: https://llmarena.ru/\nRelevance Score: 0.143\n\nTitle: 9 главных LLM 2026 года: какую модель брать под какую задачу\nDescription: May 3, 2026 · 9 главных LLM 2026 года: какую модель брать под какую задачу Полный разбор флагманов от OpenAI, Anthropic, Google и китайских вендоров — с ценами, бенчмарками и …\nURL: https://vc.ru/ai/2905428-luchshie-llm-dlya-zadach\nRelevance Score: 0.125\n\nTitle: LLM: что это такое, как работает большая языковая модель и зачем …\nDescription: May 19, 2025 · LLM — это аббревиатура от Large Language Model, что переводится как большая языковая модель. Это разновидность искусственного интеллекта, которая обучена понимать и …\nURL: https://kvan.tech/blog/articles/llm-chto-eto-takoe-kak-rabotaet-bolshaya-yazykovaya-model-i-zachem-ona-biznesu/\nRelevance Score: 0.111\n\nTitle: Что такое большие языковые модели (LLM)? | Microsoft Azure\nDescription: Узнайте, как большие языковые модели (LLM) понимают и генерируют естественный язык для разработки решений ИИ в различных вариантах использования.\nURL: https://azure.microsoft.com/ru-ru/resources/cloud-computing-dictionary/what-are-large-language-models-llms?msockid=35d204b03cc661f9007f132f3de96019\nRelevance Score: 0.100\n<dcp-message-id>m0058</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

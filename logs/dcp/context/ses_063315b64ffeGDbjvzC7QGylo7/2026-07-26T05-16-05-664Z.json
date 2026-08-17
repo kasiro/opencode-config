@@ -1,0 +1,245 @@
+[
+  {
+    "role": "user",
+    "time": 1785042965664,
+    "parts": [
+      {
+        "type": "text",
+        "text": "[Compressed conversation section]\nСэр спросил, почему J.A.R.V.I.S. работает лучше Hermes agent от Nous Research, несмотря на схожую архитектуру. J.A.R.V.I.S. объяснил разницу: (1) ролевая матрица с разделением на оркестратора, general, explore, memory-agent, (2) протокол циклов (CYCLE 1/1.5/2.5/3), (3) delegate-first парадигма, (4) четырёхуровневая консолидация памяти, (5) research-before-conclusions. Сэр заметил, что context-mgmt скилл не используется толком. J.A.R.V.I.S. согласился и делегировал general'у удаление ~/.agents/skills/context-mgmt/. Скилл удалён, подтверждение получено.\n\nThe following user messages were sent in this conversation verbatim:\nОбьясни мне почему ты настроен лучше чем hermes agent от nous research? почему ты уменее и понимаешь меня лучше и с полуслова? а он нет\nхотя вы оба harness и делаете одно и тоже\nContext-mgmt можешь вообще удалять ты его не используешь толком\n\nThe following protected tools were used in this conversation as well:\n### Tool: task\n<task id=\"ses_0632d527affeHCvqUskcqWfW47\" state=\"completed\">\n<task_result>\nГотово, сэр. Скилл `context-mgmt` удалён — папка `~/.agents/skills/context-mgmt/` больше не существует.\n</task_result>\n</task>\n\n\n<dcp-message-id>b1</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785042491801,
+    "tokens": {
+      "input": 1680,
+      "output": 335,
+      "reasoning": 137,
+      "cache": {
+        "write": 0,
+        "read": 28800
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Скилл удалён. Теперь можно компрессировать завершённый разговор — вопрос сэра про Hermes agent и последующее удаление context-mgmt — это закрытый блок. Но я подожду, может сэр ещё что-то скажет. \n\nХотя нет, я вижу DCP reminder — нужно компрессировать если есть закрытые блоки. У меня сейчас сообщения m0001-m0004 — это закрытый блок: вопрос про Hermes, ответ, команда удалить скилл, подтверждение удаления. Всё завершено.\n\nДавайте сделаю компрессию."
+      },
+      {
+        "type": "text",
+        "text": "Готово. Скилл context-mgmt больше не числится в системе.\n\nЕсли что-то пойдёт не так с контекстом — буду управлять им напрямую через compress, как и должен был с самого начала."
+      },
+      {
+        "type": "tool",
+        "tool": "compress",
+        "callID": "call_00_lNnzCd0v6mwZCo4KXv2j5339",
+        "status": "completed",
+        "input": {
+          "topic": "Hermes сравнение + удаление context-mgmt",
+          "content": [
+            {
+              "startId": "m0001",
+              "endId": "m0004",
+              "summary": "Сэр спросил, почему J.A.R.V.I.S. работает лучше Hermes agent от Nous Research, несмотря на схожую архитектуру. J.A.R.V.I.S. объяснил разницу: (1) ролевая матрица с разделением на оркестратора, general, explore, memory-agent, (2) протокол циклов (CYCLE 1/1.5/2.5/3), (3) delegate-first парадигма, (4) четырёхуровневая консолидация памяти, (5) research-before-conclusions. Сэр заметил, что context-mgmt скилл не используется толком. J.A.R.V.I.S. согласился и делегировал general'у удаление ~/.agents/skills/context-mgmt/. Скилл удалён, подтверждение получено."
+            }
+          ]
+        },
+        "output": "Compressed 4 messages into [Compressed conversation section].\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785042497760,
+    "tokens": {
+      "input": 903,
+      "output": 9,
+      "reasoning": 21,
+      "cache": {
+        "write": 0,
+        "read": 28800
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Compression confirmed. That block is now in the compressed section. Ready for the next message from sir."
+      },
+      {
+        "type": "text",
+        "text": "Что-то ещё, сэр?\n\n<dcp-message-id>m0006</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1785042956203,
+    "parts": [
+      {
+        "type": "text",
+        "text": "надо что бы ты не просто ответил а изучил как себя так и hermes для ответа\n\n<dcp-message-id>m0007</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785042956222,
+    "tokens": {
+      "input": 98,
+      "output": 233,
+      "reasoning": 381,
+      "cache": {
+        "write": 0,
+        "read": 29696
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Сэр хочет, чтобы я не просто дал поверхностный ответ, а изучил свою собственную архитектуру (настройки, конфиги, скиллы, правила) и архитектуру Hermes agent от Nous Research, и на основе этого дал структурированное сравнение.\n\nДавайте спланирую:\n\n1. **Что нужно изучить:**\n   - Мою собственную конфигурацию: opencode.json, глобальные правила (уже есть в контексте — global-rules.md, soul.md), скиллы, пермишены, агенты\n   - Hermes agent от Nous Research: что это вообще такое, как устроен, какие у него промпты, архитектура\n\n2. **Как это сделать:**\n   - Для своей части — прочитать opencode.json, посмотреть список агентов, скиллов, конфигурацию\n   - Для Hermes — нужно исследовать через интернет (делегировать general'у). Hermes agent — это open-source проект от Nous Research. Нужно найти их промпты, системные сообщения, описание архитектуры.\n\n3. **Потом сравнить и дать развёрнутый ответ.**\n\nНо нужно быть осторожным — я не могу делать исследовательские выводы сам. Нужно делегировать.\n\nПлан:\n- Шаг 1: Прочитать свою конфигурацию (opencode.json, агенты, скиллы)\n- Шаг 2: Делегировать general'у исследование Hermes agent (поиск в интернете)\n- Шаг 3: Собрать всё вместе и дать ответ\n\nДавайте начну.\n\nСначала прочитаю свою конфигурацию."
+      },
+      {
+        "type": "text",
+        "text": "Вполне справедливо, сэр. Поверхностное сравнение без изучения фактов — это как раз то, чего я не должен делать.\n\nДавайте подойду systematic: изучу свою конфигурацию, делегирую исследование Hermes, и только потом сделаю вывод."
+      },
+      {
+        "type": "tool",
+        "tool": "todowrite",
+        "callID": "call_00_KBR39bLSioAlkmzlKVnM0662",
+        "status": "completed",
+        "input": {
+          "todos": [
+            {
+              "content": "Изучить свою конфигурацию: opencode.json, агенты, скиллы, пермишены, глобальные правила",
+              "status": "in_progress",
+              "priority": "high"
+            },
+            {
+              "content": "Исследовать Hermes agent от Nous Research: архитектура, промпты, системные сообщения",
+              "status": "pending",
+              "priority": "high"
+            },
+            {
+              "content": "Собрать структурированное сравнение и дать развёрнутый ответ",
+              "status": "pending",
+              "priority": "high"
+            }
+          ]
+        },
+        "output": "[\n  {\n    \"content\": \"Изучить свою конфигурацию: opencode.json, агенты, скиллы, пермишены, глобальные правила\",\n    \"status\": \"in_progress\",\n    \"priority\": \"high\"\n  },\n  {\n    \"content\": \"Исследовать Hermes agent от Nous Research: архитектура, промпты, системные сообщения\",\n    \"status\": \"pending\",\n    \"priority\": \"high\"\n  },\n  {\n    \"content\": \"Собрать структурированное сравнение и дать развёрнутый ответ\",\n    \"status\": \"pending\",\n    \"priority\": \"high\"\n  }\n]\n<dcp-message-id>m0008</dcp-message-id>",
+        "metadata": {
+          "todos": [
+            {
+              "content": "Изучить свою конфигурацию: opencode.json, агенты, скиллы, пермишены, глобальные правила",
+              "status": "in_progress",
+              "priority": "high"
+            },
+            {
+              "content": "Исследовать Hermes agent от Nous Research: архитектура, промпты, системные сообщения",
+              "status": "pending",
+              "priority": "high"
+            },
+            {
+              "content": "Собрать структурированное сравнение и дать развёрнутый ответ",
+              "status": "pending",
+              "priority": "high"
+            }
+          ],
+          "truncated": false
+        },
+        "title": "3 todos"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785042962765,
+    "tokens": {
+      "input": 872,
+      "output": 96,
+      "reasoning": 26,
+      "cache": {
+        "write": 0,
+        "read": 29696
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Теперь нужно изучить конфигурацию. Начну с opencode.json, чтобы понять мою структуру."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_egQLEVjSDqMj2LzzKoFH0502",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode"
+        },
+        "output": "<path>/home/kasiro/.config/opencode</path>\n<type>directory</type>\n<entries>\n.git/\n.gitignore\nagents/\nbun.lock\ndcp.jsonc\nexa-api-keys.txt\nglobal-rules.md\nlogs/\nmcp-servers/\nnode_modules/\nopencode.json\npackage-lock.json\npackage.json\npersona/\nplugins/\nraports/\nskills/\ntui.json\n\n(18 entries)\n</entries>\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "preview": ".git/\n.gitignore\nagents/\nbun.lock\ndcp.jsonc\nexa-api-keys.txt\nglobal-rules.md\nlogs/\nmcp-servers/\nnode_modules/\nopencode.json\npackage-lock.json\npackage.json\npersona/\nplugins/\nraports/\nskills/\ntui.json",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.config/opencode",
+            "entries": [
+              ".git/",
+              ".gitignore",
+              "agents/",
+              "bun.lock",
+              "dcp.jsonc",
+              "exa-api-keys.txt",
+              "global-rules.md",
+              "logs/",
+              "mcp-servers/",
+              "node_modules/",
+              "opencode.json",
+              "package-lock.json",
+              "package.json",
+              "persona/",
+              "plugins/",
+              "raports/",
+              "skills/",
+              "tui.json"
+            ],
+            "offset": 1,
+            "totalEntries": 18,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_UAquGH8rfzQgacU7tGfC0912",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/opencode.json"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/opencode.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"$schema\": \"https://opencode.ai/config.json\",\n3:   \"model\": \"opencode/deepseek-v4-flash-free\",\n4:   \"default_agent\": \"jarvis\",\n5:   \"share\": \"disabled\",\n6:   \"instructions\": [\n7:     \"~/.config/opencode/global-rules.md\",\n8:     \"~/.config/opencode/persona/soul.md\"\n9:   ],\n10:   \"permission\": {\n11:     \"bash\": {\n12:       \"*find*\": \"deny\",\n13:       \"*grep*\": \"deny\",\n14:       \"*npm*\": \"deny\",\n15:       \"*sqlite*\": \"ask\",\n16:       \"*opencode*\": \"ask\"\n17:     },\n18:     \"glob\": \"deny\",\n19:     \"grep\": \"deny\",\n20:     \"websearch\": \"deny\"\n21:   },\n22:   \"mcp\": {\n23:     \"exa\": {\n24:       \"type\": \"remote\",\n25:       \"url\": \"http://127.0.0.1:18099\",\n26:       \"enabled\": true,\n27:       \"timeout\": 120000\n28:     },\n29:     \"deepwiki\": {\n30:       \"type\": \"remote\",\n31:       \"url\": \"https://mcp.deepwiki.com/mcp\",\n32:       \"enabled\": true,\n33:       \"timeout\": 120000\n34:     },\n35:     \"sequential-thinking\": {\n36:       \"type\": \"local\",\n37:       \"command\": [\n38:         \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n39:       ],\n40:       \"timeout\": 120000,\n41:       \"enabled\": true\n42:     },\n43:     \"context7\": {\n44:       \"type\": \"remote\",\n45:       \"url\": \"https://mcp.context7.com/mcp\",\n46:       \"enabled\": true,\n47:       \"timeout\": 120000,\n48:       \"headers\": {\n49:         \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n50:       }\n51:     },\n52:     \"web-research\": {\n53:       \"type\": \"local\",\n54:       \"command\": [\n55:         \"web-research-mcp\"\n56:       ],\n57:       \"enabled\": true,\n58:       \"timeout\": 60000,\n59:       \"description\": \"Поиск через DuckDuckGo + fetch страниц\"\n60:     },\n61:     \"searxng\": {\n62:       \"type\": \"local\",\n63:       \"command\": [\n64:         \"mcp-searxng\"\n65:       ],\n66:       \"enabled\": true,\n67:       \"timeout\": 60000,\n68:       \"environment\": {\n69:         \"SEARXNG_URL\": \"http://localhost:8099\",\n70:         \"SEARXNG_MAX_RESULTS\": \"15\"\n71:       },\n72:       \"description\": \"Поиск через свой SearXNG (Docker) + web_url_read\"\n73:     },\n74:     \"crawl4ai\": {\n75:       \"type\": \"local\",\n76:       \"command\": [\n77:         \"/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python\",\n78:         \"-m\",\n79:         \"crawl4ai_mcp.server\"\n80:       ],\n81:       \"timeout\": 60000,\n82:       \"enabled\": true,\n83:       \"description\": \"Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions\"\n84:     },\n85:     \"youtube-transcript\": {\n86:       \"type\": \"local\",\n87:       \"command\": [\n88:         \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n89:       ],\n90:       \"environment\": {\n91:         \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n92:       },\n93:       \"timeout\": 60000,\n94:       \"enabled\": true\n95:     },\n96:     \"memory\": {\n97:       \"type\": \"local\",\n98:       \"command\": [\n99:         \"bun\",\n100:         \"run\",\n101:         \"--cwd\",\n102:         \"/home/kasiro/.config/opencode/mcp-servers/memory-mcp\",\n103:         \"dist/index.js\"\n104:       ],\n105:       \"enabled\": true,\n106:       \"timeout\": 15000\n107:     },\n108:     \"chrome-devtools\": {\n109:       \"type\": \"local\",\n110:       \"command\": [\n111:         \"/home/kasiro/.bun/bin/chrome-devtools-mcp\",\n112:         \"--executablePath=/opt/brave-bin/brave\"\n113:       ],\n114:       \"enabled\": true,\n115:       \"timeout\": 60000\n116:     }\n117:   },\n118:   \"agent\": {\n119:     \"jarvis\": {\n120:       \"permission\": {\n121:         \"edit\": {\n122:           \"*\": \"deny\"\n123:         },\n124:         \"bash\": {\n125:           \"*\": \"deny\"\n126:         },\n127:         \"websearch\": \"deny\",\n128:         \"webfetch\": \"deny\",\n129:         \"searxng_*\": \"deny\",\n130:         \"crawl4ai_*\": \"deny\",\n131:         \"deepwiki_*\": \"deny\",\n132:         \"context7_*\": \"deny\",\n133:         \"exa_*\": \"deny\",\n134:         \"web-research_*\": \"deny\",\n135:         \"youtube-transcript_*\": \"deny\",\n136:         \"memory_*\": \"allow\"\n137:       }\n138:     },\n139:     \"title\": {\n140:       \"model\": \"opencode/big-pickle\"\n141:     },\n142:     \"general\": {\n143:       \"permission\": {\n144:         \"edit\": {\n145:           \"**/memory/**\": \"deny\",\n146:           \"*\": \"allow\"\n147:         },\n148:         \"bash\": {\n149:           \"*sqlite*\": \"ask\",\n150:           \"*\": \"allow\"\n151:         },\n152:         \"websearch\": \"allow\",\n153:         \"webfetch\": \"allow\",\n154:         \"skill\": {\n155:           \"agent-delegation\": \"deny\",\n156:           \"jarvis-cycles\": \"deny\",\n157:           \"context-mgmt\": \"deny\",\n158:           \"how_use_memory\": \"deny\"\n159:         },\n160:         \"memory_*\": \"deny\"\n161:       },\n162:       \"tools\": {\n163:         \"sequential-thinking_*\": true,\n164:         \"searxng_*\": true,\n165:         \"deepwiki_*\": true,\n166:         \"context7_*\": true,\n167:         \"exa_*\": true,\n168:         \"web-research_*\": true,\n169:         \"crawl4ai_*\": true,\n170:         \"youtube-transcript_*\": true\n171:       }\n172:     },\n173:     \"memory-agent\": {\n174:       \"permission\": {\n175:         \"edit\": {\n176:           \"**/memory/projects/**\": \"allow\",\n177:           \"**/memory/global/**\": \"allow\",\n178:           \"**/memory/sessions/**\": \"allow\",\n179:           \"*\": \"deny\"\n180:         },\n181:         \"read\": {\n182:           \"**/memory/**\": \"allow\",\n183:           \"*\": \"deny\"\n184:         },\n185:         \"bash\": {\n186:           \"*\": \"allow\"\n187:         },\n188:         \"websearch\": \"deny\",\n189:         \"webfetch\": \"deny\",\n190:         \"memory_*\": \"allow\",\n191:         \"skill\": \"allow\"\n192:       },\n193:       \"tools\": {\n194:         \"memory_*\": true\n195:       }\n196:     },\n197:     \"explore\": {\n198:       \"disable\": true\n199:     }\n200:   },\n201:   \"lsp\": {},\n202:   \"plugin\": [\n203:     \"opencode-intellisearch\",\n204:     \"@tarquinen/opencode-dcp@3.1.13\"\n205:   ],\n206:   \"compaction\": {\n207:     \"auto\": false,\n208:     \"prune\": false\n209:   },\n210:   \"tool_output\": {\n211:     \"max_lines\": 5000,\n212:     \"max_bytes\": 204800\n213:   },\n214:   \"experimental\": {\n215:     \"mcp_timeout\": 120000\n216:   }\n217: }\n\n(End of file - total 217 lines)\n</content>\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "preview": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"opencode/deepseek-v4-flash-free\",\n  \"default_agent\": \"jarvis\",\n  \"share\": \"disabled\",\n  \"instructions\": [\n    \"~/.config/opencode/global-rules.md\",\n    \"~/.config/opencode/persona/soul.md\"\n  ],\n  \"permission\": {\n    \"bash\": {\n      \"*find*\": \"deny\",\n      \"*grep*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/opencode.json",
+            "text": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"opencode/deepseek-v4-flash-free\",\n  \"default_agent\": \"jarvis\",\n  \"share\": \"disabled\",\n  \"instructions\": [\n    \"~/.config/opencode/global-rules.md\",\n    \"~/.config/opencode/persona/soul.md\"\n  ],\n  \"permission\": {\n    \"bash\": {\n      \"*find*\": \"deny\",\n      \"*grep*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"\n  },\n  \"mcp\": {\n    \"exa\": {\n      \"type\": \"remote\",\n      \"url\": \"http://127.0.0.1:18099\",\n      \"enabled\": true,\n      \"timeout\": 120000\n    },\n    \"deepwiki\": {\n      \"type\": \"remote\",\n      \"url\": \"https://mcp.deepwiki.com/mcp\",\n      \"enabled\": true,\n      \"timeout\": 120000\n    },\n    \"sequential-thinking\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n      ],\n      \"timeout\": 120000,\n      \"enabled\": true\n    },\n    \"context7\": {\n      \"type\": \"remote\",\n      \"url\": \"https://mcp.context7.com/mcp\",\n      \"enabled\": true,\n      \"timeout\": 120000,\n      \"headers\": {\n        \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n      }\n    },\n    \"web-research\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"web-research-mcp\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 60000,\n      \"description\": \"Поиск через DuckDuckGo + fetch страниц\"\n    },\n    \"searxng\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"mcp-searxng\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 60000,\n      \"environment\": {\n        \"SEARXNG_URL\": \"http://localhost:8099\",\n        \"SEARXNG_MAX_RESULTS\": \"15\"\n      },\n      \"description\": \"Поиск через свой SearXNG (Docker) + web_url_read\"\n    },\n    \"crawl4ai\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python\",\n        \"-m\",\n        \"crawl4ai_mcp.server\"\n      ],\n      \"timeout\": 60000,\n      \"enabled\": true,\n      \"description\": \"Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions\"\n    },\n    \"youtube-transcript\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n      ],\n      \"environment\": {\n        \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n      },\n      \"timeout\": 60000,\n      \"enabled\": true\n    },\n    \"memory\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"bun\",\n        \"run\",\n        \"--cwd\",\n        \"/home/kasiro/.config/opencode/mcp-servers/memory-mcp\",\n        \"dist/index.js\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 15000\n    },\n    \"chrome-devtools\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/.bun/bin/chrome-devtools-mcp\",\n        \"--executablePath=/opt/brave-bin/brave\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 60000\n    }\n  },\n  \"agent\": {\n    \"jarvis\": {\n      \"permission\": {\n        \"edit\": {\n          \"*\": \"deny\"\n        },\n        \"bash\": {\n          \"*\": \"deny\"\n        },\n        \"websearch\": \"deny\",\n        \"webfetch\": \"deny\",\n        \"searxng_*\": \"deny\",\n        \"crawl4ai_*\": \"deny\",\n        \"deepwiki_*\": \"deny\",\n        \"context7_*\": \"deny\",\n        \"exa_*\": \"deny\",\n        \"web-research_*\": \"deny\",\n        \"youtube-transcript_*\": \"deny\",\n        \"memory_*\": \"allow\"\n      }\n    },\n    \"title\": {\n      \"model\": \"opencode/big-pickle\"\n    },\n    \"general\": {\n      \"permission\": {\n        \"edit\": {\n          \"**/memory/**\": \"deny\",\n          \"*\": \"allow\"\n        },\n        \"bash\": {\n          \"*sqlite*\": \"ask\",\n          \"*\": \"allow\"\n        },\n        \"websearch\": \"allow\",\n        \"webfetch\": \"allow\",\n        \"skill\": {\n          \"agent-delegation\": \"deny\",\n          \"jarvis-cycles\": \"deny\",\n          \"context-mgmt\": \"deny\",\n          \"how_use_memory\": \"deny\"\n        },\n        \"memory_*\": \"deny\"\n      },\n      \"tools\": {\n        \"sequential-thinking_*\": true,\n        \"searxng_*\": true,\n        \"deepwiki_*\": true,\n        \"context7_*\": true,\n        \"exa_*\": true,\n        \"web-research_*\": true,\n        \"crawl4ai_*\": true,\n        \"youtube-transcript_*\": true\n      }\n    },\n    \"memory-agent\": {\n      \"permission\": {\n        \"edit\": {\n          \"**/memory/projects/**\": \"allow\",\n          \"**/memory/global/**\": \"allow\",\n          \"**/memory/sessions/**\": \"allow\",\n          \"*\": \"deny\"\n        },\n        \"read\": {\n          \"**/memory/**\": \"allow\",\n          \"*\": \"deny\"\n        },\n        \"bash\": {\n          \"*\": \"allow\"\n        },\n        \"websearch\": \"deny\",\n        \"webfetch\": \"deny\",\n        \"memory_*\": \"allow\",\n        \"skill\": \"allow\"\n      },\n      \"tools\": {\n        \"memory_*\": true\n      }\n    },\n    \"explore\": {\n      \"disable\": true\n    }\n  },\n  \"lsp\": {},\n  \"plugin\": [\n    \"opencode-intellisearch\",\n    \"@tarquinen/opencode-dcp@3.1.13\"\n  ],\n  \"compaction\": {\n    \"auto\": false,\n    \"prune\": false\n  },\n  \"tool_output\": {\n    \"max_lines\": 5000,\n    \"max_bytes\": 204800\n  },\n  \"experimental\": {\n    \"mcp_timeout\": 120000\n  }\n}",
+            "lineStart": 1,
+            "lineEnd": 217,
+            "totalLines": 217,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/opencode.json"
+      }
+    ]
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "role": "user",
+    "time": 1784796489262,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Research REAL production systems that implement hybrid strict/free control in LLMs. I need to find: 1) Any existing frameworks that let users mark parts of output as constrained vs free 2) How production guardrail systems actually handle mixed constraints 3) Case studies of systems that tried 'prompt markers' and what the results were 4) The closest thing to 'partial constrained decoding' in production 5) How agent frameworks (LangChain, AutoGen, CrewAI) handle this — do they use modes, markers, or something else? 6) Any empirical comparisons of different control approaches in the same system. Focus on real deployments, not papers. Search the web.\n\n<dcp-message-id>m0062</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0062</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796489281,
+    "tokens": {
+      "input": 386,
+      "output": 309,
+      "reasoning": 76,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research real production systems that implement hybrid strict/free control in LLMs. This is a multi-faceted research question. Let me search the web for each of these aspects. Let me start with multiple parallel searches to cover the different angles.\n\nI'll use the searxng and exa search tools since they're available and good for web research."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, принимаю задачу. Это многослойный запрос — запускаю параллельный поиск."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_GFrdMvQg0utRhHctBquL6122",
+        "status": "completed",
+        "input": {
+          "query": "production guardrail systems LLM hybrid strict free constrained output mixed constraints",
+          "num_results": 10
+        },
+        "output": "Title: Microsoft – AI, Cloud, Productivity, Computing, Gaming & Apps\nDescription: Explore Microsoft products and services and support for your home or business. Shop Microsoft 365, Copilot, Teams, Xbox, …\nURL: https://www.microsoft.com/en-us?msockid=0db61795892f68ba3ef0000a881d6916\nRelevance Score: 1.000\n\nTitle: Office 365 login\nDescription: Collaborate for free with online versions of Microsoft Word, PowerPoint, Excel, and OneNote. Save documents, spreadsheets, and …\nURL: https://www.office.com/\nRelevance Score: 0.500\n\nTitle: Microsoft - Wikipedia\nDescription: Microsoft Corporation is an American multinational technology company headquartered in Redmond, Washington. The company …\nURL: https://en.wikipedia.org/wiki/Microsoft\nRelevance Score: 0.333\n\nTitle: Create your Microsoft account\nDescription: Create your Microsoft account to access various services and features.\nURL: https://signup.live.com/\nRelevance Score: 0.250\n\nTitle: Microsoft Outlook Personal Email and Calendar | Microsoft 365\nDescription: Download free Microsoft Outlook email and calendar, plus Office Online apps like Word, Excel, and PowerPoint. Sign in to access …\nURL: https://www.outlook.com/\nRelevance Score: 0.200\n\nTitle: Microsoft Store | XBOX\nDescription: What you used to get on XBOX Store you can now find on Microsoft Store. The destination to get the games and entertainment you …\nURL: https://www.xbox.com/en-us/microsoft-store?msockid=0db61795892f68ba3ef0000a881d6916\nRelevance Score: 0.167\n\nTitle: Create and edit documents for free | Microsoft Word for the Web\nDescription: Write, edit, and collaborate on documents with Microsoft Word online. Free and seamless access from any device.\nURL: https://word.cloud.microsoft/en-us/\nRelevance Score: 0.143\n\nTitle: Microsoft campus - Wikipedia\nDescription: The Microsoft campus is the corporate headquarters of Microsoft Corporation, located in Redmond, Washington, United States, a part …\nURL: https://en.wikipedia.org/wiki/Microsoft_campus\nRelevance Score: 0.125\n\nTitle: XBOX Official Site: Play Games Anywhere | XBOX\nDescription: Experience the new generation of games and entertainment with XBOX. Explore consoles, new and old XBOX games and …\nURL: https://www.xbox.com/en-US/?msockid=0db61795892f68ba3ef0000a881d6916\nRelevance Score: 0.111\n\nTitle: Microsoft - LinkedIn\nDescription: Microsoft | 28,683,623 followers on LinkedIn. Every company has a mission. What&#39;s ours? To empower every person and every …\nURL: https://www.linkedin.com/company/microsoft\nRelevance Score: 0.100\n<dcp-message-id>m0066</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_SCQeiIxq8brwaG5pivUe9366",
+        "status": "completed",
+        "input": {
+          "query": "partial constrained decoding LLM production system structured output free text mixing",
+          "num_results": 10
+        },
+        "output": "Title: 腎絲球過濾率是什麼？eGFR正常值、下降原因、改善方法一次看\nDescription: 3 days ago · 腎絲球過濾率（eGFR）是健檢與抽血報告常見的腎功能指標，數值愈低，通常代表腎臟過濾血液的能力愈差。不 …\nURL: https://helloyishi.com.tw/urological-health/kidney-disease/understand-egfr-and-renal-function/\nRelevance Score: 1.000\n\nTitle: 腎絲球過濾率（GFR）到底是什麼？一篇看懂這張「腎臟成績單」 - 引人入腎 - 醫學白話文衛教知識平台，讓腎 …\nDescription: Jun 10, 2026 · eGFR（估計腎絲球過濾率）是抽血測肌酸酐後，用 CKD-EPI 公式結合年齡、性別推算的腎臟過濾能力估計值，正常成 …\nURL: https://drelilin.com/gfr-what-is-it\nRelevance Score: 0.500\n\nTitle: 腎絲球過濾率完整解說：正常值、下降原因與提升方法一次看懂！\nDescription: Jul 20, 2025 · 腎絲球過濾率（GFR）正常值為 90 mL/min/1.73m² 以上，代表腎臟功能良好，能有效排除體內廢物與多餘水分，一般來 …\nURL: https://www.tccm.com.tw/glomerular-filtration-rate/\nRelevance Score: 0.333\n\nTitle: 腎絲球過濾率高，血清肌酸酐、血糖、糖化血色素、尿蛋白等指標異常…\nDescription: 健檢:腎絲球過濾率131,血清肌酸酐0.52 血糖99 糖化血色素5.6,尿蛋白6 總膽固醇227 低密度膽固醇160 高密度膽固醇48 請問醫生,膽固 …\nURL: https://adoctor.tw/article/220663\nRelevance Score: 0.250\n\nTitle: 腎功能指數｜一文看懂eGFR、肌酸酐正常值、指數過高原因及飲食\nDescription: 2. 肌酸酐 (Creatinine, Cre) 這是什麼： 肌酸酐是肌肉活動時代謝產生的廢物，會經由腎臟過濾後從尿液排出。 如何解讀： 當腎功能下 …\nURL: https://healthbloghk.com/kidney-function-test/\nRelevance Score: 0.200\n\nTitle: 腎絲球過濾率eGFR越高越好嗎？當心！數值飆高可能是腎臟的求救訊號 …\nDescription: Nov 10, 2025 · 前言 拿到健康檢查報告時，許多人會緊盯著「腎絲球過濾率（eGFR）」的數值，並直覺地認為這個數字和考試分數一 …\nURL: https://uptogo.com.tw/%E5%81%A5%E5%BA%B7/%E6%B3%8C%E5%B0%BF%E5%81%A5%E5%BA%B7/%E8%85%8E%E8%87%9F%E7%97%85/egfr%E8%B6%8A%E9%AB%98%E8%B6%8A%E5%A5%BD%E5%97%8E%EF%BC%9F/\nRelevance Score: 0.167\n\nTitle: 腎絲球過濾率 (eGFR) 過低是洗腎前兆？看懂 5 期分級與逆轉關鍵\nDescription: Oct 24, 2025 · 健檢報告上的「腎絲球過濾率 (eGFR)」紅字讓您焦慮嗎？ 本文詳細解析 eGFR 的定義、正常值與 5 期分級標準。 除 …\nURL: https://www.khjclinic.com/knowledge/gfr-meaning-normal-range-ckd-stages-treatment\nRelevance Score: 0.143\n\nTitle: 健檢報告紅字？egfr腎絲球過濾率教你讀懂腎功能警訊 - UpToGo\nDescription: Sep 6, 2025 · 腎臟的主要功能是負責腎臟代謝與清除體內代謝廢物，其中，肌酸酐是肌肉活動後的自然代謝產物，主要經由腎臟的腎 …\nURL: https://uptogo.com.tw/%E5%81%A5%E5%BA%B7/%E6%B3%8C%E5%B0%BF%E5%81%A5%E5%BA%B7/%E8%85%8E%E8%87%9F%E7%97%85/egfr%E8%85%8E%E7%B5%B2%E7%90%83%E9%81%8E%E6%BF%BE%E7%8E%87/\nRelevance Score: 0.125\n\nTitle: EP.216 你的腎臟健康嗎？從「腎絲球過濾率」看懂腎功能！ - 引人入腎 - 醫學白話文衛教知識平台，讓腎 …\nDescription: Oct 3, 2025 · 在健康檢查報告中，經常會看到一個關鍵的數字——腎絲球過濾率（Glomerular Filtration Rate, GFR）。 它與我們的腎 …\nURL: https://drelilin.com/ep-216-%E4%BD%A0%E7%9A%84%E8%85%8E%E8%87%9F%E5%81%A5%E5%BA%B7%E5%97%8E%EF%BC%9F%E5%BE%9E%E3%80%8C%E8%85%8E%E7%B5%B2%E7%90%83%E9%81%8E%E6%BF%BE%E7%8E%87%E3%80%8D%E7%9C%8B%E6%87%82%E8%85%8E\nRelevance Score: 0.111\n\nTitle: 腎絲球過濾率（GFR）與腎臟病分期完整解析 - singeng.com.tw\nDescription: 一、什麼是腎絲球？ 什麼是過濾率？ 腎絲球是什麼？ 腎臟裡有大約 100 萬個「腎元」，每一個腎元的第一站就是「腎絲球」。 你可 …\nURL: https://singeng.com.tw/kidney-gfr-qna/\nRelevance Score: 0.100\n<dcp-message-id>m0066</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_ntxu5BZZeLPa6xqoXxqE1223",
+        "status": "completed",
+        "input": {
+          "query": "LangChain AutoGen CrewAI constrained output modes markers agent framework production",
+          "num_results": 10
+        },
+        "output": "Title: LangChain: Observe, Evaluate, and Deploy Reliable AI Agents\nDescription: LangChain provides the engineering platform and open source frameworks developers use to build, test, and deploy reliable AI agents.\nURL: https://www.langchain.com/\nRelevance Score: 1.000\n\nTitle: LangChain: Open Source AI Agent Framework | Build Agents Faster\nDescription: LangChain is an open source framework with a pre-built agent architecture and integrations for any model or tool, so you can build …\nURL: https://www.langchain.com/langchain\nRelevance Score: 0.500\n\nTitle: GitHub - langchain-ai/langchain: The agent engineering platform.\nDescription: Mar 12, 2023 · LangChain is a framework for building agents and LLM-powered applications. It helps you chain together interoperable …\nURL: https://github.com/langchain-ai/langchain\nRelevance Score: 0.333\n\nTitle: Как LangChain и LangGraph упрощают жизнь разработчика ИИ …\nDescription: Feb 11, 2025 · LangChain позволяет легко логировать шаги агента, а LangGraph – контролировать каждое действие агента …\nURL: https://habr.com/ru/articles/881372/\nRelevance Score: 0.250\n\nTitle: Home - Docs by LangChain\nDescription: The platform for agent engineering One platform to improve every step of the agent development lifecycle, so you can ship reliable …\nURL: https://docs.langchain.com/\nRelevance Score: 0.200\n\nTitle: LangChain overview - Docs by LangChain\nDescription: LangChain’s agents are built on top of LangGraph. This allows us to take advantage of LangGraph’s durable execution, human-in-the …\nURL: https://docs.langchain.com/oss/python/langchain/overview\nRelevance Score: 0.167\n\nTitle: LangChain — Википедия\nDescription: LangChain — фреймворк (программная среда или оболочка) и библиотека программных инструментов с открытым исходным …\nURL: https://ru.wikipedia.org/wiki/LangChain\nRelevance Score: 0.143\n\nTitle: LangChain - Wikipedia\nDescription: LangChain is a software framework that helps facilitate the integration of large language models (LLMs) into applications. As a …\nURL: https://en.wikipedia.org/wiki/LangChain\nRelevance Score: 0.125\n\nTitle: LangChain для бывалых: память и агенты. часть 1 / Хабр\nDescription: May 4, 2023 · В своей предыдущей статье я написал о многообещающем фреймворке LangChain. Туториал был достаточно …\nURL: https://habr.com/ru/articles/733262/\nRelevance Score: 0.111\n\nTitle: Introduction to LangChain - GeeksforGeeks\nDescription: Jun 11, 2026 · LangChain is an open-source framework that simplifies building applications using large language models. It helps …\nURL: https://www.geeksforgeeks.org/artificial-intelligence/introduction-to-langchain/\nRelevance Score: 0.100\n<dcp-message-id>m0066</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_03_V9YiOfa1yVjVY4yy7iTD9978",
+        "status": "completed",
+        "input": {
+          "query": "prompt markers constrained vs free text LLM production case study empirical comparison",
+          "num_results": 10
+        },
+        "output": "Title: Онлайн-переводчик PROMT.One — перевод текстов и словарь\nDescription: Онлайн-переводчик PROMT.One для перевода текстов, слов и фраз с английского на русский и другие языки. Словарь, …\nURL: https://www.translate.ru/%D0%BF%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%D0%B4\nRelevance Score: 1.000\n\nTitle: prompt — перевод на русский с английского | PROMT.One\nDescription: Перевод «prompt» с английского на русский: предлагать, побуждать, вызывать. Транскрипция, произношение, примеры …\nURL: https://www.translate.ru/%D0%BF%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%D0%B4/%D0%B0%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/prompt\nRelevance Score: 0.500\n\nTitle: Prompt – перевод с английского на русский\nDescription: Перевод слова \"Prompt\" с английского на русский онлайн. Перевод слов, фраз и предложений с высокой точностью. Перевод …\nURL: https://translate.yandex.ru/dictionary/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/prompt\nRelevance Score: 0.333\n\nTitle: Перевод PROMPT с английского на русский: Cambridge Dictionary\nDescription: For example, during planning, a problem may prompt the reminding of a past plan that can be adapted to help solve a new problem.\nURL: https://dictionary.cambridge.org/ru/%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C/%D0%B0%D0%BD%D0%B3%D0%BB%D0%BE-%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/prompt\nRelevance Score: 0.250\n\nTitle: Prompt - перевод, транскрипция, произношение, примеры\nDescription: Перевод Prompt - быстрый, подсказывать, быстро, точно, ровно, подсказка. Транскрипция - |prɑːmpt|. Примеры - prompt cash, …\nURL: https://wooordhunt.ru/word/prompt\nRelevance Score: 0.200\n\nTitle: prompt - Перевод на русский - примеры английский | Reverso …\nDescription: In aviation, prompt response is key during an engine failure situation. В авиации быстрая реакция является ключевым моментом …\nURL: https://context.reverso.net/%D0%BF%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%D0%B4/%D0%B0%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/prompt\nRelevance Score: 0.167\n\nTitle: 4,000+ Free AI Prompts | For Art, Writing & Videos\nDescription: Explore our collection of 4,000+ free AI prompts. Learn professional prompt engineering and create stunning results without spending …\nURL: https://promptbase.com/free-prompts\nRelevance Score: 0.143\n\nTitle: Промптхаб — место обмена промптами для Алисы AI и других …\nDescription: База работающих промптов, курсы и челленджи для нейросетей. Учитесь на кейсах экспертов, делитесь своими решениями …\nURL: https://alice.yandex.ru/prompthub\nRelevance Score: 0.125\n\nTitle: Определение PROMPT в кембриджском словаре английского языка\nDescription: [ + to infinitive ] What prompted you to say that? If you prompt an actor or speaker, you help by quietly saying the next word or phrase …\nURL: https://dictionary.cambridge.org/ru/%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C/%D0%B0%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9/prompt\nRelevance Score: 0.111\n\nTitle: Free AI Prompt Generator - ChatGPT, Claude, Gemini Prompts\nDescription: Generate professional AI prompts for ChatGPT, Claude, Gemini and other AI models. Enhance output quality and boost productivity …\nURL: https://generateprompt.ai/en\nRelevance Score: 0.100\n<dcp-message-id>m0066</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

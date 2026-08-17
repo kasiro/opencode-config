@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1784732120870,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Проверь что плагин phase0-guard.ts компилируется без ошибок.\n\n1. Зайди в директорию где лежит @opencode-ai/plugin:\n```bash\ncd ~/.config/opencode\n```\n\n2. Проверь есть ли tsconfig.json:\n```bash\nls tsconfig.json 2>/dev/null || echo \"no tsconfig\"\n```\n\n3. Запусти проверку TypeScript на плагине:\n```bash\nbunx tsc --noEmit --strict --moduleResolution bundler --module esnext --target esnext plugins/phase0-guard.ts 2>&1\n```\n\n4. Если tsc не сработал, попробуй:\n```bash\nbun check plugins/phase0-guard.ts 2>&1\n```\n\n5. Или простая проверка синтаксиса:\n```bash\nbun build plugins/phase0-guard.ts --no-bundle 2>&1 || echo \"build failed\"\n```\n\nВерни вывод любой из этих команд.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

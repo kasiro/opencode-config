@@ -1,0 +1,344 @@
+[
+  {
+    "role": "user",
+    "time": 1785067443384,
+    "parts": [
+      {
+        "type": "text",
+        "text": "проверь а у нас точно все bash: *grep* блокируются?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067443396,
+    "tokens": {
+      "input": 28608,
+      "output": 104,
+      "reasoning": 207,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Пользователь спрашивает, действительно ли все bash-команды с *grep* блокируются. Давайте разберусь. \n\nМне нужно проверить глобальные правила и конфигурацию OpenCode, чтобы понять, есть ли блокировка grep в bash. Посмотрю файлы конфигурации.\n\nДавайте сначала вспомню правила:\n- В global-rules.md есть секция [ЗАПРЕЩЁННЫЕ ИНСТРУМЕНТЫ], где указано: grep (инструмент) — используй rg (ripgrep)\n\nНо это про инструмент grep, а не про bash-команду с grep. Пользователь спрашивает про bash: *grep*, т.е. вызов grep внутри bash.\n\nМне нужно проверить конфигурацию OpenCode — permissions, rules, и т.д. Разберёмся через чтение конфигов и поиск в памяти."
+      },
+      {
+        "type": "tool",
+        "tool": "memory_search",
+        "callID": "call_00_8C6WO4HZLAX4IT3P8JJe8947",
+        "status": "completed",
+        "input": {
+          "query": "grep block запрет bash",
+          "limit": 10
+        },
+        "output": "{\n  \"query\": \"grep block запрет bash\",\n  \"results\": [\n    {\n      \"path\": \"global/MEMORY.md\",\n      \"scope\": \"global\",\n      \"scope_id\": \"\",\n      \"type\": \"free\",\n      \"content\": \"# Global Memory\\n\\nCross-project preferences and durable knowledge.\\n\\n## Rules\\n\\n- [2026-07-11] всегда использовать doas вместо sudo\\n- [2026-07-11] никогда не удалять ~/.opencode/ — там лежит бинарный файл bin/opencode\\n- [2026-07-11] никогда не удалять ~/.config/opencode/ — основная конфигурация OpenCode\\n- [2026-07-11] никогда не удалять ~/.agents/ — установленные скиллы и реестр\\n- [2026-07-11] использовать fd (fd) вместо find/glob/grep\\n- [2026-07-11] использовать bun вместо npm\\n- [2026-07-11] использовать rg (ripgrep) вместо grep\\n- [2026-07-13] session_id определять при старте сессии (Запрос 0) — писать ТОЛЬКО в свой checkpoint\\n- [2026-07-14] **Перед удалением любых данных — показывать полное содержимое сэру и получать подтверждение.** Не удалять по собственному усмотрению. Данные могут быть важнее, чем кажется на первый взгляд.\\n\\n\\n- [2026-07-22] **Принудительное выполнение CYCLE 1 (STOP→RECALL→ORIENT→ACT→VERIFY→SAVE) на КАЖДОЕ сообщение сэра.** Без исключений. При старте сессии — CYCLE 3 START (Frozen Snapshot) обязателен. Нарушение подтверждено в 24/25 последних сессий — не полагаться на self-discipline, выполнять механически. [ses_08b71f03bffee1Wqbwa4o58l05]\\n- [2026-07-22] **Создание checkpoint.md при завершении сессии — обязательно.** Не завершать сессию без записи: ключевые решения, ошибки, ссылки. Проверять что запись сделана перед END. 22/25 последних сессий без checkpoint — недопустимо.\\n\\n## Preferences\\n\\n- [2026-07-11] язык ответов: русский\\n- [2026-07-11] обращение к сэру исключительно «сэр»\\n\\n## Tools\\n\\n- [2026-07-11] memory_search — поиск по MEMORY.md (Memory MCP, FTS5 BM25, OR-токенизация)\\n- [2026-07-13] ses CLI — поиск по истории сессий (скилл session-search)\\n- [2026-07-11] dream — консолидация памяти (7 фаз MiMo-Code)\\n- [2026-07-22] distill: distill_analyze.py — canonicalization layer + PrefixSpan (closed, non-contiguous) + intent classification (9-action) + AI-SDLC confidence + retry detection. Вместо n-gram. +20% tool calls. [ses_ID]\\n- [2026-07-22] distill — discovery повторяющихся паттернов через canonicalization + PrefixSpan + intent (7 фаз MiMo-Code).\\n\\n- `ocdb` — универсальный CLI для opencode.db. Полная замена SQL-запросов. Подкоманды: sessions, session, search, tools, errors, stats. Флаги: --raw (SELECT), --validate (верификация), --format table|json|csv|compact. Установлен в ~/.local/bin/ocdb. [2026-07-22]\\n## Gotchas\\n- [2026-07-14] Read tool: содержимое файлов, прочитанных через read, НЕ ПОКАЗЫВАЕТСЯ пользователю — видит только агент. Чтобы пользователь увидел содержимое, нужно выводить в текстовом ответе или через bash cat/jq. [ses_0a2bf85a0ffe]\\n- [2026-07-14] **Read tool лимит 2000 символов на строку.** При чтении JSON-файлов одной строкой (minified JSON) read может обрезать содержимое. Всегда проверять, что строка показана полностью — сравнивать длину вывода с размером файла. Для длинных строк использовать `jq` или `python3 -c \\\"import json; ...\\\"` через bash. Не делать выводов и не удалять исходные данные, не убедившись, что прочитано всё содержимое. [ses_0a0282f11ffe4BTXVh7bgXUpwH]\\n\\n\\n- [2026-07-22] **Invalid tool call: попытка вызвать инструмент вне allowed-tools.** 40+ вызовов за 14 дней. Самая частая причина — агент пытается вызвать bash/edit/memory_search когда они недоступны в его контексте. Перед вызовом любого инструмента проверять, есть ли он в allowed-tools текущего агента. Основные нарушители: jarvis→bash (38 раз, не имеет bash), researcher→exa (22, не имеет exa в том контексте). [сессии 13-22 июля 2026]\\n\\n## system-reference\\n\\n### Системные спецификации\\n- [2026-07-14] **CPU:** Intel Core i5-4430 (4 ядра, 4 потока)\\n- [2026-07-14] **RAM:** 7.7 GiB (узкое место системы)\\n- [2026-07-14] **GPU:** NVIDIA GTX 950 (2 GiB VRAM)\\n- [2026-07-14] **Диск:** 466 GiB HDD (52% занято, ~224 GiB свободно)\\n- [2026-07-14] **ОС:** CachyOS Linux (Arch-based rolling), ядро 6.18.33-1-cachyos-lts\\n- [2026-07-14] **Python:** 3.14.5, **Node:** v22.22.2, **Docker:** 29.5.1\\n\\n### История AI-инструментов\\n- [2026-07-14] **Первый запуск Claude Code:** 19 мая 2026 (через agentmemory v0.9.27)\\n- [2026-07-14] **Hermes Agent (Nous Research):** использовался, удалён из-за ограничений железа (2GB VRAM, 8GB RAM)\\n- [2026-07-14] **Основной ассистент:** OpenCode — выбран как self-learning AI с TUI\\n- [2026-07-14] **Критерии выбора инструментов:** быстрый на HDD, Rust/Go бинарник, TUI, self-learning, видимые действия\\n\\n### Технические детали agentmemory\\n- [2026-07-14] **agentmemory v0.9.27**, движок iii, REST API порт 3111, Viewer 3113\\n- [2026-07-14] **Режим работы:** BM25-only (без LLM ключей)\\n\\n\\n## LESSONS\\n\\n- [2026-07-21] **Паттерн: инструментализация вместо ad-hoc запросов**\\n\\n  Любую операцию, которая повторяется чаще 1-2 раз, нужно оформлять в виде утилиты/скрипта, а не выполнять через прямые SQL/Python/bash вызовы в диалоге.\\n\\n  ### Примеры реализованных утилит:\\n  - `opencode_usage_export.py` — статистика использования вместо прямых SQL запросов к opencode.db\\n  - `ses` CLI (`opencode_sessions.sh`) — поиск и просмотр сессий вместо прямых FTS5 запросов\\n  - `vk_reg.py` — запись к врачу вместо прямых VK API вызовов\\n  - `receipts_report.py` — отчёты по чекам вместо ручных SQL aggregations\\n\\n  ### Правило:\\n  Если я замечаю, что делаю похожий SQL/Python запрос в диалоге второй раз — остановиться и создать утилиту. Это экономит контекст (вызов утилиты = 1 сообщение против N шагов), снижает вероятность ошибки, и результат воспроизводим.\\n\",\n      \"score\": 1\n    }\n  ],\n  \"total\": 1\n}\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_oXty3hRIhk8EKZruCzdb5608",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode"
+        },
+        "output": "<path>/home/kasiro/.config/opencode</path>\n<type>directory</type>\n<entries>\n.git/\n.gitignore\nagents/\nbun.lock\ndcp.jsonc\nexa-api-keys.txt\nglobal-rules.md\nlogs/\nmcp-servers/\nnode_modules/\nopencode.json\npackage-lock.json\npackage.json\npersona/\nplugins/\nraports/\nskills/\ntui.json\n\n(18 entries)\n</entries>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": ".git/\n.gitignore\nagents/\nbun.lock\ndcp.jsonc\nexa-api-keys.txt\nglobal-rules.md\nlogs/\nmcp-servers/\nnode_modules/\nopencode.json\npackage-lock.json\npackage.json\npersona/\nplugins/\nraports/\nskills/\ntui.json",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.config/opencode",
+            "entries": [
+              ".git/",
+              ".gitignore",
+              "agents/",
+              "bun.lock",
+              "dcp.jsonc",
+              "exa-api-keys.txt",
+              "global-rules.md",
+              "logs/",
+              "mcp-servers/",
+              "node_modules/",
+              "opencode.json",
+              "package-lock.json",
+              "package.json",
+              "persona/",
+              "plugins/",
+              "raports/",
+              "skills/",
+              "tui.json"
+            ],
+            "offset": 1,
+            "totalEntries": 18,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067587438,
+    "tokens": {
+      "input": 2255,
+      "output": 78,
+      "reasoning": 43,
+      "cache": {
+        "write": 0,
+        "read": 28800
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Пользователь спрашивает, блокируются ли все bash-команды с *grep*. Мне нужно проверить конфигурацию. Давайте посмотрим opencode.json и permissions."
+      },
+      {
+        "type": "text",
+        "text": "Сейчас проверю, сэр. Загляну в конфигурацию permissions и opencode.json."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_MR19wv4PC7Dti1IEZONx4241",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/opencode.json"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/opencode.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"$schema\": \"https://opencode.ai/config.json\",\n3:   \"model\": \"opencode/deepseek-v4-flash-free\",\n4:   \"default_agent\": \"jarvis\",\n5:   \"share\": \"disabled\",\n6:   \"instructions\": [\n7:     \"~/.config/opencode/global-rules.md\",\n8:     \"~/.config/opencode/persona/soul.md\"\n9:   ],\n10:   \"permission\": {\n11:     \"bash\": {\n12:       \"*find*\": \"deny\",\n13:       \"*grep*\": \"deny\",\n14:       \"*npm*\": \"deny\",\n15:       \"*sqlite*\": \"ask\",\n16:       \"*opencode*\": \"ask\"\n17:     },\n18:     \"glob\": \"deny\",\n19:     \"grep\": \"deny\",\n20:     \"websearch\": \"deny\"\n21:   },\n22:   \"mcp\": {\n23:     \"exa\": {\n24:       \"type\": \"remote\",\n25:       \"url\": \"http://127.0.0.1:18099\",\n26:       \"enabled\": true,\n27:       \"timeout\": 120000\n28:     },\n29:     \"deepwiki\": {\n30:       \"type\": \"remote\",\n31:       \"url\": \"https://mcp.deepwiki.com/mcp\",\n32:       \"enabled\": true,\n33:       \"timeout\": 120000\n34:     },\n35:     \"sequential-thinking\": {\n36:       \"type\": \"local\",\n37:       \"command\": [\n38:         \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n39:       ],\n40:       \"timeout\": 120000,\n41:       \"enabled\": true\n42:     },\n43:     \"context7\": {\n44:       \"type\": \"remote\",\n45:       \"url\": \"https://mcp.context7.com/mcp\",\n46:       \"enabled\": true,\n47:       \"timeout\": 120000,\n48:       \"headers\": {\n49:         \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n50:       }\n51:     },\n52:     \"web-research\": {\n53:       \"type\": \"local\",\n54:       \"command\": [\n55:         \"web-research-mcp\"\n56:       ],\n57:       \"enabled\": true,\n58:       \"timeout\": 60000,\n59:       \"description\": \"Поиск через DuckDuckGo + fetch страниц\"\n60:     },\n61:     \"searxng\": {\n62:       \"type\": \"local\",\n63:       \"command\": [\n64:         \"mcp-searxng\"\n65:       ],\n66:       \"enabled\": true,\n67:       \"timeout\": 60000,\n68:       \"environment\": {\n69:         \"SEARXNG_URL\": \"http://localhost:8099\",\n70:         \"SEARXNG_MAX_RESULTS\": \"15\"\n71:       },\n72:       \"description\": \"Поиск через свой SearXNG (Docker) + web_url_read\"\n73:     },\n74:     \"crawl4ai\": {\n75:       \"type\": \"local\",\n76:       \"command\": [\n77:         \"/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python\",\n78:         \"-m\",\n79:         \"crawl4ai_mcp.server\"\n80:       ],\n81:       \"timeout\": 60000,\n82:       \"enabled\": true,\n83:       \"description\": \"Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions\"\n84:     },\n85:     \"youtube-transcript\": {\n86:       \"type\": \"local\",\n87:       \"command\": [\n88:         \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n89:       ],\n90:       \"environment\": {\n91:         \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n92:       },\n93:       \"timeout\": 60000,\n94:       \"enabled\": true\n95:     },\n96:     \"memory\": {\n97:       \"type\": \"local\",\n98:       \"command\": [\n99:         \"bun\",\n100:         \"run\",\n101:         \"--cwd\",\n102:         \"/home/kasiro/.config/opencode/mcp-servers/memory-mcp\",\n103:         \"dist/index.js\"\n104:       ],\n105:       \"enabled\": true,\n106:       \"timeout\": 15000\n107:     },\n108:     \"chrome-devtools\": {\n109:       \"type\": \"local\",\n110:       \"command\": [\n111:         \"/home/kasiro/.bun/bin/chrome-devtools-mcp\",\n112:         \"--executablePath=/opt/brave-bin/brave\"\n113:       ],\n114:       \"enabled\": true,\n115:       \"timeout\": 60000\n116:     }\n117:   },\n118:   \"agent\": {\n119:     \"jarvis\": {\n120:       \"permission\": {\n121:         \"edit\": {\n122:           \"*\": \"deny\"\n123:         },\n124:         \"bash\": {\n125:           \"*\": \"deny\"\n126:         },\n127:         \"websearch\": \"deny\",\n128:         \"webfetch\": \"deny\",\n129:         \"searxng_*\": \"deny\",\n130:         \"crawl4ai_*\": \"deny\",\n131:         \"deepwiki_*\": \"deny\",\n132:         \"context7_*\": \"deny\",\n133:         \"exa_*\": \"deny\",\n134:         \"web-research_*\": \"deny\",\n135:         \"youtube-transcript_*\": \"deny\",\n136:         \"memory_*\": \"allow\"\n137:       }\n138:     },\n139:     \"title\": {\n140:       \"model\": \"opencode/big-pickle\"\n141:     },\n142:     \"general\": {\n143:       \"permission\": {\n144:         \"edit\": {\n145:           \"**/memory/**\": \"deny\",\n146:           \"*\": \"allow\"\n147:         },\n148:         \"bash\": {\n149:           \"*sqlite*\": \"ask\",\n150:           \"*\": \"allow\"\n151:         },\n152:         \"websearch\": \"allow\",\n153:         \"webfetch\": \"allow\",\n154:         \"skill\": {\n155:           \"agent-delegation\": \"deny\",\n156:           \"jarvis-cycles\": \"deny\",\n157:           \"context-mgmt\": \"deny\",\n158:           \"how_use_memory\": \"deny\"\n159:         },\n160:         \"memory_*\": \"deny\"\n161:       },\n162:       \"tools\": {\n163:         \"sequential-thinking_*\": true,\n164:         \"searxng_*\": true,\n165:         \"deepwiki_*\": true,\n166:         \"context7_*\": true,\n167:         \"exa_*\": true,\n168:         \"web-research_*\": true,\n169:         \"crawl4ai_*\": true,\n170:         \"youtube-transcript_*\": true\n171:       }\n172:     },\n173:     \"memory-agent\": {\n174:       \"permission\": {\n175:         \"edit\": {\n176:           \"**/memory/projects/**\": \"allow\",\n177:           \"**/memory/global/**\": \"allow\",\n178:           \"**/memory/sessions/**\": \"allow\",\n179:           \"*\": \"deny\"\n180:         },\n181:         \"read\": {\n182:           \"**/memory/**\": \"allow\",\n183:           \"*\": \"deny\"\n184:         },\n185:         \"bash\": {\n186:           \"*\": \"allow\"\n187:         },\n188:         \"websearch\": \"deny\",\n189:         \"webfetch\": \"deny\",\n190:         \"memory_*\": \"allow\",\n191:         \"skill\": \"allow\"\n192:       },\n193:       \"tools\": {\n194:         \"memory_*\": true\n195:       }\n196:     },\n197:     \"explore\": {\n198:       \"disable\": true\n199:     }\n200:   },\n201:   \"lsp\": {},\n202:   \"plugin\": [\n203:     \"opencode-intellisearch\",\n204:     \"@tarquinen/opencode-dcp@3.1.13\"\n205:   ],\n206:   \"compaction\": {\n207:     \"auto\": false,\n208:     \"prune\": false\n209:   },\n210:   \"tool_output\": {\n211:     \"max_lines\": 5000,\n212:     \"max_bytes\": 204800\n213:   },\n214:   \"experimental\": {\n215:     \"mcp_timeout\": 120000\n216:   }\n217: }\n\n(End of file - total 217 lines)\n</content>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "preview": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"opencode/deepseek-v4-flash-free\",\n  \"default_agent\": \"jarvis\",\n  \"share\": \"disabled\",\n  \"instructions\": [\n    \"~/.config/opencode/global-rules.md\",\n    \"~/.config/opencode/persona/soul.md\"\n  ],\n  \"permission\": {\n    \"bash\": {\n      \"*find*\": \"deny\",\n      \"*grep*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/opencode.json",
+            "text": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"opencode/deepseek-v4-flash-free\",\n  \"default_agent\": \"jarvis\",\n  \"share\": \"disabled\",\n  \"instructions\": [\n    \"~/.config/opencode/global-rules.md\",\n    \"~/.config/opencode/persona/soul.md\"\n  ],\n  \"permission\": {\n    \"bash\": {\n      \"*find*\": \"deny\",\n      \"*grep*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"\n  },\n  \"mcp\": {\n    \"exa\": {\n      \"type\": \"remote\",\n      \"url\": \"http://127.0.0.1:18099\",\n      \"enabled\": true,\n      \"timeout\": 120000\n    },\n    \"deepwiki\": {\n      \"type\": \"remote\",\n      \"url\": \"https://mcp.deepwiki.com/mcp\",\n      \"enabled\": true,\n      \"timeout\": 120000\n    },\n    \"sequential-thinking\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n      ],\n      \"timeout\": 120000,\n      \"enabled\": true\n    },\n    \"context7\": {\n      \"type\": \"remote\",\n      \"url\": \"https://mcp.context7.com/mcp\",\n      \"enabled\": true,\n      \"timeout\": 120000,\n      \"headers\": {\n        \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n      }\n    },\n    \"web-research\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"web-research-mcp\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 60000,\n      \"description\": \"Поиск через DuckDuckGo + fetch страниц\"\n    },\n    \"searxng\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"mcp-searxng\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 60000,\n      \"environment\": {\n        \"SEARXNG_URL\": \"http://localhost:8099\",\n        \"SEARXNG_MAX_RESULTS\": \"15\"\n      },\n      \"description\": \"Поиск через свой SearXNG (Docker) + web_url_read\"\n    },\n    \"crawl4ai\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python\",\n        \"-m\",\n        \"crawl4ai_mcp.server\"\n      ],\n      \"timeout\": 60000,\n      \"enabled\": true,\n      \"description\": \"Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions\"\n    },\n    \"youtube-transcript\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n      ],\n      \"environment\": {\n        \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n      },\n      \"timeout\": 60000,\n      \"enabled\": true\n    },\n    \"memory\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"bun\",\n        \"run\",\n        \"--cwd\",\n        \"/home/kasiro/.config/opencode/mcp-servers/memory-mcp\",\n        \"dist/index.js\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 15000\n    },\n    \"chrome-devtools\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"/home/kasiro/.bun/bin/chrome-devtools-mcp\",\n        \"--executablePath=/opt/brave-bin/brave\"\n      ],\n      \"enabled\": true,\n      \"timeout\": 60000\n    }\n  },\n  \"agent\": {\n    \"jarvis\": {\n      \"permission\": {\n        \"edit\": {\n          \"*\": \"deny\"\n        },\n        \"bash\": {\n          \"*\": \"deny\"\n        },\n        \"websearch\": \"deny\",\n        \"webfetch\": \"deny\",\n        \"searxng_*\": \"deny\",\n        \"crawl4ai_*\": \"deny\",\n        \"deepwiki_*\": \"deny\",\n        \"context7_*\": \"deny\",\n        \"exa_*\": \"deny\",\n        \"web-research_*\": \"deny\",\n        \"youtube-transcript_*\": \"deny\",\n        \"memory_*\": \"allow\"\n      }\n    },\n    \"title\": {\n      \"model\": \"opencode/big-pickle\"\n    },\n    \"general\": {\n      \"permission\": {\n        \"edit\": {\n          \"**/memory/**\": \"deny\",\n          \"*\": \"allow\"\n        },\n        \"bash\": {\n          \"*sqlite*\": \"ask\",\n          \"*\": \"allow\"\n        },\n        \"websearch\": \"allow\",\n        \"webfetch\": \"allow\",\n        \"skill\": {\n          \"agent-delegation\": \"deny\",\n          \"jarvis-cycles\": \"deny\",\n          \"context-mgmt\": \"deny\",\n          \"how_use_memory\": \"deny\"\n        },\n        \"memory_*\": \"deny\"\n      },\n      \"tools\": {\n        \"sequential-thinking_*\": true,\n        \"searxng_*\": true,\n        \"deepwiki_*\": true,\n        \"context7_*\": true,\n        \"exa_*\": true,\n        \"web-research_*\": true,\n        \"crawl4ai_*\": true,\n        \"youtube-transcript_*\": true\n      }\n    },\n    \"memory-agent\": {\n      \"permission\": {\n        \"edit\": {\n          \"**/memory/projects/**\": \"allow\",\n          \"**/memory/global/**\": \"allow\",\n          \"**/memory/sessions/**\": \"allow\",\n          \"*\": \"deny\"\n        },\n        \"read\": {\n          \"**/memory/**\": \"allow\",\n          \"*\": \"deny\"\n        },\n        \"bash\": {\n          \"*\": \"allow\"\n        },\n        \"websearch\": \"deny\",\n        \"webfetch\": \"deny\",\n        \"memory_*\": \"allow\",\n        \"skill\": \"allow\"\n      },\n      \"tools\": {\n        \"memory_*\": true\n      }\n    },\n    \"explore\": {\n      \"disable\": true\n    }\n  },\n  \"lsp\": {},\n  \"plugin\": [\n    \"opencode-intellisearch\",\n    \"@tarquinen/opencode-dcp@3.1.13\"\n  ],\n  \"compaction\": {\n    \"auto\": false,\n    \"prune\": false\n  },\n  \"tool_output\": {\n    \"max_lines\": 5000,\n    \"max_bytes\": 204800\n  },\n  \"experimental\": {\n    \"mcp_timeout\": 120000\n  }\n}",
+            "lineStart": 1,
+            "lineEnd": 217,
+            "totalLines": 217,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/opencode.json"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067590644,
+    "tokens": {
+      "input": 2212,
+      "output": 282,
+      "reasoning": 1015,
+      "cache": {
+        "write": 0,
+        "read": 31104
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Давайте разберусь, что именно блокируется.\n\nВ opencode.json есть секция `permission` на уровне корня конфига:\n\n```json\n\"permission\": {\n    \"bash\": {\n        \"*find*\": \"deny\",\n        \"*grep*\": \"deny\",\n        \"*npm*\": \"deny\",\n        \"*sqlite*\": \"ask\",\n        \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"\n}\n```\n\nЭто глобальные permission rules (permission defaults). Они применяются ко ВСЕМ агентам, если не переопределены на уровне конкретного агента.\n\nПравила:\n- `bash: {\"*grep*\": \"deny\"}` — любая bash-команда, содержащая в себе подстроку \"grep\", будет **deny** (заблокирована).\n- `bash: {\"*find*\": \"deny\"}` — любая bash-команда, содержащая подстроку \"find\" → deny.\n- `bash: {\"*npm*\": \"deny\"}` — любая команда с \"npm\" → deny.\n- `\"grep\": \"deny\"` — это блокировка built-in инструмента `grep` (не bash, а отдельный инструмент).\n- `\"glob\": \"deny\"` — блокировка инструмента `glob`.\n\nТеперь важно: эти permission rules применяются на уровне всего конфига. Но у агентов есть свои permission rules, которые могут переопределять глобальные.\n\nУ **general**:\n```json\n\"general\": {\n    \"permission\": {\n        \"bash\": {\n            \"*sqlite*\": \"ask\",\n            \"*\": \"allow\"\n        }\n    }\n}\n```\n\nТо есть у general bash permissions переопределены: `\"*\": \"allow\"` — всё разрешено, кроме `*sqlite*` (ask).\n\nУ **jarvis**:\n```json\n\"jarvis\": {\n    \"permission\": {\n        \"bash\": {\n            \"*\": \"deny\"\n        }\n    }\n}\n```\n\nУ jarvis bash полностью запрещён.\n\nУ **memory-agent**:\n```json\n\"memory-agent\": {\n    \"permission\": {\n        \"bash\": {\n            \"*\": \"allow\"\n        }\n    }\n}\n```\n\nУ memory-agent bash полностью разрешён.\n\nТеперь важный вопрос: как OpenCode обрабатывает пересечение глобальных permissions и агентских?\n\nСудя по документации OpenCode, permissions наследуются с переопределением. Если у агента есть своя секция `permission`, она переопределяет глобальную. Если нет — применяется глобальная.\n\nЗначит:\n- **jarvis**: bash полностью запрещён (агентское правило `\"*\": \"deny\"` перекрывает всё). Глобальное `\"*grep*\": \"deny\"` не имеет значения.\n- **general**: bash разрешён (агентское `\"*\": \"allow\"`). Глобальное `\"*grep*\": \"deny\"` перекрывается.\n- **memory-agent**: bash разрешён (агентское `\"*\": \"allow\"`).\n\nНО! Это если агентское permission переопределяет глобальное. Я не уверен на 100% в механике наследования. Нужно проверить.\n\nДавайте посмотрим документацию OpenCode или поищем в памяти/файлах информацию о том, как permissions работают.\n\nНа самом деле, я могу просто проверить — запустить bash с grep у general и посмотреть, сработает ли.\n\nНо у меня (J.A.R.V.I.S.) нет bash. Надо делегировать general'у проверку.\n\nХотя, сэр спрашивает просто \"проверь\", и я могу:\n1. Посмотреть конфиг (уже посмотрел)\n2. Делегировать general'у тестовый запуск grep через bash\n\nДавайте сначала проанализирую то, что вижу в конфиге, и отвечу сэру.\n\nПо сути:\n- **Глобальный permission** блокирует `bash: *grep*` — deny.\n- Но у **general** permissions переопределены на `bash: {\"*\": \"allow\"}` (кроме sqlite).\n- Вопрос в том, как OpenCode обрабатывает пересечение: глобальные правила действуют как fallback или как обязательный слой.\n\nМне нужно проверить это эмпирически. Делегирую general'у."
+      },
+      {
+        "type": "text",
+        "text": "Вижу конфигурацию. Давайте проверю эмпирически — запущу тестовый `grep` через general и посмотрю, сработает ли."
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_00_qtgniFLvPnySBsuBHUV50666",
+        "status": "completed",
+        "input": {
+          "description": "Проверка блокировки grep",
+          "subagent_type": "general",
+          "prompt": "Проверь, блокируется ли bash-команда с *grep* в OpenCode.\n\nСделай две проверки:\n\n1. Запусти `echo \"test\" | grep test` — отрапортуй, выполнилось или нет. Если выполнилось — покажи вывод.\n\n2. Запусти `rg \"test\"` с каким-нибудь файлом (можно /dev/null) — проверь, работает ли ripgrep.\n\nВерни структурированный ответ:\n- Успех/неуспех каждой команды\n- Если была ошибка — текст ошибки (особенно если там что-то про permission/deny)\n- Твой вывод: блокируется grep в bash или нет"
+        },
+        "output": "<task id=\"ses_061adf5f9ffeZ0EBT1uWjhQfJg\" state=\"completed\">\n<task_result>\nОбе команды выполнились без ошибок. Докладываю.\n\n---\n\n**Проверка 1: `echo \"test\" | grep test`**\n\n| Поле | Значение |\n|------|----------|\n| Статус | ✅ **Успех** |\n| Вывод | `test` |\n| Ошибка | отсутствует |\n\nКоманда отработала штатно, grep нашёл строку и вывел её.\n\n---\n\n**Проверка 2: `rg \"test\" /dev/null`**\n\n| Поле | Значение |\n|------|----------|\n| Статус | ✅ **Успех** |\n| Вывод | (пусто, нет совпадений — /dev/null пустой) |\n| Ошибка | отсутствует |\n\nripgrep не вывел ошибок. В /dev/null нет содержимого, поэтому логично, что вывод пуст. Если бы rg был заблокирован, мы бы увидели сообщение о permission/deny или ошибку запуска.\n\n---\n\n**Итоговый вывод:**\n\n**grep не блокируется в bash-командах OpenCode.** Ни `grep`, ни `rg` не перехватываются, не фильтруются и не отклоняются. Ограничение в глобальных правилах (`— используй `rg` (ripgrep) вместо grep`) — это **рекомендация для меня как агента**, а не блокировка на уровне выполнения. Shell-команды с grep выполняются свободно.\n</task_result>\n</task>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_061b06b52ffeMhBsYbz7tSH49p",
+          "sessionId": "ses_061adf5f9ffeZ0EBT1uWjhQfJg",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Проверка блокировки grep"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067613965,
+    "tokens": {
+      "input": 452,
+      "output": 381,
+      "reasoning": 560,
+      "cache": {
+        "write": 0,
+        "read": 34560
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Интересно. General успешно выполнил `grep` в bash. Это значит, что permission `bash: {\"*grep*\": \"deny\"}` в глобальной секции **не блокирует** general'а, потому что у general'а есть своё переопределение `bash: {\"*\": \"allow\"}`.\n\nНо давайте я ещё раз проанализирую, как именно это работает.\n\nГлобальный permission:\n```json\n\"permission\": {\n    \"bash\": {\n        \"*find*\": \"deny\",\n        \"*grep*\": \"deny\",\n        \"*npm*\": \"deny\",\n        \"*sqlite*\": \"ask\",\n        \"*opencode*\": \"ask\"\n    }\n}\n```\n\nЭто базовые правила для всех агентов, у которых нет своих permission-переопределений.\n\nУ jarvis:\n```json\n\"jarvis\": {\n    \"permission\": {\n        \"bash\": {\"*\": \"deny\"}\n    }\n}\n```\njarvis не может запускать bash вообще — глобальное `*grep*` тут неактуально.\n\nУ general:\n```json\n\"general\": {\n    \"permission\": {\n        \"bash\": {\n            \"*sqlite*\": \"ask\",\n            \"*\": \"allow\"\n        }\n    }\n}\n```\ngeneral может запускать любой bash, кроме sqlite. Глобальное `*grep*` игнорируется, т.к. агентское правило `\"*\": \"allow\"` переопределяет глобальное.\n\nУ memory-agent:\n```json\n\"memory-agent\": {\n    \"permission\": {\n        \"bash\": {\"*\": \"allow\"}\n    }\n}\n```\nmemory-agent тоже может всё.\n\nТеперь вопрос: так для кого же тогда работает глобальное `bash: {\"*grep*\": \"deny\"}`?\n\nДля любых других агентов, у которых **нет своей секции `bash` в permission**. Если у агента нет своего `bash` permission — применяется глобальное правило.\n\nНо в текущей конфигурации:\n- jarvis — bash deny всё\n- general — bash allow всё (кроме sqlite)\n- memory-agent — bash allow всё\n- explore — disabled\n\nПолучается, глобальное `*grep*` deny фактически **никуда не применяется** в текущей конфигурации, потому что все используемые агенты имеют свои переопределения.\n\nНо это потенциально опасно — если появится новый агент без своих bash permissions, grep будет заблокирован и никто не поймёт почему.\n\nДавайте отвечу сэру."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, проверил. Ситуация неоднозначная.\n\n### Что есть в конфиге\n\nВ глобальной секции `permission` (строка 12) прописано:\n\n```json\n\"bash\": {\n    \"*grep*\": \"deny\",\n    \"*find*\": \"deny\",\n    \"*npm*\": \"deny\"\n}\n```\n\nФормально — блокировка всех bash-команд, содержащих `grep`.\n\n### Почему это не работает\n\nУ каждого агента — **своё переопределение** bash-permissions:\n\n| Агент | Bash permission | Эффект |\n|-------|----------------|--------|\n| **jarvis** | `\"*\": \"deny\"` | bash полностью запрещён (grep и не нужен) |\n| **general** | `\"*\": \"allow\"` | **grep работает** — переопределяет глобальное правило |\n| **memory-agent** | `\"*\": \"allow\"` | grep тоже работает |\n\nПроверил эмпирически — `general` спокойно выполняет `echo \"test\" | grep test`.\n\n### Вывод\n\nГлобальное `\"*grep*\": \"deny\"` **висит мёртвым грузом**. Оно сработало бы только для агентов, у которых в permissions нет собственной секции `bash`. Но все текущие агенты имеют свои переопределения, поэтому блокировка grep не применяется ни к кому.\n\nЕсли это задумывалось как защита от случайного использования grep вместо rg — она не срабатывает. Если хотите, могу подчистить или, наоборот, добавить `*grep*` deny в permission general'а.\n\n<dcp-message-id>m0005</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1785067762907,
+    "parts": [
+      {
+        "type": "text",
+        "text": "а надо что бы применялась как и остальные!\n\n<dcp-system-reminder>\nEvaluate the conversation for compressible ranges.\n\nIf any messages are cleanly closed and unlikely to be needed again, use the compress tool on them.\nIf direction has shifted, compress earlier ranges that are now less relevant.\n\nThe goal is to filter noise and distill key information so context accumulation stays under control.\nKeep active context uncompressed.\n\nCompressed block context:\n- Active compressed blocks in this session: 0 (none)\n- If your selected compression range includes any listed block, include each required placeholder exactly once in the summary using `(bN)`.\n</dcp-system-reminder>\n\n<dcp-message-id>m0006</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067762924,
+    "tokens": {
+      "input": 289,
+      "output": 115,
+      "reasoning": 631,
+      "cache": {
+        "write": 0,
+        "read": 35840
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Пользователь хочет, чтобы блокировка *grep* применялась так же, как и остальные (find, npm). То есть нужно добавить `*grep*` в permission general'а, чтобы он тоже блокировался.\n\nСейчас у general:\n```json\n\"general\": {\n    \"permission\": {\n        \"bash\": {\n            \"*sqlite*\": \"ask\",\n            \"*\": \"allow\"\n        }\n    }\n}\n```\n\nНужно добавить `\"*grep*\": \"deny\"` в bash-секцию general'а.\n\nНо подождите... а зачем это нужно? Пользователь хочет, чтобы grep блокировался везде, включая general. Это имеет смысл — в global-rules.md сказано использовать rg вместо grep, и блокировка grep как инструмента уже есть (`\"grep\": \"deny\"`), но bash-команда с grep всё ещё работает.\n\nНадо добавить в permission general'а:\n```json\n\"bash\": {\n    \"*grep*\": \"deny\",\n    \"*sqlite*\": \"ask\",\n    \"*\": \"allow\"\n}\n```\n\nЯ (J.A.R.V.I.S.) не редактирую файлы — делегирую general'у. Но general не может редактировать opencode.json если там есть ограничения... Хотя у general'а `\"edit\": {\"*\": \"allow\"}`, так что может. Но opencode.json — это конфиг OpenCode, и его редактирование может быть чувствительным. Надо использовать skill customize-opencode.\n\nДавайте поступим так:\n1. Загружу customize-opencode skill\n2. Делегирую general'у редактирование\n\nИли лучше сам прочитаю и покажу сэру diff перед применением. Но сэр уже сказал что надо сделать — значит делаю.\n\nДавайте загружу customize-opencode и делегирую.\n\nХотя customize-opencode описан как skill для редактирования opencode.json. Могу его загрузить и следовать инструкциям.\n\nНа самом деле, я могу просто делегировать general'у. Но у меня есть доступ read, я могу прочитать и проверить.\n\nДавай сделаем:\n1. Прочитаю current permission для general\n2. Сделаю diff\n3. Делегирую general'у с конкретными инструкциями применить изменение\n\nНо у меня нет edit — делегирую.\n\nЛучше сразу загрузить customize-opencode и делегировать с учётом его инструкций.\n\nХотя, если честно, я знаю что нужно сделать. Давайте просто делегирую general'у: добавить `\"*grep*\": \"deny\"` в bash permission general'а в opencode.json.\n\nНо нужно быть осторожным с редактированием JSON. Объясню general'у точные изменения."
+      },
+      {
+        "type": "text",
+        "text": "Понял, сэр. Нужно, чтобы `*grep*` блокировался и для general'а — как и остальные (`*find*`, `*npm*`).\n\nСейчас в permission general'а нет `*grep*`, поэтому он и пролетает. Исправлю."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_btFUhj7PvdJUaDR6yCYg8403",
+        "status": "completed",
+        "input": {
+          "name": "customize-opencode"
+        },
+        "output": "<skill_content name=\"customize-opencode\">\n# Skill: customize-opencode\n\n<!--\n  Built-in skill. Name and description are registered in code at\n  packages/core/src/plugin/skill.ts\n  and CUSTOMIZE_OPENCODE_SKILL_DESCRIPTION). The body below becomes the\n  skill's content.\n-->\n\n# Customizing opencode\n\nopencode validates its own config strictly and refuses to start when a field\nis wrong. The shapes below cover the common surface area, but they are a\n**summary, not the source of truth**.\n\n## Full schema reference\n\nThe authoritative list of every config option — with field types, enums,\ndefaults, and descriptions — lives in the published JSON Schema:\n\n**<https://opencode.ai/config.json>**\n\nIf a field is not documented in this skill, or you need to confirm an exact\nshape before writing config, **fetch that URL and read the schema directly**\nrather than guessing. opencode hard-fails on invalid config, so the cost of a\nwrong shape is a broken startup.\n\nIndependently, every `opencode.json` should declare\n`\"$schema\": \"https://opencode.ai/config.json\"` so the user's editor catches\nmistakes as they type.\n\n## Applying changes\n\nConfig is loaded once when opencode starts and is not hot-reloaded. After\nsaving changes to `opencode.json`, an agent file, a skill, a plugin, or any\nother config-time file, **tell the user to quit and restart opencode** for\nthe changes to take effect. The running session will keep using the\nalready-loaded config until then.\n\n## Where files live\n\n| Scope                         | Path                                                                                                                      |\n| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |\n| Project config                | `./opencode.json`, `./opencode.jsonc`, or `.opencode/opencode.json` (opencode walks up from the cwd to the worktree root) |\n| Global config                 | `~/.config/opencode/opencode.json` (NOT `~/.opencode/`)                                                                   |\n| Project agents                | `.opencode/agent/<name>.md` or `.opencode/agents/<name>.md`                                                               |\n| Global agents                 | `~/.config/opencode/agent(s)/<name>.md`                                                                                   |\n| Project commands              | `.opencode/command/<name>.md` or `.opencode/commands/<name>.md`                                                           |\n| Global commands               | `~/.config/opencode/command(s)/<name>.md`                                                                                 |\n| Project skills                | `.opencode/skill(s)/<name>/SKILL.md`                                                                                      |\n| Global skills                 | `~/.config/opencode/skill(s)/<name>/SKILL.md`                                                                             |\n| External skills (auto-loaded) | `~/.claude/skills/<name>/SKILL.md`, `~/.agents/skills/<name>/SKILL.md`                                                    |\n\nConfigs from each scope are deep-merged. Project overrides global. Unknown\ntop-level keys in `opencode.json` are rejected with `ConfigInvalidError`.\n\n## opencode.json\n\nEvery field is optional.\n\n```json\n{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"username\": \"string\",\n  \"model\": \"provider/model-id\",\n  \"small_model\": \"provider/model-id\",\n  \"default_agent\": \"agent-name\",\n  \"shell\": \"/bin/zsh\",\n  \"logLevel\": \"DEBUG\" | \"INFO\" | \"WARN\" | \"ERROR\",\n  \"share\": \"manual\" | \"auto\" | \"disabled\",\n  \"autoupdate\": true | false | \"notify\",\n  \"snapshot\": true,\n  \"instructions\": [\"AGENTS.md\", \"docs/style.md\"],\n\n  \"skills\": {\n    \"paths\": [\".opencode/skills\", \"/abs/path/to/skills\"],\n    \"urls\": [\"https://example.com/.well-known/skills/\"]\n  },\n\n  \"references\": {\n    \"docs\": {\n      \"path\": \"../docs\",\n      \"description\": \"Use for product behavior and documentation conventions\"\n    },\n    \"sdk\": {\n      \"repository\": \"owner/sdk\",\n      \"branch\": \"main\",\n      \"description\": \"Use for SDK implementation details\",\n      \"hidden\": true\n    }\n  },\n\n  \"agent\": {\n    \"my-agent\": {\n      \"model\": \"anthropic/claude-sonnet-4-6\",\n      \"mode\": \"subagent\",\n      \"description\": \"...\",\n      \"permission\": { \"edit\": \"deny\" }\n    }\n  },\n\n  \"command\": {\n    \"deploy\": { \"description\": \"...\", \"template\": \"...\" }\n  },\n\n  \"provider\": {\n    \"anthropic\": { \"options\": { \"apiKey\": \"...\" } }\n  },\n  \"disabled_providers\": [\"openai\"],\n  \"enabled_providers\": [\"anthropic\"],\n\n  \"mcp\": {\n    \"playwright\": {\n      \"type\": \"local\",\n      \"command\": [\"npx\", \"-y\", \"@playwright/mcp\"],\n      \"enabled\": true,\n      \"env\": {}\n    },\n    \"remote-thing\": {\n      \"type\": \"remote\",\n      \"url\": \"https://...\",\n      \"headers\": { \"Authorization\": \"Bearer ...\" }\n    }\n  },\n\n  \"plugin\": [\n    \"opencode-gemini-auth\",\n    \"opencode-foo@1.2.3\",\n    \"./local-plugin.ts\",\n    [\"opencode-bar\", { \"option\": \"value\" }]\n  ],\n\n  \"permission\": {\n    \"edit\": \"deny\",\n    \"bash\": { \"git *\": \"allow\", \"*\": \"ask\" }\n  },\n\n  \"formatter\": false,\n  \"lsp\": false,\n\n  \"experimental\": {\n    \"primary_tools\": [\"edit\"],\n    \"mcp_timeout\": 30000\n  },\n\n  \"tool_output\": { \"max_lines\": 200, \"max_bytes\": 8192 },\n\n  \"compaction\": { \"auto\": true, \"tail_turns\": 15 }\n}\n```\n\nShape notes worth being explicit about:\n\n- `model` always carries a provider prefix: `\"anthropic/claude-sonnet-4-6\"`.\n- `skills` is an object with `paths` and/or `urls`, not an array.\n- `references` is an object keyed by alias. Each value is a local path, Git repository, or string shorthand.\n- `agent` is an object keyed by agent name, not an array.\n- `command` is an object keyed by command name, not an array.\n- `plugin` is an array of strings or `[name, options]` tuples, not an object.\n- `mcp[name].command` is an array of strings, never a single string. `type` is required.\n- `permission` is either a string action or an object keyed by tool name.\n\n## Skills\n\nopencode's skill loader scans for `**/SKILL.md` inside skill directories. The\nfile is named `SKILL.md` exactly, and lives in its own folder named after the\nskill:\n\n```\n.opencode/skills/my-skill/SKILL.md\n```\n\nFrontmatter:\n\n```markdown\n---\nname: my-skill\ndescription: One sentence covering what this skill does AND when to trigger it. Front-load the literal keywords or filenames the user is likely to say.\n---\n\n# My Skill\n\n(skill body in markdown: instructions, examples, references)\n```\n\n- `name` is required, lowercase hyphen-separated, up to 64 chars, and matches the folder name.\n- `description` is effectively required: skills without one are filtered out and never surfaced to the model. Cover both _what_ the skill does and _when_ to use it. Write in third person (\"Use when...\", not \"I help with...\"). Front-load concrete trigger keywords and filenames; gate with \"Use ONLY when...\" if the skill should stay quiet on adjacent topics.\n- Optional: `license`, `compatibility`, `metadata` (string-string map).\n\nRegister skills from non-default locations via `skills.paths` (scanned\nrecursively for `**/SKILL.md`) and `skills.urls` (each URL serves a list of\nskills).\n\n## References\n\nReferences make local directories and Git repositories outside the active\nproject available as supporting context. Configure them under `references`,\nkeyed by the alias used in `@` autocomplete:\n\n```json\n{\n  \"references\": {\n    \"docs\": {\n      \"path\": \"../product-docs\",\n      \"description\": \"Use for product behavior and terminology\"\n    },\n    \"effect\": {\n      \"repository\": \"Effect-TS/effect\",\n      \"branch\": \"main\",\n      \"description\": \"Use for Effect implementation details\"\n    }\n  }\n}\n```\n\nLocal `path` values may be relative to the declaring config, absolute, or use\n`~/`. Git `repository` values accept Git URLs, host/path references, and GitHub\n`owner/repo` shorthand; `branch` is optional. Both forms support optional\n`description` and `hidden` fields.\n\n- Only references with a `description` are advertised to agents in system context.\n- `hidden: true` removes a reference from TUI `@` autocomplete only. It remains available to agents and by direct path.\n- Reference directories are automatically allowed through the external-directory boundary; normal read/edit/tool permissions still apply.\n- String shorthand is supported: use `\"docs\": \"../docs\"` for local paths or `\"effect\": \"Effect-TS/effect\"` for Git repositories.\n\n## Agents\n\nTwo ways to define an agent. Use the file form for anything non-trivial.\n\n### Inline (in `opencode.json`)\n\n```json\n{\n  \"agent\": {\n    \"my-reviewer\": {\n      \"description\": \"Reviews PRs for style violations.\",\n      \"mode\": \"subagent\",\n      \"model\": \"anthropic/claude-sonnet-4-6\",\n      \"permission\": { \"edit\": \"deny\", \"bash\": \"ask\" },\n      \"prompt\": \"You are a strict PR reviewer...\"\n    }\n  }\n}\n```\n\n### File\n\n```\n.opencode/agent/my-reviewer.md      OR     .opencode/agents/my-reviewer.md\n```\n\n```markdown\n---\ndescription: Reviews PRs for style violations.\nmode: subagent\nmodel: anthropic/claude-sonnet-4-6\npermission:\n  edit: deny\n  bash: ask\n---\n\nYou are a strict PR reviewer. Focus on...\n```\n\nThe file body becomes the agent's `prompt`. Do not also put `prompt:` in the\nfrontmatter.\n\n`mode` is one of `\"primary\"`, `\"subagent\"`, `\"all\"`.\n\nAllowed top-level frontmatter fields: `name, model, variant, description, mode,\nhidden, color, steps, options, permission, disable, temperature, top_p`. Any\nunknown field is silently routed into `options`.\n\nTo disable a built-in agent: `agent: { build: { disable: true } }`, or in a\nfile, `disable: true` in frontmatter.\n\n`default_agent` must point to a non-hidden, primary-mode agent.\n\n### Built-in agents\n\nopencode ships with `build`, `plan`, `general`, `explore`. Hidden internal agents:\n`compaction`, `title`, `summary`. To override a built-in's fields, define the\nsame key in `agent: { <name>: { ... } }`.\n\n## Commands\n\nopencode's command loader scans for `**/*.md` inside command directories. The\nfile is named after the command, and lives directly inside the `command` folder:\n\n```\n.opencode/command/deploy.md\n```\n\nFrontmatter:\n\n```markdown\n---\ndescription: One sentence describing what the command does.\nagent: build\nmodel: anthropic/claude-sonnet-4-6\n---\n\n(command body in markdown: the prompt opencode runs, with $ARGUMENTS for the user's input)\n```\n\n- `template` is the command body — everything below the frontmatter — and is required: it is the prompt opencode runs when the command is invoked. Do not also put a `template:` key in the frontmatter.\n- `$ARGUMENTS` is replaced with everything the user typed after the command; `$1`, `$2`, … pull individual positional arguments.\n- Optional: `description`, `agent`, `model`, `variant`, `subtask`.\n\n## Plugins\n\n`plugin:` is an array. Each entry is one of:\n\n```json\n\"plugin\": [\n  \"opencode-gemini-auth\",            // npm spec, latest\n  \"opencode-foo@1.2.3\",              // npm spec, pinned\n  \"./local-plugin.ts\",               // file path, relative to the declaring config\n  \"file:///abs/path/plugin.js\",      // file URL\n  [\"opencode-bar\", { \"key\": \"val\" }] // tuple form with options\n]\n```\n\nAuto-discovered plugins (no config entry needed): any `*.ts` or `*.js` file in\n`.opencode/plugin/` or `.opencode/plugins/`.\n\nA plugin module exports `default` (or any named export) of type\n`Plugin = (input: PluginInput, options?) => Promise<Hooks>`. The export is a\nfunction, not a plain object literal, and the function returns an object\n(return `{}` if there is nothing to register).\n\n```ts\nimport type { Plugin } from \"@opencode-ai/plugin\"\n\nexport default (async ({ client, project, directory, $ }) => {\n  return {\n    config: (cfg) => {\n      // cfg is the live merged config; mutate fields here.\n    },\n    \"tool.execute.before\": async (input, output) => {\n      // mutate output.args before the tool runs\n    },\n  }\n}) satisfies Plugin\n```\n\nHook surface (mutate `output` in place; return `void`):\n\n- `event(input)`: every bus event\n- `config(cfg)`: once on init with the merged config\n- `chat.message`, `chat.params`, `chat.headers`\n- `tool.execute.before`, `tool.execute.after`\n- `tool.definition`\n- `command.execute.before`\n- `shell.env`\n- `permission.ask`\n- `experimental.chat.messages.transform`, `experimental.chat.system.transform`,\n  `experimental.session.compacting`, `experimental.compaction.autocontinue`,\n  `experimental.text.complete`\n\nSpecial object-shaped (not callbacks): `tool: { my_tool: { ... } }`,\n`auth: { ... }`, `provider: { ... }`.\n\n## MCP servers\n\n`mcp:` is an object keyed by server name. Each server is discriminated by\n`type`:\n\n```json\n{\n  \"mcp\": {\n    \"playwright\": {\n      \"type\": \"local\",\n      \"command\": [\"npx\", \"-y\", \"@playwright/mcp\"],\n      \"enabled\": true,\n      \"env\": { \"BROWSER\": \"chromium\" }\n    },\n    \"github\": {\n      \"type\": \"remote\",\n      \"url\": \"https://...\",\n      \"enabled\": true,\n      \"headers\": { \"Authorization\": \"Bearer {env:GITHUB_TOKEN}\" }\n    },\n    \"old-server\": { \"enabled\": false }\n  }\n}\n```\n\n`command` is an array of strings. `type` is required. Use `enabled: false` to\ndisable a server inherited from a parent config. String values such as header\ntokens support `{env:VAR}` interpolation (and `{file:path}`); the shell-style\n`${VAR}` is not substituted.\n\n## Permissions\n\n```json\n\"permission\": {\n  \"edit\": \"deny\",\n  \"bash\": { \"git *\": \"allow\", \"rm *\": \"deny\", \"*\": \"ask\" },\n  \"external_directory\": { \"~/secrets/**\": \"deny\", \"*\": \"allow\" }\n}\n```\n\nActions: `\"allow\"`, `\"ask\"`, `\"deny\"`.\n\nPer-tool value forms: `\"allow\"` shorthand (treated as `{\"*\": \"allow\"}`), or an\nobject `{ pattern: action }`. Within an object, **insertion order matters**.\nopencode evaluates the LAST matching rule, so put broad rules first and narrow\nrules last.\n\n`permission: \"allow\"` (a string at the top level) is shorthand for \"allow\neverything\" and is rarely what the user wants.\n\nKnown permission keys: `read, edit, glob, grep, list, bash, task,\nexternal_directory, todowrite, question, webfetch, websearch, lsp, doom_loop,\nskill`. Some of these (`todowrite,\nquestion, webfetch, websearch, doom_loop`) only accept a flat\naction, not a per-pattern object.\n\n`external_directory` patterns are filesystem paths (use `~/`, absolute paths,\nor globs like `~/projects/**`).\n\nPer-agent `permission:` overrides top-level `permission:`. Plan Mode lives on\nthe `plan` agent's permission ruleset (`edit: deny *`).\n\n## Escape hatches\n\nWhen a user's config is broken and opencode won't start, these env vars help:\n\n- `OPENCODE_DISABLE_PROJECT_CONFIG=1`: skip the project's local `opencode.json`\n  and start from globals only. Run from the project directory, opencode loads,\n  the user edits the broken file, then they restart without the flag.\n- `OPENCODE_CONFIG=/path/to/file.json`: load an additional explicit config.\n- `OPENCODE_CONFIG_CONTENT='{\"$schema\":\"https://opencode.ai/config.json\"}'`:\n  inject inline JSON as a final local-scope merge.\n- `OPENCODE_DISABLE_DEFAULT_PLUGINS=1`: skip default plugins.\n- `OPENCODE_PURE=1`: skip external plugins entirely.\n- `OPENCODE_DISABLE_EXTERNAL_SKILLS=1`,\n  `OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1`: skip the external skill scans under\n  `~/.claude/` and `~/.agents/`.\n\n## When proposing edits\n\n- Validate against the schema before writing. If you are unsure of a field's\n  exact shape, or the field is not covered in this skill, fetch\n  `https://opencode.ai/config.json` and read the schema rather than guessing.\n- Preserve `$schema` and any existing fields the user did not ask to change.\n- For agent, command, skill, and plugin definitions, prefer creating new files\n  in the correct location over inlining everything in `opencode.json`.\n- If the user's existing config is malformed, point them at the env-var escape\n  hatches above so they can edit from inside opencode without breaking their\n  session.\n- After saving any config change, remind the user to quit and restart opencode\n  — running sessions keep using the already-loaded config.\n\nBase directory for this skill: .\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n<file>/home/kasiro/.hermes.md</file>\n<file>/home/kasiro/.NexData/compressed/img.jpg</file>\n<file>/home/kasiro/.NexData/evolvecore/data.json</file>\n<file>/home/kasiro/.nanobot/config.json</file>\n<file>/home/kasiro/.nanobot/webui/token-usage.json</file>\n<file>/home/kasiro/.nanobot/cli-apps/harness_registry_cache.json</file>\n<file>/home/kasiro/.nanobot/history/cli_history</file>\n<file>/home/kasiro/.nanobot/workspace/.gitignore</file>\n<file>/home/kasiro/.nanobot/workspace/memory/history.jsonl</file>\n<file>/home/kasiro/.nanobot/workspace/memory/MEMORY.md</file>\n</skill_files>\n</skill_content>\n<dcp-message-id>m0007</dcp-message-id>",
+        "metadata": {
+          "name": "customize-opencode",
+          "dir": ".",
+          "truncated": false
+        },
+        "title": "Loaded skill: customize-opencode"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067772475,
+    "tokens": {
+      "input": 5312,
+      "output": 191,
+      "reasoning": 870,
+      "cache": {
+        "write": 0,
+        "read": 35840
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Отлично, customize-opencode skill загружен. Теперь я понимаю как работает permission.\n\nКлючевой момент из skill: **\"insertion order matters. opencode evaluates the LAST matching rule\"**.\n\nИ: **\"Per-agent `permission:` overrides top-level `permission:`\"**\n\nЗначит, у general сейчас:\n```json\n\"bash\": {\n    \"*sqlite*\": \"ask\",\n    \"*\": \"allow\"\n}\n```\n\n«*»: allow — разрешает всё. opencode оценивает последнее совпавшее правило. Поэтому `*grep*` не блокируется — последнее правило `*: allow` перекрывает всё.\n\nЧтобы работало как с *find* и *npm*, надо добавить `\"*grep*\": \"deny\"` ПЕРЕД `\"*\": \"allow\"`.\n\nПорядок имеет значение:\n```json\n\"bash\": {\n    \"*grep*\": \"deny\",\n    \"*find*\": \"deny\",\n    \"*npm*\": \"deny\",\n    \"*sqlite*\": \"ask\",\n    \"*\": \"allow\"\n}\n```\n\nНо сэр хочет, чтобы применялось \"как и остальные\". В глобальном permission уже есть `*grep*`, `*find*`, `*npm*`. Проблема в том, что у general эти правила переопределяются.\n\nМожно:\n1. Добавить `\"*grep*\": \"deny\"` в permission general'а\n2. Или убрать переопределение bash у general — тогда будут применяться глобальные (но это сломает `\"*\": \"allow\"`)\n\nВариант 1 — добавляем `\"*grep*\": \"deny\"` в permission general'а, перед `\"*\": \"allow\"`.\n\nТакже можно было бы добавить `\"*find*\": \"deny\"` и `\"*npm*\": \"deny\"` — но они уже есть в глобальном. Сейчас глобальные `*find*` и `*npm*` тоже не применяются к general'у, потому что у general `\"*\": \"allow\"` переопределяет всё. Получается, что find и npm тоже не блокируются для general'а.\n\nНо сэр сказал \"как и остальные\" — имея в виду, что *grep* должен блокироваться так же, как find и npm. То есть: в глобальном секция есть `*grep*` deny, нужно чтобы она применялась.\n\nСамый логичный вариант: добавить все deny-правила в permission general'а, чтобы они работали. Либо синхронизировать глобальные deny-правила с agent-level.\n\nДавайте добавлю `\"*grep*\": \"deny\"` в permission general'а. И заодто, если уж на то пошло, и `\"*find*\": \"deny\"`, `\"*npm*\": \"deny\"` — чтобы они тоже работали.\n\nНо сэр сказал только про *grep*. Спрошу? Нет, он чётко сказал: \"надо что бы применялась как и остальные!\" — то есть блокировка grep должна работать так же, как работают блокировки find и npm.\n\nНо find и npm сейчас тоже не работают у general'а... если сэр думает что они работают — он ошибается.\n\nДавайте сначала уточню, или сразу добавлю и find, и npm, и grep в general.\n\nЛучше сразу сделать как надо. Добавлю всё:\n```json\n\"general\": {\n    \"permission\": {\n        \"bash\": {\n            \"*grep*\": \"deny\",\n            \"*find*\": \"deny\",\n            \"*npm*\": \"deny\",\n            \"*sqlite*\": \"ask\",\n            \"*\": \"allow\"\n        }\n    }\n}\n```\n\nДелегирую general'у редактирование opencode.json."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, всё верно. Загвоздка в порядке правил: у general'а стоит `\"*\": \"allow\"`, которое перекрывает все глобальные deny. Причём это касается не только `*grep*`, но и `*find*` с `*npm*` — они тоже не блокируются у general'а.\n\nДобавлю все три deny-правила в permission general'а, перед `\"*\": \"allow\"`."
+      },
+      {
+        "type": "tool",
+        "tool": "todowrite",
+        "callID": "call_00_b8diSmHbBCyg4TU0yRts7691",
+        "status": "completed",
+        "input": {
+          "todos": [
+            {
+              "content": "Добавить *grep*, *find*, *npm* deny в permission general'а в opencode.json",
+              "status": "in_progress",
+              "priority": "high"
+            }
+          ]
+        },
+        "output": "[\n  {\n    \"content\": \"Добавить *grep*, *find*, *npm* deny в permission general'а в opencode.json\",\n    \"status\": \"in_progress\",\n    \"priority\": \"high\"\n  }\n]\n<dcp-message-id>m0008</dcp-message-id>",
+        "metadata": {
+          "todos": [
+            {
+              "content": "Добавить *grep*, *find*, *npm* deny в permission general'а в opencode.json",
+              "status": "in_progress",
+              "priority": "high"
+            }
+          ],
+          "truncated": false
+        },
+        "title": "1 todos"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785067783759,
+    "tokens": {
+      "input": 175,
+      "output": 413,
+      "reasoning": 81,
+      "cache": {
+        "write": 0,
+        "read": 42112
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Теперь делегирую general'у редактирование opencode.json. Нужно добавить три deny-правила в bash permission general'а.\n\nВажно: opencode.json — чувствительный конфиг, нужно быть аккуратным. Использовать jq или точечную замену.\n\nПусть general прочитает файл и заменит секцию."
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_00_l1sLSqSaLaHnwdR1BDNJ4021",
+        "status": "completed",
+        "input": {
+          "description": "Добавить grep/find/npm deny general'у",
+          "prompt": "Отредактируй файл /home/kasiro/.config/opencode/opencode.json.\n\nНужно в секции `agent.general.permission.bash` добавить три deny-правила перед `\"*\": \"allow\"`.\n\nТекущее содержимое (строки 143-151):\n```json\n\"general\": {\n  \"permission\": {\n    \"bash\": {\n      \"*sqlite*\": \"ask\",\n      \"*\": \"allow\"\n    }\n  }\n}\n```\n\nДолжно стать:\n```json\n\"general\": {\n  \"permission\": {\n    \"bash\": {\n      \"*grep*\": \"deny\",\n      \"*find*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*\": \"allow\"\n    }\n  }\n}\n```\n\nВАЖНО: Порядок имеет значение — `\"*\": \"allow\"` должно быть ПОСЛЕДНИМ (после deny-правил), иначе deny не сработают.\n\nИспользуй jq или python3 для редактирования, чтобы не сломать JSON.\n\nПосле редактирования:\n1. Проверь, что файл валидный JSON: `python3 -m json.tool /home/kasiro/.config/opencode/opencode.json`\n2. Покажи финальное содержимое секции general.permission.bash\n\nВерни: подтверждение что изменено, и что валидация пройдена.",
+          "subagent_type": "general"
+        },
+        "output": "<task id=\"ses_061ab238fffe209Nwt6n04xTnq\" state=\"completed\">\n<task_result>\nГотово. Изменения в `/home/kasiro/.config/opencode/opencode.json`:\n\n**Что изменено:** В секцию `agent.general.permission.bash` добавлены три deny-правила: `*grep*`, `*find*`, `*npm*`. Порядок соблюдён — deny-правила перед `*sqlite*`, а `\"*\": \"allow\"` — последним.\n\n**Финальное содержимое:**\n```json\n\"bash\": {\n  \"*grep*\": \"deny\",\n  \"*find*\": \"deny\",\n  \"*npm*\": \"deny\",\n  \"*sqlite*\": \"ask\",\n  \"*\": \"allow\"\n}\n```\n\n**Валидация:** пройдена — `python3 -m json.tool` ошибок не выявил.\n</task_result>\n</task>\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_061b06b52ffeMhBsYbz7tSH49p",
+          "sessionId": "ses_061ab238fffe209Nwt6n04xTnq",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Добавить grep/find/npm deny general'у"
+      }
+    ]
+  }
+]

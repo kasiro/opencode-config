@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1785090994974,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Создай универсальную обёртку для Iulita, которая будет работать в любой оболочке (не только fish).\n\nПроблема: ANTHROPIC_API_KEY задан в ~/.config/fish/secrets.fish для nekofree, но Iulita видит его и ошибочно выбирает Claude провайдер.\n\nРешение: создать shell-скрипт-обёртку.\n\n1. Переименуй оригинальный бинарник:\n```bash\nsudo mv /usr/local/bin/iulita /usr/local/bin/iulita-bin\n```\n\n2. Создай скрипт-обёртку /usr/local/bin/iulita:\n```bash\nsudo tee /usr/local/bin/iulita << 'ENDOFFILE'\n#!/bin/sh\n# Iulita wrapper — очищает ANTHROPIC переменные (нужны для nekofree)\n# Без них Iulita не пытается использовать Claude провайдер\nexec env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita-bin \"$@\"\nENDOFFILE\nsudo chmod +x /usr/local/bin/iulita\n```\n\n3. Проверь:\n```bash\nls -la /usr/local/bin/iulita*\n/usr/local/bin/iulita --version\n/usr/local/bin/iulita --doctor\n```\n\nВерни полный вывод всех команд.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1784731356109,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Проведи исследование о том, как работают плагины и сабагенты в OpenCode.\n\n**Цель:** Проверить гипотезу: \"Каждый сабагент — отдельный процесс OpenCode. Плагин загружается в каждом процессе независимо. Глобальная переменная внутри одного процесса видна только его сессии. Race condition нет.\"\n\n**Задачи:**\n\n1. **Поиск в интернете (через SearXNG):**\n   - \"opencode plugin architecture subagent process\"\n   - \"opencode subagent session isolation\"\n   - \"anomalyco opencode plugin system\"\n\n2. **GitHub поиск реальных плагинов OpenCode:**\n   - Ищи на GitHub репозитории с opencode плагинами (поиск: \"opencode plugin\")\n   - Найди 3-5 реальных плагинов, посмотри их структуру\n   - Особенно интересует: есть ли плагины которые используют chat.message, tool.definition\n\n3. **Исследование через deepwiki (если MCP доступен):**\n   - Если есть MCP deepwiki: используй deepwiki_configure, deepwiki_query для исследования репозитория anomalyco/opencode\n   - Узнай как устроена архитектура сабагентов и плагинов\n\n4. **Дополнительные источники:**\n   - opencode.dev — документация\n   - npm: @opencode-ai/plugin — пакет\n\n**Верни структурированный ответ:**\n- Как сабагенты запускаются (отдельный процесс/поток/воркер?)\n- Загружаются ли плагины для каждого сабагента?\n- Есть ли общее состояние между primary и сабагентами?\n- Как работает chat.message и tool.definition для сабагентов?\n- Примеры реальных плагинов и их подходов\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

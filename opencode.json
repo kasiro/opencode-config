@@ -4,8 +4,7 @@
   "default_agent": "jarvis",
   "share": "disabled",
   "instructions": [
-    "~/.config/opencode/global-rules.md",
-    "~/.config/opencode/persona/soul.md"
+    "~/.config/opencode/global-rules.md"
   ],
   "permission": {
     "bash": {
@@ -20,12 +19,6 @@
     "websearch": "deny"
   },
   "mcp": {
-    "exa": {
-      "type": "remote",
-      "url": "http://127.0.0.1:18099",
-      "enabled": true,
-      "timeout": 120000
-    },
     "deepwiki": {
       "type": "remote",
       "url": "https://mcp.deepwiki.com/mcp",
@@ -49,39 +42,6 @@
         "Authorization": "Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500"
       }
     },
-    "web-research": {
-      "type": "local",
-      "command": [
-        "web-research-mcp"
-      ],
-      "enabled": true,
-      "timeout": 60000,
-      "description": "Поиск через DuckDuckGo + fetch страниц"
-    },
-    "searxng": {
-      "type": "local",
-      "command": [
-        "mcp-searxng"
-      ],
-      "enabled": true,
-      "timeout": 60000,
-      "environment": {
-        "SEARXNG_URL": "http://localhost:8099",
-        "SEARXNG_MAX_RESULTS": "15"
-      },
-      "description": "Поиск через свой SearXNG (Docker) + web_url_read"
-    },
-    "crawl4ai": {
-      "type": "local",
-      "command": [
-        "/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python",
-        "-m",
-        "crawl4ai_mcp.server"
-      ],
-      "timeout": 60000,
-      "enabled": true,
-      "description": "Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions"
-    },
     "youtube-transcript": {
       "type": "local",
       "command": [
@@ -93,17 +53,18 @@
       "timeout": 60000,
       "enabled": true
     },
-    "memory": {
+    "lightpanda": {
       "type": "local",
       "command": [
-        "bun",
-        "run",
-        "--cwd",
-        "/home/kasiro/.config/opencode/mcp-servers/memory-mcp",
-        "dist/index.js"
+        "lightpanda",
+        "mcp"
       ],
       "enabled": true,
-      "timeout": 15000
+      "timeout": 60000,
+      "environment": {
+        "LIGHTPANDA_DISABLE_TELEMETRY": "true"
+      },
+      "description": "Lightpanda headless browser — быстрый MCP скрапинг"
     }
   },
   "agent": {
@@ -117,14 +78,10 @@
         },
         "websearch": "deny",
         "webfetch": "deny",
-        "searxng_*": "deny",
-        "crawl4ai_*": "deny",
         "deepwiki_*": "deny",
         "context7_*": "deny",
-        "exa_*": "deny",
-        "web-research_*": "deny",
         "youtube-transcript_*": "deny",
-        "memory_*": "allow"
+        "lightpanda_*": "deny"
       }
     },
     "title": {
@@ -133,64 +90,45 @@
     "general": {
       "permission": {
         "edit": {
-          "**/memory/**": "deny",
           "*": "allow"
         },
         "bash": {
-          "*sqlite*": "ask",
-          "*": "allow"
-        },
-        "websearch": "allow",
-        "webfetch": "allow",
-        "skill": {
-          "agent-delegation": "deny",
-          "jarvis-cycles": "deny",
-          "context-mgmt": "deny",
-          "how_use_memory": "deny"
-        },
-        "memory_*": "deny"
-      },
-      "tools": {
-        "sequential-thinking_*": true,
-        "searxng_*": true,
-        "deepwiki_*": true,
-        "context7_*": true,
-        "exa_*": true,
-        "web-research_*": true,
-        "crawl4ai_*": true,
-        "youtube-transcript_*": true
-      }
-    },
-    "memory-agent": {
-      "permission": {
-        "edit": {
-          "**/memory/projects/**": "allow",
-          "**/memory/global/**": "allow",
-          "**/memory/sessions/**": "allow",
-          "*": "deny"
-        },
-        "read": {
-          "**/memory/**": "allow",
-          "*": "deny"
-        },
-        "bash": {
-          "*": "allow"
+          "*": "allow",
+          "*grep*": "deny",
+          "*find*": "deny",
+          "*npx*": "deny",
+          "*npm*": "deny",
+          "*sqlite*": "ask"
         },
         "websearch": "deny",
         "webfetch": "deny",
-        "memory_*": "allow",
-        "skill": "allow"
+        "skill": {
+          "agent-delegation": "deny",
+          "jarvis-cycles": "deny"
+        }
       },
       "tools": {
-        "memory_*": true
+        "glob": false,
+        "grep": false,
+        "sequential-thinking_*": true,
+        "deepwiki_*": true,
+        "context7_*": true,
+        "youtube-transcript_*": true,
+        "lightpanda_*": true,
+        "memory_set": false,
+        "memory_replace": false,
+        "memory_list": false
       }
+    },
+    "explore": {
+      "disable": true
     }
   },
   "lsp": {},
   "plugin": [
-    "@prevalentware/opencode-goal-plugin",
     "opencode-intellisearch",
-    "@tarquinen/opencode-dcp@3.1.13"
+    "@tarquinen/opencode-dcp@3.1.13",
+    "opencode-agent-memory"
   ],
   "compaction": {
     "auto": false,

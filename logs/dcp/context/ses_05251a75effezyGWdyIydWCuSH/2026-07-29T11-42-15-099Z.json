@@ -1,0 +1,90 @@
+[
+  {
+    "role": "user",
+    "time": 1785325313968,
+    "parts": [
+      {
+        "type": "text",
+        "text": "\"расскажи как устроена твоя система памяти — memory mcp, поиск, хранение, инструменты, архитектура, FTS5, reconciliation, всё подробно опиши\"\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nSkill search trigger: this is the first user query in the session.\nYou should call skill_search before starting the task.\nFirst rewrite the request as a Skill Query containing action, input, output, and audience when available.\nDescribe the required capability and final deliverable; treat file types such as CSV as inputs, not automatically as the target skill.\nOffice examples:\n- Excel/CSV: analyze or clean data, work with formulas and tables, or create charts and workbooks.\n- PowerPoint/PPT: create, revise, or review a presentation or executive deck.\n- Word/DOCX: draft, edit, review, or format a document or report.\n- PDF: extract or review content, generate a PDF, or preserve and inspect page layout.\nCode examples: code review, debugging, test generation, security or performance analysis, frontend design, and other specialized engineering workflows.\nFor example, \"analyze gender_submission.csv\" should express data analysis as the capability, the CSV dataset as input, and findings as output.\nThese are examples of likely specialized workflows, not requirements to call a tool.\n</system-reminder>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_05251a75effezyGWdyIydWCuSH/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_05251a75effezyGWdyIydWCuSH/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785325314765,
+    "tokens": {
+      "input": 54275,
+      "output": 68,
+      "reasoning": 173,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Пользователь спрашивает о том, как устроена моя система памяти — Memory MCP, поиск, хранение, инструменты, архитектура, FTS5, reconciliation и всё подробно. Это запрос на подробное описание архитектуры памяти. \n\nДавайте подумаю, какие скиллы могут быть релевантны. Из списка вижу `how_use_memory` — это полный справочник памяти J.A.R.V.I.S. — Memory MCP + файловая память. Описание подходит. Также `jarvis-cycles` может быть релевантен, но он больше про циклы работы.\n\nЗагружу `how_use_memory` для получения полной информации о системе памяти.\n\nА также, возможно, стоит поискать скилл."
+      },
+      {
+        "type": "tool",
+        "tool": "skill_search",
+        "callID": "call_00_PSDdjwUqUANW5fj1gcpz4145",
+        "status": "completed",
+        "input": {
+          "query": "описание архитектуры памяти, memory MCP, FTS5, хранение, поиск, инструменты, reconciliation"
+        },
+        "output": "{\n  \"status\": \"matched\",\n  \"results\": [\n    {\n      \"skill_id\": \"how_use_memory\",\n      \"name\": \"how_use_memory\",\n      \"score\": 0.69,\n      \"reason\": \"The skill description matches these query terms: памяти, memory, mcp, fts5.\"\n    },\n    {\n      \"skill_id\": \"self-learning-kit\",\n      \"name\": \"self-learning-kit\",\n      \"score\": 0.3498,\n      \"reason\": \"The skill description matches these query terms: memory, поиск, инструменты.\"\n    },\n    {\n      \"skill_id\": \"github-api-search\",\n      \"name\": \"github-api-search\",\n      \"score\": 0.286,\n      \"reason\": \"The skill description matches these query terms: mcp, поиск.\"\n    }\n  ],\n  \"loaded_skill_id\": null\n}\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "status": "matched",
+          "loadedSkillID": null,
+          "truncated": false
+        },
+        "title": "Found 3 skills"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1785325328853,
+    "tokens": {
+      "input": 39102,
+      "output": 47,
+      "reasoning": 28,
+      "cache": {
+        "write": 0,
+        "read": 15232
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Хорошо, skill_search вернул `how_use_memory` как наиболее релевантный. Загружу его."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_srb6k7l4oYZne3FonHPb6077",
+        "status": "completed",
+        "input": {
+          "name": "how_use_memory"
+        },
+        "output": "<skill_content name=\"how_use_memory\">\n# Skill: how_use_memory\n\n# Память J.A.R.V.I.S. — Memory MCP + MEMORY.md\n\n## Архитектура\n\n```\n┌─────────────────────────────────────────────────────────────┐\n│                  MEMORY MCP + ФАЙЛОВАЯ ПАМЯТЬ                │\n├──────────────────────┬──────────────────────────────────────┤\n│     Memory MCP       │         MEMORY.md файлы              │\n│                      │                                      │\n│  memory_search()     │  ~/.local/share/opencode/memory/     │\n│  (FTS5 BM25)         │  ├── global/MEMORY.md                │\n│                      │  ├── projects/<hash>/MEMORY.md       │\n│  memory://{path}     │  └── memory.db (FTS5 индекс)         │\n│  (read resources)    │                                      │\n├──────────────────────┴──────────────────────────────────────┤\n│  Запись (сессия): делегировать memory-agent → checkpoint.md | Запись (долгосрочная): ТОЛЬКО dream → MEMORY.md │\n│  Консолидация: dream скилл                                  │\n│  Discovery: distill скилл                                   │\n└─────────────────────────────────────────────────────────────┘\n```\n\n## Инструменты\n\n| Операция | Инструмент | Описание |\n|----------|-----------|----------|\n| **Поиск** | `memory_search(query, limit=20)` | FTS5 BM25 — возвращает path + **полный content** файла, а не snippet |\n| **Чтение файла** | `memory://{scope}/{path}` | Ресурс MCP для чтения MEMORY.md |\n| **Чтение файла** | `read` | Прямое чтение из ~/.local/share/opencode/memory/ |\n| **Запись (сессия)** | делегировать memory-agent | `task(subagent_type=\"memory-agent\", prompt=\"Добавь запись в checkpoint.md ...\")` — ТОЛЬКО в sessions/<id>/checkpoint.md |\n| **Запись (долгосрочная)** | dream скилл | ТОЛЬКО dream может писать в projects/*/MEMORY.md и global/MEMORY.md |\n| **Консолидация** | dream скилл | 5 фаз: INSPECT → ANALYZE → CONSOLIDATE → REPORT → VERIFY |\n| **Discovery** | distill скилл | 6 фаз: поиск паттернов в траекториях |\n| **Поиск сессий** | `ocdb` (или `ses`) | `ocdb search/list/inspect` — поиск по истории сессий OpenCode через FTS5 (скилл `session-search`). `ses` CLI как альтернатива. |\n\n## Структура файлов памяти (MiMo-Code)\n\n```\n~/.local/share/opencode/memory/\n├── .keep\n├── memory.db                               # FTS5 SQLite индекс (авто-реконсилиация)\n├── global/\n│   └── MEMORY.md                           # Кросс-проектные правила (Rules, Preferences, Tools)\n├── projects/\n│   └── <project_hash>/\n│       └── MEMORY.md                       # Project memory (Rules, Arch decisions, Patterns, Gotchas)\n└── sessions/\n    └── <session_id>/\n        ├── checkpoint.md                   # Сессионная память (Progress, Decisions, Errors)\n        └── notes.md                        # Свободные заметки к сессии\n```\n\nПроектный хэш: `SHA256(абсолютный_путь)[:12]`\n```\nPROJECT_HASH=$(echo -n \"$(pwd)\" | sha256sum | cut -c1-12)\nMEMORY_FILE=\"$HOME/.local/share/opencode/memory/projects/$PROJECT_HASH/MEMORY.md\"\n```\n\n### Три уровня памяти\n\n| Уровень | Что хранит | Формат | Место |\n|---------|-----------|--------|-------|\n| **Checkpoint** | Прогресс сессии, решения «на лету», ошибки, заметки | `sessions/<id>/checkpoint.md`, `notes.md` | Сессионная |\n| **Project** | Durable знания: правила, архитектурные решения, паттерны, грабли | `projects/<hash>/MEMORY.md` | После dream |\n| **Global** | Кросс-проектные предпочтения, привычки пользователя | `global/MEMORY.md` | Глобальная |\n\n### Жизненный цикл\n\n1. **В процессе сессии** → SAVE пишет в `session/<id>/checkpoint.md`\n2. **В конце сессии** → dream читает checkpoint + SQLite → консолидирует в project/global MEMORY.md\n3. **При старте сессии** → Frozen Snapshot загружает project MEMORY.md + последние checkpoint\n\n## Формат MEMORY.md\n\n```markdown\n# Global Memory\n\n## Rules\n- [2026-07-11] всегда использовать doas вместо sudo\n- [2026-07-11] никогда не удалять ~/.opencode/\n\n## Architecture decisions\n- [2026-07-11] выбрана файловая память вместо agentmemory\n\n## Discovered durable knowledge\n- [2026-07-11] Memory MCP использует FTS5 с BM25 ранжированием\n\n## Patterns\n- [2026-07-11] для поиска ошибок: memory_search(\"error bug failed\")\n\n## Gotchas\n- [2026-07-11] после редактирования MEMORY.md wait перезапуска сессии для реиндексации\n\n## Ideas\n- [2026-07-11] ID:1 голосовое управление opencode\n```\n\n## Как работать с памятью\n\n### Поиск (READ)\n```javascript\nmemory_search(query=\"doas вместо sudo\", limit=5)\n// Возвращает: path, scope, content (полный текст файла), score\n\n// ВНИМАНИЕ: Возвращает полный текст MEMORY.md файла (не snippet).\n// Если файл большой (>200 строк) — используй limit=3-5, чтобы не перегрузить контекст.\n```\n\n### Сохранение (WRITE) — ТОЛЬКО в checkpoint.md через edit\nВо время сессии ВСЁ пишется ТОЛЬКО в `sessions/<id>/checkpoint.md`. \nНи J.A.R.V.I.S., ни memory-agent, ни любой другой агент НЕ ИМЕЮТ ПРАВ на `projects/*/MEMORY.md` и `global/MEMORY.md`.\n\nПравило записи — СТРОГО:\n- memory-agent использует ТОЛЬКО инструмент `edit` для добавления записей в файлы памяти\n- memory-agent НИКОГДА не использует `bash sed` для редактирования файлов памяти\n- memory-agent НИКОГДА не использует `bash echo >>` для дописывания в файлы памяти\n- Только `edit` — чтобы гарантировать целостность формата MEMORY.md\n\nПример правильной делегации:\n```\ntask(subagent_type=\"memory-agent\", prompt=\"Прочитай checkpoint.md текущей сессии. Используя edit, добавь запись в конец файла: '- [2026-07-13] что произошло'\")\n```\n\nДолгосрочная запись в MEMORY.md — ТОЛЬКО через dream скилл при CYCLE 3 END.\n\n### Консолидация (DREAM)\n```\n1. Загрузить dream скилл\n2. Выполнить 5 фаз: INSPECT → ANALYZE → CONSOLIDATE → REPORT → VERIFY\n```\n\n### Discovery (DISTILL)\n```\n1. Загрузить distill скилл\n2. Выполнить 6 фаз: INVENTORY → DISCOVER → CONFIRM → SHORTLIST → FORM → CREATE\n```\n\n## ❄️ Frozen Snapshot Pattern\n\n**При старте сессии:**\n1. `memory_search(query=\"rule decision pattern\", limit=5)` — ключевые знания из MEMORY.md\n2. Эти данные → в system prompt. Не перезагружать mid-session.\n\n## DECISION MATRIX\n\n| Ситуация | Инструмент |\n|----------|-----------|\n| Найти правило/паттерн | `memory_search()` |\n| Сохранить решение | делегировать memory-agent → checkpoint.md секция \"Decisions\" (edit, не sed) |\n| Сохранить урок из ошибки | делегировать memory-agent → checkpoint.md секция \"Errors\" (edit, не sed) |\n| Сохранить факт | делегировать memory-agent → checkpoint.md секция \"Progress\" (edit, не sed) |\n| Записать в долгосрочную память | ТОЛЬКО dream скилл (при CYCLE 3 END) |\n| Консолидировать сессию | dream скилл |\n| Найти повторяющиеся паттерны | distill скилл |\n| Найти сессию/историю | `ses search <query>` / `ses list` (скилл `session-search`) |\n\n## 🔍 Определение текущей сессии (КРИТИЧНО)\n\nПри записи в checkpoint.md memory-agent ДОЛЗЕН определить правильную сессию.\n\n### Проблема\nMemory-agent запускается как subagent. Его ID сессии — это НЕ основная сессия пользователя.\nЕсли писать в `sessions/<subagent_id>/checkpoint.md` — данные попадут в сессию агента, а не пользователя.\n\n### Решение: определение через parent_id\n\n```bash\n# 1. Найти target_session через ocdb\nTARGET=$(ocdb session --current --format json 2>/dev/null | jq -r '.[] | select(.field==\"target_session\") | .value // \"\"')\n\n# 2. Если parent_id не найден — используем текущую сессию\nif [ -z \"$TARGET\" ] || [ \"$TARGET\" = \"—\" ]; then\n  echo \"ERROR: PARENT ID NOT FOUND!\"\n  exit 1\nfi\n\n# 3. Записать в checkpoint.md этой сессии\n# Файл: ~/.local/share/opencode/memory/sessions/$TARGET/checkpoint.md\n```\n\n### Правило для memory-agent (СТРОГО)\n1. Найти parent_id через ocdb (столбец target_session)\n2. **Если parent_id пустой → АБОРТ. НЕ ПИСАТЬ НИКУДА. Вернуть ошибку: \"ERROR: PARENT ID NOT FOUND! CANNOT WRITE CHECKPOINT!\"**\n3. **memory-agent ВСЕГДА запускается как subagent → у него ОБЯЗАТЕЛЬНО должен быть parent_id**\n4. Если parent_id найден → писать ТОЛЬКО в: `sessions/<target_session>/checkpoint.md`\n5. Никогда не писать в свою собственную сессию\n\nЕсли parent_id не найден — не делать ничего. Вернуть текст ошибки сэру.\n\n### ocdb-запрос для полного контекста\n```bash\nocdb session --current --format json\n```\n\n## Важные правила\n\n1. **J.A.R.V.I.S. не редактирует файлы** — все операции записи делегировать memory-agent'у\n2. **memory-agent пишет ТОЛЬКО через edit** — ни `bash sed`, ни `bash echo`, ни `bash printf`. Только `edit` для целостности файлов памяти.\n3. **Только dream может писать в MEMORY.md** — `projects/*/MEMORY.md` и `global/MEMORY.md` редактирует ТОЛЬКО dream скилл. Никакие другие агенты не имеют на это прав.\n4. **Во время сессии — только checkpoint** — все записи (решения, ошибки, прогресс, идеи) → `sessions/<id>/checkpoint.md`\n5. **Memory Search** использует FTS5 OR-токенизацию — запрос \"doas sudo\" найдёт оба слова\n6. **Не дублировать** — перед записью проверить через memory_search что такой записи нет\n7. **Дата в формате** `[YYYY-MM-DD]` для всех записей\n8. **Лимит ~200 строк** на checkpoint — при превышении архивировать старые записи\n9. **Определяй текущую сессию через parent_id (через ocdb — без SQL вручную)** — memory-agent ВСЕГДА запускается как subagent, у него ВСЕГДА должен быть parent_id (сессия пользователя). Если parent_id не найден — АБОРТ, ошибка, ничего не писать. Запись ТОЛЬКО в `sessions/<parent_id>/checkpoint.md`.\n\n## Reference файлы — архитектура памяти\n\nДва файла с полным описанием архитектуры памяти для понимания различий между MiMo-Code и OpenCode:\n\n| Файл | Описание |\n|------|----------|\n| `HOW_WORK_MIMOCODE_MEMORY.md` | Архитектура памяти в MiMo-Code (https://github.com/XiaomiMiMo/MiMo-Code) |\n| `HOW_WORK_OPENCODE_MEMORY.md` | Архитектура памяти в OpenCode (наша реализация) |\n\n**Когда читать:**\n- При старте новой сессии — чтобы вспомнить архитектуру\n- Перед CYCLE 3 END — чтобы правильно сохранить checkpoint\n- При вопросах сэра о том как работает память\n- Для сравнения с MiMo-Code при отладке\n\n**Как читать:**\n```\nread ~/.agents/skills/how_use_memory/HOW_WORK_OPENCODE_MEMORY.md   # наша архитектура\nread ~/.agents/skills/how_use_memory/HOW_WORK_MIMOCODE_MEMORY.md   # MiMo-Code архитектура\n```\n\nBase directory for this skill: file:///home/kasiro/.agents/skills/how_use_memory\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n<file>/home/kasiro/.agents/skills/how_use_memory/HOW_WORK_MIMOCODE_MEMORY.md</file>\n<file>/home/kasiro/.agents/skills/how_use_memory/HOW_WORK_OPENCODE_MEMORY.md</file>\n</skill_files>\n</skill_content>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "name": "how_use_memory",
+          "dir": "/home/kasiro/.agents/skills/how_use_memory",
+          "truncated": false
+        },
+        "title": "Loaded skill: how_use_memory"
+      }
+    ]
+  }
+]

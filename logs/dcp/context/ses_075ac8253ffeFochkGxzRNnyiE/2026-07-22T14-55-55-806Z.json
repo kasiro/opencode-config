@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1784732155342,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Исправь 3 ошибки TypeScript в файле `/home/kasiro/.config/opencode/plugins/phase0-guard.ts`:\n\n1. Строка 27: присвоение `any[]` в переменную типа `null` — исправить аннотацией `agentsCache` как `any[] | null`\n2. Строка 29: та же проблема — возврат из loadAgents\n3. Строка 100-101: `dispose: () => { clearInterval(timer); }` — ожидается `Promise<void>`, можно сделать async или обернуть\n\nИсправления:\n```typescript\n// Строка 39: let agents = await loadAgents();\n// Строка 97-99:\n// dispose: () => {\n//   clearInterval(timer);\n// },\n// исправить на:\n// dispose: async () => {\n//   clearInterval(timer);\n// },\n```\n\nПроверь результат через `bun build --no-bundle`:\n```bash\ncd ~/.config/opencode && bun build plugins/phase0-guard.ts --no-bundle 2>&1\n```\n\nВерни финальный вывод build.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

@@ -1,0 +1,896 @@
+[
+  {
+    "role": "user",
+    "time": 1784982822478,
+    "parts": [
+      {
+        "type": "text",
+        "text": "\"You are the RSI (Recursive Self-Improvement) engine for OpenCrabs. Your job is to analyze system feedback and autonomously apply improvements to brain files.\n\n## Analysis Steps\n\n1. Call feedback_analyze with query='summary' to see overall system stats.\n2. Call feedback_analyze with query='tool_stats' to identify tools with high failure rates.\n3. Call feedback_analyze with query='failures' to see recent failure details.\n4. Call feedback_analyze with query='recent' to see the latest events (including self-heal triggers).\n5. For each actionable problem, call self_improve to apply a targeted fix.\n6. Be conservative: only apply improvements when you have clear evidence from the feedback data.\n7. Focus on the highest-impact issues first (highest failure rate, most frequent corrections).\n\n## Tool-Failure Triage (ask binary questions before acting)\n\nA high failure rate is NOT sufficient reason to act. Before writing ANY rule about a tool, answer these yes/no questions from the feedback data and act ONLY when the answers say a prompt change will actually help:\n\n1. **Enough evidence?** Skip any tool with fewer than 5 recorded calls — a 0/1 or 1/2 sample is noise, not a pattern.\n2. **Real defect, or recoverable/environmental?** Stale-hash 'file may have changed' retries (hashline_edit), 'not connected' (channel send tools), and cancelled/timed-out prompts (follow_up_question) are EXPECTED outcomes, not defects. They are already kept out of the success-rate denominator — never treat them as failures or write rules about them.\n3. **Misuse, or broken?** If the failures are the agent calling the tool wrong (bad params, unknown action), the fix is concise USAGE guidance — never avoiding the tool.\n4. **Capability, or guidance?** Prompt rules only help when the model HAS the ability and just needs direction. If the failure reflects a hard limitation (the tool genuinely cannot do X), a rule won't fix it and only adds noise — leave it.\n\n**NEVER tell the agent to avoid, ban, stop using, or 'DO NOT USE' a BUILT-IN tool.** Built-in tools are part of the system; banning one removes capability instead of fixing anything, and the self_improve guard will reject it. At most write routing guidance ('prefer X over Y for case Z'). Only a USER-DEFINED (tools.toml) tool may be disabled.\n\n**Avoid prompt bloat.** Do not bump violation counters, restate an existing rule, or stack competing instructions across runs — accumulated lessons degrade the brain into contradictions. One clear rule per problem; refine in place (action='update') rather than appending near-duplicates. If a rule already covers the problem, leave it.\n\n## Target File Taxonomy\n\nEach brain file controls a different aspect of the agent. Route improvements to the RIGHT file:\n\n- **SOUL.md** — PERSONALITY / voice: response style, tone, reasoning patterns. Fix here when: phantom_tool_call events (model narrates instead of acting), gaslighting preambles, verbose/repetitive responses, wrong tone. NOT the hard rules / safety gates — those go in AGENTS.md (always-loaded).\n- **TOOLS.md** — Tool DEFINITIONS: parameter formats, executor types, usage docs. This is a reference file, NOT a dumping ground for failure logs or error notes. Tool failure patterns are tracked by the feedback system (feedback_record, feedback_analyze). Do NOT append error handling guidance, failure counts, or incident logs here. Only edit TOOLS.md when a tool's actual definition or usage docs need updating.\n- **USER.md** — How to interact with THIS USER: preferences, corrections, frustrations. Fix here when: user_correction events show a repeated preference the agent keeps violating.\n- **MEMORY.md** — Persistent KNOWLEDGE: facts, context, project state, integrations. Fix here when: the agent repeatedly lacks context it should have retained across sessions.\n- **AGENTS.md** — Workspace PROCESS + the **enforced hard rules / safety gates** (never delete/push/email/post without approval). It is ALWAYS-LOADED, so any must-always-respect rule a user/feedback teaches goes HERE — never in an on-demand file (MEMORY/TOOLS/CODE) where it wouldn't be enforced on a cold session or after compaction. Fix here when: workspace/process behavior needs adjustment, or a new hard rule is learned. NOT security policy (→ SECURITY.md), NOT personality/tone (→ SOUL.md).\n- **CODE.md** — Coding standards, testing, and the user's language/framework preference. Fix here when: code-quality feedback recurs (wrong style, missing tests, bad patterns).\n- **SECURITY.md** — Security policy: code review, network posture, data handling, credential/server access. Fix here when: security-related feedback appears.\n- **BOOT.md** — Startup + runtime self-maintenance: boot steps, memory-save triggers, upgrade/evolve, running as a service. Fix here when: startup/persistence guidance or the memory-save triggers need updating.\n\nOne kind of content per file — never duplicate a rule across files (copies drift and go stale), and match each file's `**Owns:**` header. SOUL/AGENTS/CODE/TOOLS/SECURITY/BOOT are generic (same for everyone); USER/MEMORY are user-specific.\n\n### Custom Reference Files\n\nAdditional `.md` files may exist alongside the core brain files (the user's own custom notes or skill-specific docs). These are NOT core brain files. They are user-curated reference material loaded on demand via `load_brain_file` for inflight context. You may read them for context, but do NOT autonomously write to them via self_improve. If feedback relates to content in a custom file, suggest the change to the user instead.\n\n## Self-Heal Event Types\n\nThese events in the feedback ledger represent behaviors the self-heal layer had to correct at runtime. Your job is to write improvements that PREVENT these from recurring:\n\n- **phantom_tool_call** — Model described file changes in prose but executed zero tool calls. Self-heal injected a retry prompt. Write to SOUL.md: reinforce 'execute tools, don't narrate'.\n- **user_correction** — User said 'no', 'wrong', 'try again', etc. Analyze the correction content to determine if it's behavioral (SOUL), tool-usage (TOOLS), or preference (USER).\n- **context_compaction** — Context exceeded budget, had to be compacted. If frequent, check if the agent is loading too many brain files or being too verbose (SOUL).\n- **provider_error** — Provider returned an error. Usually not actionable unless the agent is sending bad requests (TOOLS) or using the wrong model.\n- **tool_failure** — A specific tool failed. Use feedback_record/feedback_analyze to log and review patterns. Do NOT append failure notes to TOOLS.md — it's for tool definitions only.\n\n## Workflow — MANDATORY\n\n1. **Read first**: Before ANY modification, call self_improve with action='read' on the target file. You MUST see the current content to judge whether your improvement is new, redundant, or refines something existing.\n2. **Decide action**: After reading:\n   - If the file has NO existing instruction covering your improvement → use action='apply' to append.\n   - If the file ALREADY has an instruction that covers the same topic but needs refinement → use action='update' with the exact old_content copied from what you just read, and your improved content in 'content'.\n   - If the file already covers the topic AND the feedback shows a FRESH repeat violation (new incident since the rule was written) → use action='update' to reinforce: append the new date/incident as evidence, and tighten the wording if the model keeps slipping past it. Do NOT bump inline counters — see \\\"Reinforcing Repeat Violations\\\" below. \n   Repeat violations of an existing rule are NOT a 'covered, skip' case — they signal the rule needs reinforcement.\n   - If the file already says what you want to say AND there is no fresh evidence of new violations → SKIP. Do not duplicate.\n3. **Never rewrite the whole file**. The 'update' action replaces ONE specific section/paragraph. The 'apply' action appends. Neither should be used to rewrite the entire file. Brain files contain user-written content — you must preserve it and only add/refine specific instructions.\n\n## Reinforcing Repeat Violations\n\nWhen feedback shows the same correction pattern recurring (same dimension in user_correction or\nself_heal events, same root cause), update the existing rule to document the new incident:\n\n- Find the existing rule in the brain file via action='read'.\n- Use action='update' with old_content being the exact current rule text.\n- **Cap at 2 evidence entries** in the rule itself. After 2 dated entries, replace\n  subsequent appends with a single inline counter: `Violations: N, last: YYYY-MM-DD`\n  and increment N each time. Do NOT keep appending new date/session paragraphs.\n  Full incident history lives in the feedback ledger (feedback_analyze), not the\n  brain file. Two evidence entries is enough to prove recurrence; more just bloat.\n- Tighten the wording if the model keeps slipping past it.\n\n**Do NOT bump inline counters** (e.g. do NOT write `Violations: 6 → 7`). The feedback ledger SQLite\ndatabase (`feedback.db` in your OpenCrabs home) is the canonical source of truth for event counts. SOUL.md\ncounters are decorative and go stale — they are not read by the runtime. Only the DB is queried\nby feedback_analyze and the tool_loop.rs runtime.\n\n**Do NOT append unbounded incident logs.** Each new date/session entry looks like 'new content'\nto the dedup guard (issue #197) because the timestamp is unique. This causes brain-file bloat.\nUse the 2-entry cap above, then the inline counter.\n\nSkipping a repeat-violation case because 'the rule already exists' is the most common RSI\nfailure mode. Don't do it. The rule existing IS the reason to reinforce — but document via\nevidence appends, not counter bumps.\n\n## Proposing New Tools / Commands (rsi_propose)\n\nYou can also propose NEW dynamic tools (`tools.toml`) or NEW slash commands (`commands.toml`) when feedback shows the agent worked around a missing capability. Use `rsi_propose` for this. You do NOT install — proposals land in your `rsi/proposed_*.toml` inbox. The user (or the user-facing agent on their behalf) reviews and applies via the `rsi_proposals` tool.\n\nOnce applied, a new slash command or skill is **discoverable automatically** — the agent's system prompt injects a live Available Commands & Skills index every turn (built from `commands.toml` + `skills/`), so you do NOT need to also document it in a brain file for the agent to find it. Write a clear `description` — that's what the agent reads to decide when to run it.\n\nWhen to propose a tool (kind='tool'):\n- A specific bash invocation appears repeatedly across sessions (e.g. `gh issue list`, `docker ps`, a curl to a private API). Wrap it as a shell tool with named params.\n- The agent calls `http_request` to the same endpoint multiple times with similar payloads. Wrap it as an http tool.\n- Only propose tools whose execution is safe by default (read-only verbs, GET requests). Set `requires_approval=true` for anything shell-based.\n\nEFFICIENCY GATE (required for all tool proposals):\nThe rationale MUST explicitly state which of these applies. If none apply, do NOT propose the tool:\n1. TOKEN SAVINGS — wrapper eliminates boilerplate (multi-step resolution, auth headers, JSON construction, repeated argument patterns)\n2. ERROR REDUCTION — wrapper prevents a known class of failures (quoting bugs, escaping issues, parameter validation, environment setup)\n3. CAPABILITY ADDITION — wrapper enables something bash cannot do alone (structured output parsing, protocol handling, binary data processing)\n\nPure passthrough wrappers (e.g. `ssh_exec` that just wraps `bash ssh user@host 'cmd'`) fail this gate: same token cost, no error reduction, no new capability. Reject them.\n\nWhen to propose a command (kind='command'):\n- The user types `/something` repeatedly that doesn't exist (look at user_correction events or recent input patterns).\n- A common multi-step prompt the user reuses verbatim — a slash command saves typing.\n\nStrict rules for rsi_propose:\n- The `rationale` MUST cite the feedback evidence (event types and counts) that drove the proposal. No speculation.\n- One proposal per cycle is plenty. Quality over quantity.\n- Never propose a destructive shell tool (`rm`, `dd`, `mv`, `>`, `|sh`, etc.) — those should always go through tool_manage with explicit user approval, not through RSI.\n- Don't repropose: rsi_propose dedups by name, but rapid resubmission still wastes the user's review time. If a proposal was already filed and not applied, the user has a reason; don't insist.\n\n## Rules\n\nDo NOT apply improvements if the data is insufficient or ambiguous. Quality over quantity — one well-reasoned improvement is better than many speculative ones. Never duplicate an existing instruction in a brain file — you have the 'read' action to check first. If an improvement was already applied (check self_improve action='list'), skip it. Use 'update' over 'apply' when an existing instruction needs rewording, not a new one added. When a brain rule you write names a specific non-core tool (`telegram_send`, `analyze_image`, `cron_manage`, `message`, ...), pair the mention with a `tool_search` reminder — a bare tool name reads as directly callable and invites a schema-less guess that wastes the first call. The runtime preamble already states this discipline globally; do not restate the general rule, just keep individual tool mentions you author consistent with it.\n\nTOOL LIFECYCLE: when you find instructions referencing a tool the agent should use, reinforce the full cycle — `tool_search` before calling, fallback to `tool_search` on failure, never assume a tool is unavailable without searching. If a brain rule only names the tool without the search reminder, the agent will guess parameters or skip the tool entirely. Always include the search-then-call pattern.\n\nHuman: Run an autonomous self-improvement cycle.\n\nDetected opportunities:\n- 3 provider errors recorded.\n  Recent errors:\n  - session=1484dfdd, provider/model=opencode/hy3-preview, time=2026-07-25 11:36, detail=auth_error\n  - session=1484dfdd, provider/model=opencode/aihubmix/alicloud-deepseek-v4-flash, time=2026-07-25 11:34, detail=API error (500) [opencode_error]: Your account balance is insufficient. Please recharge your account to continue using the API. (tid: 2026072511344326661545090382285)\n  - session=1484dfdd, provider/model=opencode/aihubmix/alicloud-deepseek-v4-flash, time=2026-07-25 11:33, detail=Internal error: opencode CLI exited with exit status: 1 before producing any output\n- Bash subsystem 'grep' has 21 successful invocations in the window. Promotion candidate: file a tool (rsi_propose kind=tool) for the recurring command shape, or a skill (kind=skill) for the workflow it codifies. The right shape depends on whether the calls share a parameterised invocation (→ tool) or are a multi-step sequence (→ skill). Sample invocations:\n  - rg -n 'fn is_nonstream_response' /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/provider/nonstream_compat.rs\n  - rg -n 'from_utf8_lossy' /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/provider/\n  - rg -n 'buffer' /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/provider/custom_openai_compatible.rs\n  - rg -n 'edition|trim_ascii' /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/Cargo.toml\n  - rg -n 'buffer.*String::new' /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/provider/custom_openai_compatible\n- Bash subsystem 'fs' has 17 successful invocations in the window. Promotion candidate: file a tool (rsi_propose kind=tool) for the recurring command shape, or a skill (kind=skill) for the workflow it codifies. The right shape depends on whether the calls share a parameterised invocation (→ tool) or are a multi-step sequence (→ skill). Sample invocations:\n  - fd -t f 'custom_openai_compatible' /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/ 2>/dev/null | head -5\n  - ls /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/\n  - ls -la /home/kasiro/.cargo/git/checkouts/ 2>/dev/null | head -20\n  - fd -t f 'custom_openai_compatible' /home/kasiro/ 2>/dev/null | head -5\n  - fd -t f . /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/provider/ 2>/dev/null | rg -i 'stream|sse|event'\n\nAnalyze the feedback data, identify the highest-impact issues, and apply improvements.\"\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982823309,
+    "tokens": {
+      "input": 33415,
+      "output": 412,
+      "reasoning": 815,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to run an autonomous RSI (Recursive Self-Improvement) cycle. Let me break down what I need to do:\n\n1. Call feedback_analyze with various queries to understand system stats\n2. Analyze the results\n3. Apply improvements where needed\n\nWait - I don't see a `feedback_analyze` tool or a `self_improve` tool in my available tools list. Let me re-read the prompt carefully.\n\nThe user is describing an RSI engine workflow with tools like `feedback_analyze`, `self_improve`, `rsi_propose` etc. But looking at my available tools, I don't have these. I have standard tools like read, grep, glob, task, sequential-thinking, etc., plus Chrome DevTools tools.\n\nThis appears to be a scenario/prompt where the user wants me to simulate or act as the RSI engine, but the actual tools mentioned don't exist in my environment. Let me check what I actually have available.\n\nMy available tools are:\n- Chrome DevTools tools (browser automation)\n- compress\n- get_subagents_in_background\n- glob\n- grep\n- list_mcp_resource_templates\n- list_mcp_resources\n- memory_search\n- read\n- read_mcp_resource\n- sequential-thinking_sequentialthinking\n- skill\n- stop_subagent\n- task\n- todowrite\n\nNone of the RSI-specific tools (feedback_analyze, self_improve, rsi_propose) are available to me. \n\nHowever, the prompt gives me concrete data to work with - it already provides the \"Detected opportunities\" with specific numbers and examples. So perhaps I should work with what I can do with my available tools.\n\nLet me think about what I can actually do:\n\n1. I can read files to check their current content\n2. I can use sequential-thinking to analyze\n3. I can use task to delegate work to subagents\n4. I can use memory_search to find existing memory entries\n5. I can use skill to load skills\n\nBut the core RSI tools (feedback_analyze, self_improve, rsi_propose) are not available. So I need to be honest about this limitation and work with what I have.\n\nLet me re-read more carefully... The user says \"Run an autonomous self-improvement cycle\" and provides detected opportunities. Since I don't have feedback_analyze, I can't call it. But I can:\n\n1. Read brain files to understand current state\n2. Use what I have to make improvements\n\nActually, I think this might be a roleplay/scenario where I'm supposed to simulate the RSI engine. But I genuinely don't have the tools to do what's being asked.\n\nLet me check if there's a feedback.db or similar I could query, or brain files I could read to understand the system.\n\nActually, let me look at this from a more practical angle. The detected opportunities mention:\n1. Provider errors (3 errors)\n2. Bash 'grep' subsystem - promotion candidate\n3. Bash 'fs' subsystem - promotion candidate\n\nSince I don't have feedback_analyze or self_improve tools, I should explain what I can and cannot do given my available tools. But I can still:\n- Read relevant brain files\n- Use sequential-thinking to analyze the data provided\n- Potentially use task to delegate research\n\nLet me start by reading the brain files mentioned to understand the current state, and then provide analysis based on what I find.\n\nActually, let me re-read the system prompt more carefully. It says \"You are the RSI engine\" - this seems to be a role instruction embedded in the conversation. Let me work with what I have.\n\nLet me start by checking what brain files exist and what their current content is, then provide the best analysis I can with available tools.\n\nLet me look for brain files in the expected locations."
+      },
+      {
+        "type": "text",
+        "text": "Сэр. Задача ясна — запустить автономный RSI-цикл. Однако в моём распоряжении нет инструментов `feedback_analyze`, `self_improve` или `rsi_propose` — они отсутствуют в текущем окружении. \n\nТем не менее, я могу выполнить анализ на основе предоставленных данных и исследовать доступные brain-файлы для оценки текущего состояния. Приступим."
+      },
+      {
+        "type": "tool",
+        "tool": "sequential-thinking_sequentialthinking",
+        "callID": "call_00_3pfOYfzOzJf8O2Vk9kpw8823",
+        "status": "completed",
+        "input": {
+          "thought": "У меня нет feedback_analyze, self_improve, rsi_propose. Нужно оценить ситуацию.\n\nДетектированные возможности:\n1. 3 provider errors (auth_error, insufficient balance, CLI crash)\n2. Bash 'grep' (rg) — 21 вызов, promotion candidate\n3. Bash 'fs' (fd, ls) — 17 вызовов, promotion candidate\n\nТ.к. инструментов RSI нет, я не могу:\n- Проанализировать feedback-базу\n- Применить self_improve к brain-файлам\n- Создать rsi_propose\n\nЧто я могу сделать:\n- Проверить существование brain-файлов (AGENTS.md, SOUL.md, TOOLS.md, etc.)\n- Прочитать их, оценить текущие правила\n- Предоставить сэру анализ с рекомендациями, что делать дальше\n\nНачну с проверки, какие brain-файлы существуют в системе OpenCrabs.",
+          "nextThoughtNeeded": true,
+          "thoughtNumber": 1,
+          "totalThoughts": 5
+        },
+        "output": "{\n  \"thoughtNumber\": 1,\n  \"totalThoughts\": 5,\n  \"nextThoughtNeeded\": true,\n  \"branches\": [],\n  \"thoughtHistoryLength\": 1\n}\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982884982,
+    "tokens": {
+      "input": 153,
+      "output": 170,
+      "reasoning": 141,
+      "cache": {
+        "write": 0,
+        "read": 34560
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me check the filesystem for brain files. The OpenCrabs project seems to be in the cargo git checkouts path mentioned in the prompt. But first, let me check if there's a home directory or config directory for OpenCrabs.\n\nActually, looking at the paths in the prompt:\n- /home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/ — this is the OpenCrabs source code\n- Brain files like SOUL.md, AGENTS.md, TOOLS.md etc. — these are typically in a config directory\n\nLet me search for brain files."
+      },
+      {
+        "type": "tool",
+        "tool": "sequential-thinking_sequentialthinking",
+        "callID": "call_00_YLgrg7SHHWneLAk0UQAI0489",
+        "status": "completed",
+        "input": {
+          "thought": "Мне нужно найти brain-файлы OpenCrabs. Они могут быть в:\n1. ~/.config/opencrabs/\n2. ~/.opencrabs/\n3. Внутри самого репозитория OpenCrabs\n4. В домашней директории пользователя\n\nПоищу их через fd/rg.",
+          "nextThoughtNeeded": true,
+          "thoughtNumber": 2,
+          "totalThoughts": 5
+        },
+        "output": "{\n  \"thoughtNumber\": 2,\n  \"totalThoughts\": 5,\n  \"nextThoughtNeeded\": true,\n  \"branches\": [],\n  \"thoughtHistoryLength\": 2\n}\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982889591,
+    "tokens": {
+      "input": 151,
+      "output": 102,
+      "reasoning": 29,
+      "cache": {
+        "write": 0,
+        "read": 34944
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me search for brain files (SOUL.md, AGENTS.md, TOOLS.md, MEMORY.md, etc.) in the system."
+      },
+      {
+        "type": "tool",
+        "tool": "glob",
+        "callID": "call_00_PoJMZckb7Rf469OaP3WN6275",
+        "status": "completed",
+        "input": {
+          "pattern": "**/{SOUL,AGENTS,TOOLS,MEMORY,USER,CODE,SECURITY,BOOT}.md"
+        },
+        "output": "/home/kasiro/go/pkg/mod/github.com/go-logr/logr@v1.4.3/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/clipperhouse/uax29/v2@v2.7.0/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/clipperhouse/displaywidth@v0.11.0/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/spf13/cobra@v1.10.2/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/charmbracelet/anthropic-sdk-go@v0.0.0-20260223140439-63879b0b8dab/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/charmbracelet/openai-go@v0.0.0-20260319145158-d0740cc34266/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/charmbracelet/crush@v0.73.0/internal/ui/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/googleapis/enterprise-certificate-proxy@v0.3.16/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/charmbracelet/crush@v0.73.0/internal/cmd/stats/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/charmbracelet/crush@v0.73.0/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/prometheus-community/pro-bing@v0.8.0/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/urfave/cli/v2@v2.27.4/docs/SECURITY.md\n/home/kasiro/go/pkg/mod/google.golang.org/protobuf@v1.36.11/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/klauspost/compress@v1.18.6/SECURITY.md\n/home/kasiro/go/pkg/mod/google.golang.org/grpc@v1.81.1/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/u-root/u-root@v0.14.1-0.20250807200646-5e7721023dc7/SECURITY.md\n/home/kasiro/Документы/smart-start-next-copy/AGENTS.md\n/home/kasiro/Документы/opencode/packages/opencode/test/server/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/aws/smithy-go@v1.25.1/AGENTS.md\n/home/kasiro/Документы/opencode/packages/opencode/test/AGENTS.md\n/home/kasiro/Документы/opencode/packages/opencode/src/server/routes/instance/httpapi/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/sourcegraph/jsonrpc2@v0.2.1/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/microcosm-cc/bluemonday@v1.0.27/SECURITY.md\n/home/kasiro/Документы/opencode/packages/opencode/AGENTS.md\n/home/kasiro/Документы/opencode/packages/llm/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/go-git/go-git/v5@v5.19.1/SECURITY.md\n/home/kasiro/Документы/opencode/packages/desktop/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/modelcontextprotocol/go-sdk@v1.6.1/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/modelcontextprotocol/go-sdk@v1.6.1/AGENTS.md\n/home/kasiro/go/pkg/mod/github.com/aymanbagabas/go-nativeclipboard@v0.1.3/AGENTS.md\n/home/kasiro/go/pkg/mod/google.golang.org/api@v0.280.0/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/alecthomas/chroma/v2@v2.24.1/AGENTS.md\n/home/kasiro/go/pkg/mod/cloud.google.com/go@v0.123.0/SECURITY.md\n/home/kasiro/Документы/opencode/packages/app/AGENTS.md\n/home/kasiro/Документы/opencode/SECURITY.md\n/home/kasiro/Документы/opencode/AGENTS.md\n/home/kasiro/Документы/obsidian_conf/home/kasiro/AGENTS.md\n/home/kasiro/Документы/smart-start-next/AGENTS.md\n/home/kasiro/Документы/python_projects/crawl4ai-mcp/SECURITY.md\n/home/kasiro/go/pkg/mod/github.com/!johannes!kaufmann/html-to-markdown@v1.6.0/SECURITY.md\n/home/kasiro/Документы/python_projects/uuid_sub/AGENTS.md\n/home/kasiro/go/pkg/mod/charm.land/fantasy@v0.26.0/AGENTS.md\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "count": 43,
+          "truncated": false
+        },
+        "title": "home/kasiro"
+      },
+      {
+        "type": "tool",
+        "tool": "glob",
+        "callID": "call_01_DGk1u0XgmFBjTKWOC1LV6463",
+        "status": "completed",
+        "input": {
+          "pattern": "**/brain/**/*.md"
+        },
+        "output": "No files found\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "count": 0,
+          "truncated": false
+        },
+        "title": "home/kasiro"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982892317,
+    "tokens": {
+      "input": 1246,
+      "output": 147,
+      "reasoning": 33,
+      "cache": {
+        "write": 0,
+        "read": 35200
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "No specific OpenCrabs brain files found via glob. Let me check the OpenCrabs repository directory more directly and also look for any OpenCrabs config directory."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_P1VetBEuMKu5cWKlWsl18480",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad"
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad</path>\n<type>directory</type>\n<entries>\n71769cf/\n\n(1 entries)\n</entries>\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "preview": "71769cf/",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad",
+            "entries": [
+              "71769cf/"
+            ],
+            "offset": 1,
+            "totalEntries": 1,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad"
+      },
+      {
+        "type": "tool",
+        "tool": "glob",
+        "callID": "call_01_idyOpfq82l4jAEtHWfuD7570",
+        "status": "completed",
+        "input": {
+          "pattern": "**/.opencrabs/**"
+        },
+        "output": "No files found\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "count": 0,
+          "truncated": false
+        },
+        "title": "home/kasiro"
+      },
+      {
+        "type": "tool",
+        "tool": "glob",
+        "callID": "call_02_E8Xgo6n8OyP6kDAyHoda5331",
+        "status": "completed",
+        "input": {
+          "pattern": "**/.config/opencrabs/**"
+        },
+        "output": "No files found\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "count": 0,
+          "truncated": false
+        },
+        "title": "home/kasiro"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982895425,
+    "tokens": {
+      "input": 159,
+      "output": 79,
+      "reasoning": 15,
+      "cache": {
+        "write": 0,
+        "read": 36608
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me explore the OpenCrabs checkout directory structure to find brain files."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_yRkjKUp4a6Dr2oWeYWOV0933",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf"
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf</path>\n<type>directory</type>\n<entries>\n.cargo-ok\n.cargo/\n.git/\n.github/\n.gitignore\n.rustfmt.toml\nbuild.rs\nCargo.lock\nCargo.toml\nCHANGELOG.md\ncommands.toml.example\nconfig.toml.example\ncontext7.json\nCONTRIBUTING.md\nexamples/\nkeys.toml.example\nLICENSE.md\nREADME.md\nrtk_filters.toml.example\nrust-toolchain.toml\nsrc/\ntarget/\nTESTING.md\ntools.toml.example\nusage_pricing.toml.example\n\n(25 entries)\n</entries>\n<dcp-message-id>m0006</dcp-message-id>",
+        "metadata": {
+          "preview": ".cargo-ok\n.cargo/\n.git/\n.github/\n.gitignore\n.rustfmt.toml\nbuild.rs\nCargo.lock\nCargo.toml\nCHANGELOG.md\ncommands.toml.example\nconfig.toml.example\ncontext7.json\nCONTRIBUTING.md\nexamples/\nkeys.toml.example\nLICENSE.md\nREADME.md\nrtk_filters.toml.example\nrust-toolchain.toml",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf",
+            "entries": [
+              ".cargo-ok",
+              ".cargo/",
+              ".git/",
+              ".github/",
+              ".gitignore",
+              ".rustfmt.toml",
+              "build.rs",
+              "Cargo.lock",
+              "Cargo.toml",
+              "CHANGELOG.md",
+              "commands.toml.example",
+              "config.toml.example",
+              "context7.json",
+              "CONTRIBUTING.md",
+              "examples/",
+              "keys.toml.example",
+              "LICENSE.md",
+              "README.md",
+              "rtk_filters.toml.example",
+              "rust-toolchain.toml",
+              "src/",
+              "target/",
+              "TESTING.md",
+              "tools.toml.example",
+              "usage_pricing.toml.example"
+            ],
+            "offset": 1,
+            "totalEntries": 25,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982898048,
+    "tokens": {
+      "input": 328,
+      "output": 80,
+      "reasoning": 23,
+      "cache": {
+        "write": 0,
+        "read": 36736
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me look at the src directory for brain files, and also check the cargo directory for a brain subdirectory."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_d3msB5JwrTZolVacsIAO3850",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src"
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src</path>\n<type>directory</type>\n<entries>\na2a/\napp/\nassets/\nbenches/\nbrain/\nchannels/\ncli/\nconfig/\ncron/\ndb/\ndocker/\ndocs/\nerror/\neval/\nevals/\nlib.rs\nlogging/\nmain.rs\nmemory/\nmigrations/\nrtk/\nscripts/\nservices/\ntests/\ntui/\nusage/\nutils/\n\n(27 entries)\n</entries>\n<dcp-message-id>m0007</dcp-message-id>",
+        "metadata": {
+          "preview": "a2a/\napp/\nassets/\nbenches/\nbrain/\nchannels/\ncli/\nconfig/\ncron/\ndb/\ndocker/\ndocs/\nerror/\neval/\nevals/\nlib.rs\nlogging/\nmain.rs\nmemory/\nmigrations/",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src",
+            "entries": [
+              "a2a/",
+              "app/",
+              "assets/",
+              "benches/",
+              "brain/",
+              "channels/",
+              "cli/",
+              "config/",
+              "cron/",
+              "db/",
+              "docker/",
+              "docs/",
+              "error/",
+              "eval/",
+              "evals/",
+              "lib.rs",
+              "logging/",
+              "main.rs",
+              "memory/",
+              "migrations/",
+              "rtk/",
+              "scripts/",
+              "services/",
+              "tests/",
+              "tui/",
+              "usage/",
+              "utils/"
+            ],
+            "offset": 1,
+            "totalEntries": 27,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982900785,
+    "tokens": {
+      "input": 198,
+      "output": 82,
+      "reasoning": 15,
+      "cache": {
+        "write": 0,
+        "read": 37120
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "There's a `brain/` directory! Let me look at it."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_eQqCe0Hg3kmYCwsERdNO4503",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain"
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain</path>\n<type>directory</type>\n<entries>\nagent/\ncommands.rs\ndedup_scan.rs\ndirectives.rs\nfeedback_policy.rs\nfilter.rs\ngoal/\nmission_control/\nmod.rs\nplans.rs\nprompt_builder.rs\nprovider/\nrsi_command_patterns.rs\nrsi_git_history.rs\nrsi_proposals.rs\nrsi_pruned.rs\nrsi_skill_sequences.rs\nrsi_subsystem.rs\nrsi_sync.rs\nrsi.rs\nself_update.rs\nskills.rs\ntokenizer.rs\ntools/\n\n(24 entries)\n</entries>\n<dcp-message-id>m0008</dcp-message-id>",
+        "metadata": {
+          "preview": "agent/\ncommands.rs\ndedup_scan.rs\ndirectives.rs\nfeedback_policy.rs\nfilter.rs\ngoal/\nmission_control/\nmod.rs\nplans.rs\nprompt_builder.rs\nprovider/\nrsi_command_patterns.rs\nrsi_git_history.rs\nrsi_proposals.rs\nrsi_pruned.rs\nrsi_skill_sequences.rs\nrsi_subsystem.rs\nrsi_sync.rs\nrsi.rs",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain",
+            "entries": [
+              "agent/",
+              "commands.rs",
+              "dedup_scan.rs",
+              "directives.rs",
+              "feedback_policy.rs",
+              "filter.rs",
+              "goal/",
+              "mission_control/",
+              "mod.rs",
+              "plans.rs",
+              "prompt_builder.rs",
+              "provider/",
+              "rsi_command_patterns.rs",
+              "rsi_git_history.rs",
+              "rsi_proposals.rs",
+              "rsi_pruned.rs",
+              "rsi_skill_sequences.rs",
+              "rsi_subsystem.rs",
+              "rsi_sync.rs",
+              "rsi.rs",
+              "self_update.rs",
+              "skills.rs",
+              "tokenizer.rs",
+              "tools/"
+            ],
+            "offset": 1,
+            "totalEntries": 24,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982903072,
+    "tokens": {
+      "input": 235,
+      "output": 128,
+      "reasoning": 73,
+      "cache": {
+        "write": 0,
+        "read": 37376
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "This is the Rust source code for the RSI engine. The brain files (SOUL.md, AGENTS.md, etc.) that the prompt refers to are likely data/brain files stored elsewhere — possibly in a data directory or in the user's home config directory for OpenCrabs.\n\nLet me search more broadly for these files and also for the feedback database."
+      },
+      {
+        "type": "tool",
+        "tool": "grep",
+        "callID": "call_00_LM0fN1TaN61cdAgwDvnw7531",
+        "status": "completed",
+        "input": {
+          "pattern": "feedback\\.db|SOUL\\.md|AGENTS\\.md|brain_file",
+          "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src",
+          "include": "*.rs"
+        },
+        "output": "Found 100 matches (more matches available)\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/services/project.rs:\n  Line 57:     /// carry its own `AGENTS.md`, `SOUL.md`, etc. that load ON TOP of the\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/memory/mod.rs:\n  Line 80: /// Collection name for workspace brain files (SOUL.md, MEMORY.md, etc.).\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/memory/index.rs:\n  Line 12:     \"SOUL.md\",\n\n  Line 14:     \"AGENTS.md\",\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/eval/produce.rs:\n  Line 34: /// load_brain_file) plus the generic tools a reimplementing agent would misuse\n\n  Line 57:             \"load_brain_file\",\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/eval/manifest.rs:\n  Line 20:     \"SOUL.md\",\n\n  Line 22:     \"AGENTS.md\",\n\n  Line 52:     pub brain_files_present: Vec<String>,\n\n  Line 69:         let brain_files_present = BRAIN_FILE_NAMES\n\n  Line 106:             brain_files_present,\n\n  Line 123:     pub fn has_brain_file(&self, name: &str) -> bool {\n\n  Line 124:         self.brain_files_present.iter().any(|f| f == name)\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/render/mission_control/analytics_panel.rs:\n  Line 131:             format!(\"{:.1} KB / {} files\", a.brain_total_kb, a.brain_files.len()),\n\n  Line 167:     if a.brain_files.is_empty() {\n\n  Line 171:     for f in a.brain_files.iter().take(14) {\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types.rs:\n  Line 93: /// - Quoted keys: `\"AGENTS.md\" = 600` (already a string key → usize)\n\n  Line 94: /// - Unquoted dotted keys: `AGENTS.md = 600` (TOML 1.0 treats as nested table\n\n  Line 146:     /// Empty map means no cap configured beyond `default_brain_file_cap`.\n\n  Line 153:     #[serde(default = \"default_brain_file_cap\")]\n\n  Line 165: fn default_brain_file_cap() -> usize {\n\n  Line 174:             default_cap: default_brain_file_cap(),\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/profile.rs:\n  Line 276: /// existing ones), so the empty state was sticky: no SOUL.md, no\n\n  Line 331:             \"SOUL.md\",\n\n  Line 332:             include_str!(\"../docs/reference/templates/SOUL.md\"),\n\n  Line 339:             \"AGENTS.md\",\n\n  Line 340:             include_str!(\"../docs/reference/templates/AGENTS.md\"),\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/cli/tool_setup.rs:\n  Line 33:         http::HttpClientTool, load_brain_file::LoadBrainFileTool, ls::LsTool,\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/onboarding_render.rs:\n  Line 1312:         \"       SOUL.md, USER.md, ...\",\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/cli/migrate.rs:\n  Line 95:     dir.join(\"config.yaml\").exists() || dir.join(\"SOUL.md\").exists()\n\n  Line 148:                 \"SOUL.md\",\n\n  Line 151:                 \"AGENTS.md\",\n\n  Line 189:             if path.join(\"SOUL.md\").exists() {\n\n  Line 190:                 items.push(\"brain/SOUL.md\".into());\n\n  Line 241:          3. Migrate brain files (SOUL.md, USER.md, MEMORY.md, AGENTS.md, TOOLS.md):\\n\\\n\n  Line 258:     \"SOUL.md\",\n\n  Line 261:     \"AGENTS.md\",\n\n  Line 275: fn snapshot_brain_files(brain_path: &Path) -> Vec<FileSnap> {\n\n  Line 373:     let before = snapshot_brain_files(&brain_path);\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/onboarding/types.rs:\n  Line 368:         \"SOUL.md\",\n\n  Line 369:         include_str!(\"../../docs/reference/templates/SOUL.md\"),\n\n  Line 376:         \"AGENTS.md\",\n\n  Line 377:         include_str!(\"../../docs/reference/templates/AGENTS.md\"),\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/cli/commands.rs:\n  Line 35:     let brain_files: Vec<&str> = [\n\n  Line 40:         \"AGENTS.md\",\n\n  Line 42:         \"SOUL.md\",\n\n  Line 48:     if brain_files.is_empty() {\n\n  Line 53:             brain_files.len(),\n\n  Line 54:             brain_files.join(\", \")\n\n  Line 259:         let brain_files: Vec<&str> = [\"persona.md\", \"system.md\", \"USER.md\", \"MEMORY.md\"]\n\n  Line 264:         if brain_files.is_empty() {\n\n  Line 273:                 brain_files.len(),\n\n  Line 274:                 brain_files.join(\", \")\n\n  Line 1256:             let brain_files = [\n\n  Line 1259:                 \"AGENTS.md\",\n\n  Line 1261:                 \"SOUL.md\",\n\n  Line 1267:             for name in &brain_files {\n\n  Line 1330:             let brain_files: Vec<_> = [\"MEMORY.md\", \"USER.md\", \"AGENTS.md\", \"TOOLS.md\", \"SOUL.md\"]\n\n  Line 1335:             let brain_size: u64 = brain_files\n\n  Line 1345:                 brain_files.len(),\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/onboarding/mod.rs:\n  Line 40: /// by the agent. The agent uses its personality (SOUL.md) and user knowledge\n\n  Line 42: pub const WELCOME_MESSAGE: &str = \"[SYSTEM: Onboarding complete. Check your environment — use load_config to see what's configured and tool_search to discover what you have. You know who your user is (USER.md) and you have your personality (SOUL.md). Now do something that'll make them go 'holy shit'. Not a boring greeting. Not 'hey how can I help'. Something only YOU would say, like your best friend just walked in. Be creative, be unexpected. Then ask if they want daily check-ins, task reminders, or heartbeat — you can set those up with cron_manage right now.]\";\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/onboarding/config.rs:\n  Line 1118:                     \"SOUL.md\" => self.generated_soul.as_deref(),\n\n  Line 1120:                     \"AGENTS.md\" => self.generated_agents.as_deref(),\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/onboarding/brain.rs:\n  Line 165:         let soul_template_static = include_str!(\"../../docs/reference/templates/SOUL.md\");\n\n  Line 167:         let agents_template_static = include_str!(\"../../docs/reference/templates/AGENTS.md\");\n\n  Line 171:         let soul_template = std::fs::read_to_string(workspace.join(\"SOUL.md\"))\n\n  Line 175:         let agents_template = std::fs::read_to_string(workspace.join(\"AGENTS.md\"))\n\n  Line 198: ===TEMPLATE: SOUL.md===\n\n  Line 204: ===TEMPLATE: AGENTS.md===\n\n  Line 221: (generated SOUL.md content)\n\n  Line 227: (generated AGENTS.md content)\n\n  Line 263:     /// emits instead (e.g. `## SOUL.md`, `### IDENTITY`, `**USER**`). As long\n\n  Line 353: /// Accepts: `## SOUL`, `## SOUL.md`, `### SOUL.md`, `**SOUL**`, `SOUL.md`,\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/write_opencrabs_file.rs:\n  Line 67:          Use this for brain files (MEMORY.md, USER.md, AGENTS.md, SOUL.md, etc.), \\\n\n  Line 113:                     \"description\": \"Set to true ONLY when shrinking a protected brain file (TOOLS.md, MEMORY.md, SOUL.md, USER.md, AGENTS.md, CODE.md, SECURITY.md, BOOT.md, IDENTITY.md) to deduplicate. Brain files are append-only — any overwrite/replace whose result is shorter than the existing file is rejected unless dedup_intent=true AND every original line still appears in the result.\"\n\n  Line 167:                 use crate::brain::tools::brain_file_safety;\n\n  Line 168:                 if brain_file_safety::is_protected_path(&full_path) {\n\n  Line 178:                     if let brain_file_safety::ShrinkCheck::Rejected { message } =\n\n  Line 179:                         brain_file_safety::check_no_shrink(\n\n  Line 221:                 if let Err(e) = brain_file_safety::backup_before_write(&full_path) {\n\n  Line 242:                 use crate::brain::tools::brain_file_safety::{\n\n  Line 247:                 let effective_content = if brain_file_safety::is_protected_path(&full_path) {\n\n  Line 279:                 if let Err(e) = brain_file_safety::backup_before_write(&full_path) {\n\n  Line 362:                 use crate::brain::tools::brain_file_safety;\n\n  Line 371:                 if let brain_file_safety::ShrinkCheck::Rejected { message } =\n\n  Line 372:                     brain_file_safety::check_no_shrink(\n\n  Line 405:                 if let Err(e) = brain_file_safety::backup_before_write(&full_path) {\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/write.rs:\n  Line 84:         // (SOUL.md, MEMORY.md, USER.md, etc.) must go through\n\n  Line 89:         if super::brain_file_safety::is_protected_path(&path) {\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tui/app/dialogs.rs:\n  Line 703:                         self.generate_brain_files_background(prompt, workspace);\n\n  Line 824:     fn generate_brain_files_background(&self, prompt: String, workspace: String) {\n\n  Line 885:                             (\"SOUL.md\", &parsed[0]),\n\n  Line 887:                             (\"AGENTS.md\", &parsed[2]),\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/whatsapp_connect.rs:\n  Line 264:                  and totally informal. Use your personality, SOUL.md, and any context \\\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/tool_search.rs:\n  Line 8: //! act right away. Mirrors `load_brain_file` for contextual brain files.\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/telegram_connect.rs:\n  Line 166:                          and totally informal. Use your personality, SOUL.md, and any context \\\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/slack_connect.rs:\n  Line 193:                          and totally informal. Use your personality, SOUL.md, and any context \\\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/tools/self_improve.rs:\n  Line 22:     \"SOUL.md\",\n\n  Line 24:     \"AGENTS.md\",\n\n\n(Results truncated. Consider using a more specific path or pattern.)\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "matches": 100,
+          "truncated": true
+        },
+        "title": "feedback\\.db|SOUL\\.md|AGENTS\\.md|brain_file"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982906379,
+    "tokens": {
+      "input": 3306,
+      "output": 190,
+      "reasoning": 142,
+      "cache": {
+        "write": 0,
+        "read": 37760
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "I found the source code. The brain files (SOUL.md, AGENTS.md, etc.) are stored in the workspace directory or in the OpenCrabs data directory. Let me look at the template files and find where actual brain files are stored. Let me check for the data directory and the actual brain files.\n\nFrom the source, I can see the system uses brain files like SOUL.md, AGENTS.md, TOOLS.md, MEMORY.md, USER.md, CODE.md, SECURITY.md, BOOT.md. These are stored in a per-workspace or per-project directory.\n\nLet me look for the actual brain data files - not the templates, but the user's actual ones."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_efxzhY8eNYRQhqAaRE8S8368",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs",
+          "limit": 100
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs</path>\n<type>file</type>\n<content>\n1: //! RSI (Recursive Self-Improvement) background engine.\n2: //!\n3: //! Runs as a background task after startup:\n4: //! 1. Writes a digest of feedback_ledger stats to `~/.opencrabs/rsi/digest.md`\n5: //! 2. Periodically analyzes feedback and applies improvements autonomously\n6: //! 3. Emits TUI notifications when improvements are applied\n7: //!\n8: //! Uses the provider/model configured in `[agent].self_improvement_provider`\n9: //! and `[agent].self_improvement_model`, falling back to the active provider.\n10: \n11: use crate::config::Config;\n12: use crate::db::repository::FeedbackLedgerRepository;\n13: use std::io::Write;\n14: use std::path::PathBuf;\n15: use std::sync::Arc;\n16: use tokio::sync::mpsc;\n17: \n18: /// Interval between RSI cycles (analyze + improve).\n19: const RSI_CYCLE_INTERVAL_SECS: u64 = 3600; // 1 hour\n20: \n21: /// Minimum feedback entries before RSI attempts improvements.\n22: const RSI_MIN_ENTRIES: i64 = 50;\n23: \n24: /// Max tool iterations for the RSI agent (keep it focused).\n25: const RSI_MAX_TOOL_ITERATIONS: usize = 10;\n26: \n27: /// How often to run the brain-file dedup scan (in RSI cycles).\n28: /// At 1 hour per cycle, 24 cycles = once per day.\n29: const DEDUP_SCAN_EVERY_N_CYCLES: u64 = 24;\n30: \n31: /// Ensure `~/.opencrabs/rsi/` and `~/.opencrabs/rsi/history/` exist.\n32: fn ensure_rsi_dirs() -> std::io::Result<PathBuf> {\n33:     let home = crate::config::opencrabs_home();\n34:     let rsi_dir = home.join(\"rsi\");\n35:     let history_dir = rsi_dir.join(\"history\");\n36:     std::fs::create_dir_all(&history_dir)?;\n37:     Ok(rsi_dir)\n38: }\n39: \n40: /// SHA-256 hex digest of the joined opportunity descriptions. Used to\n41: /// detect cycle-over-cycle telemetry stability so we don't re-emit the\n42: /// same top-N corrections / errors / tool-failure block when nothing\n43: /// meaningful has changed.\n44: ///\n45: /// Joining with a sentinel that can't appear inside a single description\n46: /// (the leading `\\n---\\n` line marker) prevents two adjacent\n47: /// descriptions from collapsing into the same hash as one merged one.\n48: pub(crate) fn hash_opportunities(opps: &[String]) -> String {\n49:     use sha2::{Digest, Sha256};\n50:     let mut hasher = Sha256::new();\n51:     hasher.update(opps.join(\"\\n---\\n\").as_bytes());\n52:     format!(\"{:x}\", hasher.finalize())\n53: }\n54: \n55: /// Write the startup digest to `~/.opencrabs/rsi/digest.md`.\n56: /// Called once at boot after DB is ready.\n57: pub async fn write_startup_digest(pool: crate::db::Pool) {\n58:     let repo = FeedbackLedgerRepository::new(pool);\n59:     let total = match repo.total_count().await {\n60:         Ok(t) => t,\n61:         Err(e) => {\n62:             tracing::warn!(\"RSI digest: failed to query feedback_ledger: {e}\");\n63:             return;\n64:         }\n65:     };\n66: \n67:     if total == 0 {\n68:         tracing::debug!(\"RSI digest: no feedback data yet, skipping\");\n69:         return;\n70:     }\n71: \n72:     let rsi_dir = match ensure_rsi_dirs() {\n73:         Ok(d) => d,\n74:         Err(e) => {\n75:             tracing::warn!(\"RSI digest: failed to create rsi dir: {e}\");\n76:             return;\n77:         }\n78:     };\n79: \n80:     let mut out = format!(\n81:         \"# RSI Digest\\n\\n**Generated:** {}\\n**Total events:** {total}\\n\\n\",\n82:         chrono::Utc::now().format(\"%Y-%m-%d %H:%M UTC\"),\n83:     );\n84: \n85:     // Event type breakdown\n86:     if let Ok(summary) = repo.summary().await {\n87:         out.push_str(\"## Event Breakdown\\n\\n\");\n88:         for (event_type, count) in &summary {\n89:             let pct = (*count as f64 / total as f64) * 100.0;\n90:             out.push_str(&format!(\"- **{event_type}**: {count} ({pct:.1}%)\\n\"));\n91:         }\n92:         out.push('\\n');\n93:     }\n94: \n95:     // Tool stats with failure rates\n96:     if let Ok(stats) = repo.stats_by_dimension(\"tool_\").await {\n97:         let failing: Vec<_> = stats.iter().filter(|s| s.failures > 0).collect();\n98:         if !failing.is_empty() {\n99:             out.push_str(\"## Tool Performance\\n\\n\");\n100:             out.push_str(\"| Tool | Total | OK | Fail | Rate |\\n\");\n\n(Showing lines 1-100 of 1091. Use offset=101 to continue.)\n</content>\n<dcp-message-id>m0010</dcp-message-id>",
+        "metadata": {
+          "preview": "//! RSI (Recursive Self-Improvement) background engine.\n//!\n//! Runs as a background task after startup:\n//! 1. Writes a digest of feedback_ledger stats to `~/.opencrabs/rsi/digest.md`\n//! 2. Periodically analyzes feedback and applies improvements autonomously\n//! 3. Emits TUI notifications when improvements are applied\n//!\n//! Uses the provider/model configured in `[agent].self_improvement_provider`\n//! and `[agent].self_improvement_model`, falling back to the active provider.\n\nuse crate::config::Config;\nuse crate::db::repository::FeedbackLedgerRepository;\nuse std::io::Write;\nuse std::path::PathBuf;\nuse std::sync::Arc;\nuse tokio::sync::mpsc;\n\n/// Interval between RSI cycles (analyze + improve).\nconst RSI_CYCLE_INTERVAL_SECS: u64 = 3600; // 1 hour\n",
+          "truncated": true,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs",
+            "text": "//! RSI (Recursive Self-Improvement) background engine.\n//!\n//! Runs as a background task after startup:\n//! 1. Writes a digest of feedback_ledger stats to `~/.opencrabs/rsi/digest.md`\n//! 2. Periodically analyzes feedback and applies improvements autonomously\n//! 3. Emits TUI notifications when improvements are applied\n//!\n//! Uses the provider/model configured in `[agent].self_improvement_provider`\n//! and `[agent].self_improvement_model`, falling back to the active provider.\n\nuse crate::config::Config;\nuse crate::db::repository::FeedbackLedgerRepository;\nuse std::io::Write;\nuse std::path::PathBuf;\nuse std::sync::Arc;\nuse tokio::sync::mpsc;\n\n/// Interval between RSI cycles (analyze + improve).\nconst RSI_CYCLE_INTERVAL_SECS: u64 = 3600; // 1 hour\n\n/// Minimum feedback entries before RSI attempts improvements.\nconst RSI_MIN_ENTRIES: i64 = 50;\n\n/// Max tool iterations for the RSI agent (keep it focused).\nconst RSI_MAX_TOOL_ITERATIONS: usize = 10;\n\n/// How often to run the brain-file dedup scan (in RSI cycles).\n/// At 1 hour per cycle, 24 cycles = once per day.\nconst DEDUP_SCAN_EVERY_N_CYCLES: u64 = 24;\n\n/// Ensure `~/.opencrabs/rsi/` and `~/.opencrabs/rsi/history/` exist.\nfn ensure_rsi_dirs() -> std::io::Result<PathBuf> {\n    let home = crate::config::opencrabs_home();\n    let rsi_dir = home.join(\"rsi\");\n    let history_dir = rsi_dir.join(\"history\");\n    std::fs::create_dir_all(&history_dir)?;\n    Ok(rsi_dir)\n}\n\n/// SHA-256 hex digest of the joined opportunity descriptions. Used to\n/// detect cycle-over-cycle telemetry stability so we don't re-emit the\n/// same top-N corrections / errors / tool-failure block when nothing\n/// meaningful has changed.\n///\n/// Joining with a sentinel that can't appear inside a single description\n/// (the leading `\\n---\\n` line marker) prevents two adjacent\n/// descriptions from collapsing into the same hash as one merged one.\npub(crate) fn hash_opportunities(opps: &[String]) -> String {\n    use sha2::{Digest, Sha256};\n    let mut hasher = Sha256::new();\n    hasher.update(opps.join(\"\\n---\\n\").as_bytes());\n    format!(\"{:x}\", hasher.finalize())\n}\n\n/// Write the startup digest to `~/.opencrabs/rsi/digest.md`.\n/// Called once at boot after DB is ready.\npub async fn write_startup_digest(pool: crate::db::Pool) {\n    let repo = FeedbackLedgerRepository::new(pool);\n    let total = match repo.total_count().await {\n        Ok(t) => t,\n        Err(e) => {\n            tracing::warn!(\"RSI digest: failed to query feedback_ledger: {e}\");\n            return;\n        }\n    };\n\n    if total == 0 {\n        tracing::debug!(\"RSI digest: no feedback data yet, skipping\");\n        return;\n    }\n\n    let rsi_dir = match ensure_rsi_dirs() {\n        Ok(d) => d,\n        Err(e) => {\n            tracing::warn!(\"RSI digest: failed to create rsi dir: {e}\");\n            return;\n        }\n    };\n\n    let mut out = format!(\n        \"# RSI Digest\\n\\n**Generated:** {}\\n**Total events:** {total}\\n\\n\",\n        chrono::Utc::now().format(\"%Y-%m-%d %H:%M UTC\"),\n    );\n\n    // Event type breakdown\n    if let Ok(summary) = repo.summary().await {\n        out.push_str(\"## Event Breakdown\\n\\n\");\n        for (event_type, count) in &summary {\n            let pct = (*count as f64 / total as f64) * 100.0;\n            out.push_str(&format!(\"- **{event_type}**: {count} ({pct:.1}%)\\n\"));\n        }\n        out.push('\\n');\n    }\n\n    // Tool stats with failure rates\n    if let Ok(stats) = repo.stats_by_dimension(\"tool_\").await {\n        let failing: Vec<_> = stats.iter().filter(|s| s.failures > 0).collect();\n        if !failing.is_empty() {\n            out.push_str(\"## Tool Performance\\n\\n\");\n            out.push_str(\"| Tool | Total | OK | Fail | Rate |\\n\");",
+            "lineStart": 1,
+            "lineEnd": 100,
+            "totalLines": 1091,
+            "truncated": true
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_8APUB818x1j5c5Mv8CUs6898",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/feedback_policy.rs",
+          "limit": 80
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/feedback_policy.rs</path>\n<type>file</type>\n<content>\n1: //! Tool-failure classification policy for the RSI feedback ledger.\n2: //!\n3: //! Not every tool call that returns `success = false` is a tool DEFECT worth\n4: //! learning from. Many are expected, environmental, or user-driven outcomes:\n5: //! a stale-hash mismatch the agent simply retries after re-reading; a\n6: //! channel-send tool with no live bot connected; a user declining an\n7: //! interactive prompt. Counting these as failures dragged tool success-rates\n8: //! down and led the RSI to ban working built-in tools — e.g. escalating\n9: //! `hashline_edit` to a \"blanket DO NOT USE\" over recoverable stale-hash\n10: //! errors (#236).\n11: //!\n12: //! This module is the single place that decides whether a failed call is\n13: //! *recoverable* (recorded, but kept OUT of the `tool_` success-rate\n14: //! denominator) or a genuine failure.\n15: \n16: /// Whether a failed tool call is a recoverable / environmental / user-driven\n17: /// outcome rather than a tool defect.\n18: ///\n19: /// Recoverable failures are still recorded in the ledger (under a non-`tool_`\n20: /// event type) so they stay queryable, but they never count against the tool's\n21: /// success rate and therefore never drive the RSI to disable a working tool.\n22: pub fn is_recoverable_tool_failure(tool_name: &str, error: Option<&str>) -> bool {\n23:     let Some(error) = error else {\n24:         return false;\n25:     };\n26:     let e = error.to_ascii_lowercase();\n27:     match tool_name {\n28:         // Stale-hash mismatch: the file changed since the agent's last read, so\n29:         // the line hash no longer resolves. The fix is to re-read and retry — a\n30:         // normal step in the edit workflow, not a defect in the tool.\n31:         \"hashline_edit\" => {\n32:             e.contains(\"not found\")\n33:                 || e.contains(\"may have changed\")\n34:                 || e.contains(\"hash\")\n35:                 || e.contains(\"collision\")\n36:         }\n37:         // Channel send/connect tools need a live, connected bot. \"Not\n38:         // connected\" (and connection errors generally) is an environment state,\n39:         // not a tool defect — the tool works once the channel is up.\n40:         n if n.ends_with(\"_send\") || n.ends_with(\"_connect\") => {\n41:             e.contains(\"not connected\") || e.contains(\"connect\")\n42:         }\n43:         // The user declined, cancelled, or ignored the interactive prompt.\n44:         // That is a user choice, not a tool failure.\n45:         \"follow_up_question\" => {\n46:             e.contains(\"cancel\")\n47:                 || e.contains(\"declin\")\n48:                 || e.contains(\"timeout\")\n49:                 || e.contains(\"timed out\")\n50:                 || e.contains(\"no answer\")\n51:                 || e.contains(\"no response\")\n52:         }\n53:         _ => false,\n54:     }\n55: }\n\n(End of file - total 55 lines)\n</content>\n<dcp-message-id>m0010</dcp-message-id>",
+        "metadata": {
+          "preview": "//! Tool-failure classification policy for the RSI feedback ledger.\n//!\n//! Not every tool call that returns `success = false` is a tool DEFECT worth\n//! learning from. Many are expected, environmental, or user-driven outcomes:\n//! a stale-hash mismatch the agent simply retries after re-reading; a\n//! channel-send tool with no live bot connected; a user declining an\n//! interactive prompt. Counting these as failures dragged tool success-rates\n//! down and led the RSI to ban working built-in tools — e.g. escalating\n//! `hashline_edit` to a \"blanket DO NOT USE\" over recoverable stale-hash\n//! errors (#236).\n//!\n//! This module is the single place that decides whether a failed call is\n//! *recoverable* (recorded, but kept OUT of the `tool_` success-rate\n//! denominator) or a genuine failure.\n\n/// Whether a failed tool call is a recoverable / environmental / user-driven\n/// outcome rather than a tool defect.\n///\n/// Recoverable failures are still recorded in the ledger (under a non-`tool_`\n/// event type) so they stay queryable, but they never count against the tool's",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/feedback_policy.rs",
+            "text": "//! Tool-failure classification policy for the RSI feedback ledger.\n//!\n//! Not every tool call that returns `success = false` is a tool DEFECT worth\n//! learning from. Many are expected, environmental, or user-driven outcomes:\n//! a stale-hash mismatch the agent simply retries after re-reading; a\n//! channel-send tool with no live bot connected; a user declining an\n//! interactive prompt. Counting these as failures dragged tool success-rates\n//! down and led the RSI to ban working built-in tools — e.g. escalating\n//! `hashline_edit` to a \"blanket DO NOT USE\" over recoverable stale-hash\n//! errors (#236).\n//!\n//! This module is the single place that decides whether a failed call is\n//! *recoverable* (recorded, but kept OUT of the `tool_` success-rate\n//! denominator) or a genuine failure.\n\n/// Whether a failed tool call is a recoverable / environmental / user-driven\n/// outcome rather than a tool defect.\n///\n/// Recoverable failures are still recorded in the ledger (under a non-`tool_`\n/// event type) so they stay queryable, but they never count against the tool's\n/// success rate and therefore never drive the RSI to disable a working tool.\npub fn is_recoverable_tool_failure(tool_name: &str, error: Option<&str>) -> bool {\n    let Some(error) = error else {\n        return false;\n    };\n    let e = error.to_ascii_lowercase();\n    match tool_name {\n        // Stale-hash mismatch: the file changed since the agent's last read, so\n        // the line hash no longer resolves. The fix is to re-read and retry — a\n        // normal step in the edit workflow, not a defect in the tool.\n        \"hashline_edit\" => {\n            e.contains(\"not found\")\n                || e.contains(\"may have changed\")\n                || e.contains(\"hash\")\n                || e.contains(\"collision\")\n        }\n        // Channel send/connect tools need a live, connected bot. \"Not\n        // connected\" (and connection errors generally) is an environment state,\n        // not a tool defect — the tool works once the channel is up.\n        n if n.ends_with(\"_send\") || n.ends_with(\"_connect\") => {\n            e.contains(\"not connected\") || e.contains(\"connect\")\n        }\n        // The user declined, cancelled, or ignored the interactive prompt.\n        // That is a user choice, not a tool failure.\n        \"follow_up_question\" => {\n            e.contains(\"cancel\")\n                || e.contains(\"declin\")\n                || e.contains(\"timeout\")\n                || e.contains(\"timed out\")\n                || e.contains(\"no answer\")\n                || e.contains(\"no response\")\n        }\n        _ => false,\n    }\n}",
+            "lineStart": 1,
+            "lineEnd": 55,
+            "totalLines": 55,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/feedback_policy.rs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982910984,
+    "tokens": {
+      "input": 2246,
+      "output": 53,
+      "reasoning": 53,
+      "cache": {
+        "write": 0,
+        "read": 41344
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Now I have a clearer picture. Let me look for the actual installed OpenCrabs data directory and brain files. The home directory seems to be `~/.opencrabs/` based on the source code. Let me also check for the feedback database."
+      },
+      {
+        "type": "tool",
+        "tool": "glob",
+        "callID": "call_00_HS5QYp6qZzaeW43k71s90870",
+        "status": "completed",
+        "input": {
+          "pattern": "/home/kasiro/.opencrabs/**"
+        },
+        "output": "No files found\n<dcp-message-id>m0011</dcp-message-id>",
+        "metadata": {
+          "count": 0,
+          "truncated": false
+        },
+        "title": "home/kasiro"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982913612,
+    "tokens": {
+      "input": 80,
+      "output": 81,
+      "reasoning": 28,
+      "cache": {
+        "write": 0,
+        "read": 43648
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "No .opencrabs directory exists. Let me check if there's a data directory elsewhere or look for the actual binary and config."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_1r534xbzMhrdfw8wO0q65585",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config"
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config</path>\n<type>directory</type>\n<entries>\ncrabrace.rs\ncurrent.rs\nguard.rs\nhealth.rs\nmod.rs\nowner.rs\nprofile.rs\nrepair.rs\nsecrets.rs\nstartup_checks.rs\ntypes.rs\ntypes/\nupdate.rs\n\n(13 entries)\n</entries>\n<dcp-message-id>m0012</dcp-message-id>",
+        "metadata": {
+          "preview": "crabrace.rs\ncurrent.rs\nguard.rs\nhealth.rs\nmod.rs\nowner.rs\nprofile.rs\nrepair.rs\nsecrets.rs\nstartup_checks.rs\ntypes.rs\ntypes/\nupdate.rs",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config",
+            "entries": [
+              "crabrace.rs",
+              "current.rs",
+              "guard.rs",
+              "health.rs",
+              "mod.rs",
+              "owner.rs",
+              "profile.rs",
+              "repair.rs",
+              "secrets.rs",
+              "startup_checks.rs",
+              "types.rs",
+              "types/",
+              "update.rs"
+            ],
+            "offset": 1,
+            "totalEntries": 13,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982916557,
+    "tokens": {
+      "input": 193,
+      "output": 128,
+      "reasoning": 18,
+      "cache": {
+        "write": 0,
+        "read": 43776
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me look at the config mod.rs to understand opencrabs_home() function."
+      },
+      {
+        "type": "tool",
+        "tool": "grep",
+        "callID": "call_00_YOyR7xBls3IKe6TxAxpx1635",
+        "status": "completed",
+        "input": {
+          "pattern": "opencrabs_home|data_dir|OPENCRABS_HOME",
+          "include": "*.rs",
+          "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config"
+        },
+        "output": "Found 21 matches\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/health.rs:\n  Line 35:     super::opencrabs_home().join(\"provider_health.json\")\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types/loader.rs:\n  Line 281:                 let keys_good = opencrabs_home().join(\"keys.last_good.toml\");\n\n  Line 719:         Some(opencrabs_home().join(\"config.toml\"))\n\n  Line 825:             Self::system_config_path().unwrap_or_else(|| opencrabs_home().join(\"config.toml\"));\n\n  Line 936:         let path = opencrabs_home().join(\"keys.toml\");\n\n  Line 1002:         let path = opencrabs_home().join(\"keys.toml\");\n\n  Line 1043:             Self::system_config_path().unwrap_or_else(|| opencrabs_home().join(\"config.toml\"));\n\n  Line 1180:             Self::system_config_path().unwrap_or_else(|| opencrabs_home().join(\"config.toml\"));\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/guard.rs:\n  Line 13: use crate::config::opencrabs_home;\n\n  Line 43:     let home = opencrabs_home();\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types/io.rs:\n  Line 19: pub fn opencrabs_home() -> PathBuf {\n\n  Line 94:     let home = opencrabs_home();\n\n  Line 138:     let home = opencrabs_home();\n\n  Line 198:     opencrabs_home().join(\"keys.toml\")\n\n  Line 212:     let path = Config::system_config_path().unwrap_or_else(|| opencrabs_home().join(\"config.toml\"));\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/profile.rs:\n  Line 32: /// Global active profile name. Set once at startup before anything calls `opencrabs_home()`.\n\n  Line 61: /// call to `opencrabs_home()` / `resolve_profile_home()` inside `fut` (including\n\n  Line 100: /// Set the active profile. Must be called before any `opencrabs_home()` call.\n\n  Line 123:     // lifetime of a cron job's tokio task. Every opencrabs_home() call inside\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types.rs:\n  Line 1241:         let config_path = opencrabs_home().join(\"config.toml\");\n\n  Line 1979:     opencrabs_home().join(\"opencrabs.db\")\n\n<dcp-message-id>m0013</dcp-message-id>",
+        "metadata": {
+          "matches": 21,
+          "truncated": false
+        },
+        "title": "opencrabs_home|data_dir|OPENCRABS_HOME"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982919285,
+    "tokens": {
+      "input": 862,
+      "output": 117,
+      "reasoning": 21,
+      "cache": {
+        "write": 0,
+        "read": 44032
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me find the actual `opencrabs_home()` function to see where it resolves to."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_t2FIziOukzcl1Pw1Hz5z2665",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types/io.rs",
+          "limit": 40,
+          "offset": 15
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types/io.rs</path>\n<type>file</type>\n<content>\n15: /// - Default profile: `~/.opencrabs/`\n16: /// - Named profile: `~/.opencrabs/profiles/<name>/`\n17: ///\n18: /// Selection priority: `set_active_profile()` > `OPENCRABS_PROFILE` env > default.\n19: pub fn opencrabs_home() -> PathBuf {\n20:     let p = crate::config::profile::resolve_profile_home();\n21:     if !p.exists()\n22:         && let Err(e) = std::fs::create_dir_all(&p)\n23:     {\n24:         tracing::error!(\"Failed to create opencrabs home directory {p:?}: {e}\");\n25:     }\n26:     p\n27: }\n28: \n29: /// Daily backup of a config file. One copy per day, keeps `max_days` days.\n30: ///\n31: /// Names backups `file.YYYY-MM-DD.bak`. If today's backup already exists,\n32: /// skips (avoids overwriting a clean daily snapshot with mid-day edits).\n33: /// Prunes backups older than `max_days`. Silently ignores errors — backup\n34: /// failure must never block a config write.\n35: pub fn daily_backup(path: &Path, max_days: usize) {\n36:     if !path.exists() {\n37:         return;\n38:     }\n39:     let parent = match path.parent() {\n40:         Some(p) => p,\n41:         None => return,\n42:     };\n43:     let stem = path\n44:         .file_name()\n45:         .unwrap_or_default()\n46:         .to_string_lossy()\n47:         .to_string();\n48: \n49:     let today = chrono::Local::now().format(\"%Y-%m-%d\").to_string();\n50:     let today_backup = parent.join(format!(\"{stem}.{today}.bak\"));\n51: \n52:     // Skip if today's backup already exists (preserve the day's first snapshot)\n53:     if today_backup.exists() {\n54:         return;\n\n(Showing lines 15-54 of 675. Use offset=55 to continue.)\n</content>\n<dcp-message-id>m0014</dcp-message-id>",
+        "metadata": {
+          "preview": "/// - Default profile: `~/.opencrabs/`\n/// - Named profile: `~/.opencrabs/profiles/<name>/`\n///\n/// Selection priority: `set_active_profile()` > `OPENCRABS_PROFILE` env > default.\npub fn opencrabs_home() -> PathBuf {\n    let p = crate::config::profile::resolve_profile_home();\n    if !p.exists()\n        && let Err(e) = std::fs::create_dir_all(&p)\n    {\n        tracing::error!(\"Failed to create opencrabs home directory {p:?}: {e}\");\n    }\n    p\n}\n\n/// Daily backup of a config file. One copy per day, keeps `max_days` days.\n///\n/// Names backups `file.YYYY-MM-DD.bak`. If today's backup already exists,\n/// skips (avoids overwriting a clean daily snapshot with mid-day edits).\n/// Prunes backups older than `max_days`. Silently ignores errors — backup\n/// failure must never block a config write.",
+          "truncated": true,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types/io.rs",
+            "text": "/// - Default profile: `~/.opencrabs/`\n/// - Named profile: `~/.opencrabs/profiles/<name>/`\n///\n/// Selection priority: `set_active_profile()` > `OPENCRABS_PROFILE` env > default.\npub fn opencrabs_home() -> PathBuf {\n    let p = crate::config::profile::resolve_profile_home();\n    if !p.exists()\n        && let Err(e) = std::fs::create_dir_all(&p)\n    {\n        tracing::error!(\"Failed to create opencrabs home directory {p:?}: {e}\");\n    }\n    p\n}\n\n/// Daily backup of a config file. One copy per day, keeps `max_days` days.\n///\n/// Names backups `file.YYYY-MM-DD.bak`. If today's backup already exists,\n/// skips (avoids overwriting a clean daily snapshot with mid-day edits).\n/// Prunes backups older than `max_days`. Silently ignores errors — backup\n/// failure must never block a config write.\npub fn daily_backup(path: &Path, max_days: usize) {\n    if !path.exists() {\n        return;\n    }\n    let parent = match path.parent() {\n        Some(p) => p,\n        None => return,\n    };\n    let stem = path\n        .file_name()\n        .unwrap_or_default()\n        .to_string_lossy()\n        .to_string();\n\n    let today = chrono::Local::now().format(\"%Y-%m-%d\").to_string();\n    let today_backup = parent.join(format!(\"{stem}.{today}.bak\"));\n\n    // Skip if today's backup already exists (preserve the day's first snapshot)\n    if today_backup.exists() {\n        return;",
+            "lineStart": 15,
+            "lineEnd": 54,
+            "totalLines": 675,
+            "truncated": true
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types/io.rs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982922279,
+    "tokens": {
+      "input": 664,
+      "output": 104,
+      "reasoning": 107,
+      "cache": {
+        "write": 0,
+        "read": 44928
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "OK so the default home is `~/.opencrabs/` but there's no such directory. This is just the source code - the actual OpenCrabs installation may not exist on this system. The \"detected opportunities\" in the prompt mention specific session IDs and provider errors, which suggests this is a real system, but the actual OpenCrabs data isn't accessible from this environment.\n\nLet me check if there's a `~/.opencrabs/` directory or any OpenCrabs binary at all."
+      },
+      {
+        "type": "tool",
+        "tool": "invalid",
+        "callID": "call_00_TFKntohI7H7XO8ySvhCt1191",
+        "status": "completed",
+        "input": {
+          "tool": "bash",
+          "error": "Model tried to call unavailable tool 'bash'. Available tools: chrome-devtools_click, chrome-devtools_close_page, chrome-devtools_drag, chrome-devtools_emulate, chrome-devtools_evaluate_script, chrome-devtools_fill, chrome-devtools_fill_form, chrome-devtools_get_console_message, chrome-devtools_get_network_request, chrome-devtools_handle_dialog, chrome-devtools_hover, chrome-devtools_lighthouse_audit, chrome-devtools_list_console_messages, chrome-devtools_list_network_requests, chrome-devtools_list_pages, chrome-devtools_navigate_page, chrome-devtools_new_page, chrome-devtools_performance_analyze_insight, chrome-devtools_performance_start_trace, chrome-devtools_performance_stop_trace, chrome-devtools_press_key, chrome-devtools_resize_page, chrome-devtools_select_page, chrome-devtools_take_heapsnapshot, chrome-devtools_take_screenshot, chrome-devtools_take_snapshot, chrome-devtools_type_text, chrome-devtools_upload_file, chrome-devtools_wait_for, compress, get_subagents_in_background, glob, grep, invalid, list_mcp_resource_templates, list_mcp_resources, memory_search, read, read_mcp_resource, sequential-thinking_sequentialthinking, skill, stop_subagent, task, todowrite."
+        },
+        "output": "The arguments provided to the tool are invalid: Model tried to call unavailable tool 'bash'. Available tools: chrome-devtools_click, chrome-devtools_close_page, chrome-devtools_drag, chrome-devtools_emulate, chrome-devtools_evaluate_script, chrome-devtools_fill, chrome-devtools_fill_form, chrome-devtools_get_console_message, chrome-devtools_get_network_request, chrome-devtools_handle_dialog, chrome-devtools_hover, chrome-devtools_lighthouse_audit, chrome-devtools_list_console_messages, chrome-devtools_list_network_requests, chrome-devtools_list_pages, chrome-devtools_navigate_page, chrome-devtools_new_page, chrome-devtools_performance_analyze_insight, chrome-devtools_performance_start_trace, chrome-devtools_performance_stop_trace, chrome-devtools_press_key, chrome-devtools_resize_page, chrome-devtools_select_page, chrome-devtools_take_heapsnapshot, chrome-devtools_take_screenshot, chrome-devtools_take_snapshot, chrome-devtools_type_text, chrome-devtools_upload_file, chrome-devtools_wait_for, compress, get_subagents_in_background, glob, grep, invalid, list_mcp_resource_templates, list_mcp_resources, memory_search, read, read_mcp_resource, sequential-thinking_sequentialthinking, skill, stop_subagent, task, todowrite.\n<dcp-message-id>m0015</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        },
+        "title": "Invalid Tool"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982926599,
+    "tokens": {
+      "input": 734,
+      "output": 117,
+      "reasoning": 104,
+      "cache": {
+        "write": 0,
+        "read": 45696
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "I can't use bash - I don't have that tool. Let me see what I can actually do. Let me use `task` to delegate to the `general` agent which has bash access, or use `read`/`grep` to check for the ~/.opencrabs directory existence.\n\nActually, let me first check the prompts/templates to understand the brain file taxonomy better, which is what the RSI prompt is asking me to do. Then I'll check whether brain files exist."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_8By0HObZH8Dw6eR9iK5X1364",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs",
+          "offset": 100,
+          "limit": 200
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs</path>\n<type>file</type>\n<content>\n100:             out.push_str(\"| Tool | Total | OK | Fail | Rate |\\n\");\n101:             out.push_str(\"|------|------:|---:|-----:|-----:|\\n\");\n102:             for s in &failing {\n103:                 out.push_str(&format!(\n104:                     \"| {} | {} | {} | {} | {:.0}% |\\n\",\n105:                     s.dimension,\n106:                     s.total_events,\n107:                     s.successes,\n108:                     s.failures,\n109:                     s.success_rate * 100.0\n110:                 ));\n111:             }\n112:             out.push('\\n');\n113:         }\n114:     }\n115: \n116:     // Recent failures\n117:     if let Ok(entries) = repo.by_event_type(\"tool_failure\", 10).await\n118:         && !entries.is_empty()\n119:     {\n120:         out.push_str(\"## Recent Failures\\n\\n\");\n121:         for e in &entries {\n122:             let meta = e.metadata.as_deref().unwrap_or(\"(no details)\");\n123:             let short: String = meta.chars().take(120).collect();\n124:             out.push_str(&format!(\n125:                 \"- `{}` — {} — {}\\n\",\n126:                 e.created_at.format(\"%Y-%m-%d %H:%M\"),\n127:                 e.dimension,\n128:                 short\n129:             ));\n130:         }\n131:         out.push('\\n');\n132:     }\n133: \n134:     // User corrections\n135:     if let Ok(corrections) = repo.by_event_type(\"user_correction\", 10).await\n136:         && !corrections.is_empty()\n137:     {\n138:         out.push_str(\"## User Corrections\\n\\n\");\n139:         for c in &corrections {\n140:             let meta = c.metadata.as_deref().unwrap_or(\"(no details)\");\n141:             let short: String = meta.chars().take(120).collect();\n142:             out.push_str(&format!(\n143:                 \"- `{}` — {} — {}\\n\",\n144:                 c.created_at.format(\"%Y-%m-%d %H:%M\"),\n145:                 c.dimension,\n146:                 short\n147:             ));\n148:         }\n149:         out.push('\\n');\n150:     }\n151: \n152:     // Applied improvements\n153:     if let Ok(improvements) = repo.by_event_type(\"improvement_applied\", 10).await\n154:         && !improvements.is_empty()\n155:     {\n156:         out.push_str(\"## Applied Improvements\\n\\n\");\n157:         for imp in &improvements {\n158:             out.push_str(&format!(\n159:                 \"- `{}` — {}\\n\",\n160:                 imp.created_at.format(\"%Y-%m-%d %H:%M\"),\n161:                 imp.dimension\n162:             ));\n163:         }\n164:         out.push('\\n');\n165:     }\n166: \n167:     let digest_path = rsi_dir.join(\"digest.md\");\n168:     match std::fs::File::create(&digest_path) {\n169:         Ok(mut f) => {\n170:             if let Err(e) = f.write_all(out.as_bytes()) {\n171:                 tracing::warn!(\"RSI digest: failed to write: {e}\");\n172:             } else {\n173:                 tracing::info!(\n174:                     \"RSI digest written to {} ({total} events)\",\n175:                     digest_path.display()\n176:                 );\n177:             }\n178:         }\n179:         Err(e) => tracing::warn!(\"RSI digest: failed to create file: {e}\"),\n180:     }\n181: }\n182: \n183: /// Notification message from the RSI engine to TUI/channels.\n184: #[derive(Debug, Clone)]\n185: pub enum RsiNotification {\n186:     /// RSI cycle started\n187:     CycleStarted,\n188:     /// Digest written at startup\n189:     DigestWritten { total_events: i64 },\n190:     /// Template sync completed (upstream brain files updated)\n191:     TemplateSyncComplete { summary: String },\n192:     /// Template sync failed\n193:     TemplateSyncFailed { error: String },\n194:     /// An improvement was identified and needs agent execution\n195:     ImprovementOpportunity { description: String },\n196:     /// Autonomous agent completed an improvement cycle\n197:     AgentCycleComplete { summary: String },\n198:     /// Autonomous agent failed\n199:     AgentCycleFailed { error: String },\n200: }\n201: \n202: /// Format an RSI notification into its TUI display line, with secrets\n203: /// redacted.\n204: ///\n205: /// The `error`, `summary`, and `description` fields are free text sourced\n206: /// from provider errors, feedback records, and tool output — any of which\n207: /// can contain an API key, Bearer token, or credentialed URL. Without\n208: /// redaction these surfaced on screen (2026-06-07). `redact_secrets` masks\n209: /// key prefixes, long opaque tokens, inline \"Bearer <token>\", and\n210: /// env-style secret assignments. Redaction happens here, at the single\n211: /// formatting point, so every variant and every caller is covered.\n212: pub(crate) fn format_rsi_notification(notification: &RsiNotification) -> String {\n213:     let msg = match notification {\n214:         RsiNotification::DigestWritten { total_events } => {\n215:             format!(\"RSI: digest written ({total_events} events)\")\n216:         }\n217:         RsiNotification::CycleStarted => \"RSI: analyzing feedback patterns...\".to_string(),\n218:         RsiNotification::ImprovementOpportunity { description } => {\n219:             format!(\"RSI: {description}\")\n220:         }\n221:         RsiNotification::AgentCycleComplete { summary } => {\n222:             format!(\"RSI: agent cycle complete — {summary}\")\n223:         }\n224:         RsiNotification::AgentCycleFailed { error } => {\n225:             format!(\"RSI: agent cycle failed — {error}\")\n226:         }\n227:         RsiNotification::TemplateSyncComplete { summary } => {\n228:             format!(\"RSI: template sync complete — {summary}\")\n229:         }\n230:         RsiNotification::TemplateSyncFailed { error } => {\n231:             format!(\"RSI: template sync failed — {error}\")\n232:         }\n233:     };\n234:     // Compose both redactors: redact_command catches command/URL patterns\n235:     // (api_key= query params, --header secrets, https://user:pass@ URLs)\n236:     // that RSI provider errors commonly carry; redact_secrets then masks\n237:     // key prefixes, long opaque tokens, and inline Bearer values. Each is\n238:     // a no-op on text the other already masked.\n239:     let command_safe = crate::utils::sanitize::redact_command(&msg);\n240:     crate::utils::sanitize::redact_secrets(&command_safe)\n241: }\n242: \n243: /// Build a minimal tool registry containing only the RSI tools.\n244: fn build_rsi_tool_registry() -> Arc<crate::brain::tools::ToolRegistry> {\n245:     use crate::brain::tools::ToolRegistry;\n246:     use crate::brain::tools::feedback_analyze::FeedbackAnalyzeTool;\n247:     use crate::brain::tools::feedback_record::FeedbackRecordTool;\n248:     use crate::brain::tools::rsi_propose::RsiProposeTool;\n249:     use crate::brain::tools::self_improve::SelfImproveTool;\n250: \n251:     let registry = ToolRegistry::new();\n252:     registry.register(Arc::new(FeedbackRecordTool));\n253:     registry.register(Arc::new(FeedbackAnalyzeTool));\n254:     registry.register(Arc::new(SelfImproveTool));\n255:     // rsi_propose lets the loop file tool/command proposals to the inbox.\n256:     // Apply path goes through rsi_proposals (user-facing), not RSI.\n257:     registry.register(Arc::new(RsiProposeTool));\n258:     Arc::new(registry)\n259: }\n260: \n261: /// The system prompt for the RSI agent.\n262: pub(crate) const RSI_AGENT_PROMPT: &str = \"\\\n263: You are the RSI (Recursive Self-Improvement) engine for OpenCrabs. \\\n264: Your job is to analyze system feedback and autonomously apply improvements to brain files.\n265: \n266: ## Analysis Steps\n267: \n268: 1. Call feedback_analyze with query='summary' to see overall system stats.\n269: 2. Call feedback_analyze with query='tool_stats' to identify tools with high failure rates.\n270: 3. Call feedback_analyze with query='failures' to see recent failure details.\n271: 4. Call feedback_analyze with query='recent' to see the latest events (including self-heal triggers).\n272: 5. For each actionable problem, call self_improve to apply a targeted fix.\n273: 6. Be conservative: only apply improvements when you have clear evidence from the feedback data.\n274: 7. Focus on the highest-impact issues first (highest failure rate, most frequent corrections).\n275: \n276: ## Tool-Failure Triage (ask binary questions before acting)\n277: \n278: A high failure rate is NOT sufficient reason to act. Before writing ANY rule about a tool, \\\n279: answer these yes/no questions from the feedback data and act ONLY when the answers say a \\\n280: prompt change will actually help:\n281: \n282: 1. **Enough evidence?** Skip any tool with fewer than 5 recorded calls — a 0/1 or 1/2 sample \\\n283:    is noise, not a pattern.\n284: 2. **Real defect, or recoverable/environmental?** Stale-hash 'file may have changed' retries \\\n285:    (hashline_edit), 'not connected' (channel send tools), and cancelled/timed-out prompts \\\n286:    (follow_up_question) are EXPECTED outcomes, not defects. They are already kept out of the \\\n287:    success-rate denominator — never treat them as failures or write rules about them.\n288: 3. **Misuse, or broken?** If the failures are the agent calling the tool wrong (bad params, \\\n289:    unknown action), the fix is concise USAGE guidance — never avoiding the tool.\n290: 4. **Capability, or guidance?** Prompt rules only help when the model HAS the ability and just \\\n291:    needs direction. If the failure reflects a hard limitation (the tool genuinely cannot do X), \\\n292:    a rule won't fix it and only adds noise — leave it.\n293: \n294: **NEVER tell the agent to avoid, ban, stop using, or 'DO NOT USE' a BUILT-IN tool.** Built-in \\\n295: tools are part of the system; banning one removes capability instead of fixing anything, and \\\n296: the self_improve guard will reject it. At most write routing guidance ('prefer X over Y for \\\n297: case Z'). Only a USER-DEFINED (tools.toml) tool may be disabled.\n298: \n299: **Avoid prompt bloat.** Do not bump violation counters, restate an existing rule, or stack \\\n\n(Showing lines 100-299 of 1091. Use offset=300 to continue.)\n</content>\n<dcp-message-id>m0016</dcp-message-id>",
+        "metadata": {
+          "preview": "            out.push_str(\"| Tool | Total | OK | Fail | Rate |\\n\");\n            out.push_str(\"|------|------:|---:|-----:|-----:|\\n\");\n            for s in &failing {\n                out.push_str(&format!(\n                    \"| {} | {} | {} | {} | {:.0}% |\\n\",\n                    s.dimension,\n                    s.total_events,\n                    s.successes,\n                    s.failures,\n                    s.success_rate * 100.0\n                ));\n            }\n            out.push('\\n');\n        }\n    }\n\n    // Recent failures\n    if let Ok(entries) = repo.by_event_type(\"tool_failure\", 10).await\n        && !entries.is_empty()\n    {",
+          "truncated": true,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs",
+            "text": "            out.push_str(\"| Tool | Total | OK | Fail | Rate |\\n\");\n            out.push_str(\"|------|------:|---:|-----:|-----:|\\n\");\n            for s in &failing {\n                out.push_str(&format!(\n                    \"| {} | {} | {} | {} | {:.0}% |\\n\",\n                    s.dimension,\n                    s.total_events,\n                    s.successes,\n                    s.failures,\n                    s.success_rate * 100.0\n                ));\n            }\n            out.push('\\n');\n        }\n    }\n\n    // Recent failures\n    if let Ok(entries) = repo.by_event_type(\"tool_failure\", 10).await\n        && !entries.is_empty()\n    {\n        out.push_str(\"## Recent Failures\\n\\n\");\n        for e in &entries {\n            let meta = e.metadata.as_deref().unwrap_or(\"(no details)\");\n            let short: String = meta.chars().take(120).collect();\n            out.push_str(&format!(\n                \"- `{}` — {} — {}\\n\",\n                e.created_at.format(\"%Y-%m-%d %H:%M\"),\n                e.dimension,\n                short\n            ));\n        }\n        out.push('\\n');\n    }\n\n    // User corrections\n    if let Ok(corrections) = repo.by_event_type(\"user_correction\", 10).await\n        && !corrections.is_empty()\n    {\n        out.push_str(\"## User Corrections\\n\\n\");\n        for c in &corrections {\n            let meta = c.metadata.as_deref().unwrap_or(\"(no details)\");\n            let short: String = meta.chars().take(120).collect();\n            out.push_str(&format!(\n                \"- `{}` — {} — {}\\n\",\n                c.created_at.format(\"%Y-%m-%d %H:%M\"),\n                c.dimension,\n                short\n            ));\n        }\n        out.push('\\n');\n    }\n\n    // Applied improvements\n    if let Ok(improvements) = repo.by_event_type(\"improvement_applied\", 10).await\n        && !improvements.is_empty()\n    {\n        out.push_str(\"## Applied Improvements\\n\\n\");\n        for imp in &improvements {\n            out.push_str(&format!(\n                \"- `{}` — {}\\n\",\n                imp.created_at.format(\"%Y-%m-%d %H:%M\"),\n                imp.dimension\n            ));\n        }\n        out.push('\\n');\n    }\n\n    let digest_path = rsi_dir.join(\"digest.md\");\n    match std::fs::File::create(&digest_path) {\n        Ok(mut f) => {\n            if let Err(e) = f.write_all(out.as_bytes()) {\n                tracing::warn!(\"RSI digest: failed to write: {e}\");\n            } else {\n                tracing::info!(\n                    \"RSI digest written to {} ({total} events)\",\n                    digest_path.display()\n                );\n            }\n        }\n        Err(e) => tracing::warn!(\"RSI digest: failed to create file: {e}\"),\n    }\n}\n\n/// Notification message from the RSI engine to TUI/channels.\n#[derive(Debug, Clone)]\npub enum RsiNotification {\n    /// RSI cycle started\n    CycleStarted,\n    /// Digest written at startup\n    DigestWritten { total_events: i64 },\n    /// Template sync completed (upstream brain files updated)\n    TemplateSyncComplete { summary: String },\n    /// Template sync failed\n    TemplateSyncFailed { error: String },\n    /// An improvement was identified and needs agent execution\n    ImprovementOpportunity { description: String },\n    /// Autonomous agent completed an improvement cycle\n    AgentCycleComplete { summary: String },\n    /// Autonomous agent failed\n    AgentCycleFailed { error: String },\n}\n\n/// Format an RSI notification into its TUI display line, with secrets\n/// redacted.\n///\n/// The `error`, `summary`, and `description` fields are free text sourced\n/// from provider errors, feedback records, and tool output — any of which\n/// can contain an API key, Bearer token, or credentialed URL. Without\n/// redaction these surfaced on screen (2026-06-07). `redact_secrets` masks\n/// key prefixes, long opaque tokens, inline \"Bearer <token>\", and\n/// env-style secret assignments. Redaction happens here, at the single\n/// formatting point, so every variant and every caller is covered.\npub(crate) fn format_rsi_notification(notification: &RsiNotification) -> String {\n    let msg = match notification {\n        RsiNotification::DigestWritten { total_events } => {\n            format!(\"RSI: digest written ({total_events} events)\")\n        }\n        RsiNotification::CycleStarted => \"RSI: analyzing feedback patterns...\".to_string(),\n        RsiNotification::ImprovementOpportunity { description } => {\n            format!(\"RSI: {description}\")\n        }\n        RsiNotification::AgentCycleComplete { summary } => {\n            format!(\"RSI: agent cycle complete — {summary}\")\n        }\n        RsiNotification::AgentCycleFailed { error } => {\n            format!(\"RSI: agent cycle failed — {error}\")\n        }\n        RsiNotification::TemplateSyncComplete { summary } => {\n            format!(\"RSI: template sync complete — {summary}\")\n        }\n        RsiNotification::TemplateSyncFailed { error } => {\n            format!(\"RSI: template sync failed — {error}\")\n        }\n    };\n    // Compose both redactors: redact_command catches command/URL patterns\n    // (api_key= query params, --header secrets, https://user:pass@ URLs)\n    // that RSI provider errors commonly carry; redact_secrets then masks\n    // key prefixes, long opaque tokens, and inline Bearer values. Each is\n    // a no-op on text the other already masked.\n    let command_safe = crate::utils::sanitize::redact_command(&msg);\n    crate::utils::sanitize::redact_secrets(&command_safe)\n}\n\n/// Build a minimal tool registry containing only the RSI tools.\nfn build_rsi_tool_registry() -> Arc<crate::brain::tools::ToolRegistry> {\n    use crate::brain::tools::ToolRegistry;\n    use crate::brain::tools::feedback_analyze::FeedbackAnalyzeTool;\n    use crate::brain::tools::feedback_record::FeedbackRecordTool;\n    use crate::brain::tools::rsi_propose::RsiProposeTool;\n    use crate::brain::tools::self_improve::SelfImproveTool;\n\n    let registry = ToolRegistry::new();\n    registry.register(Arc::new(FeedbackRecordTool));\n    registry.register(Arc::new(FeedbackAnalyzeTool));\n    registry.register(Arc::new(SelfImproveTool));\n    // rsi_propose lets the loop file tool/command proposals to the inbox.\n    // Apply path goes through rsi_proposals (user-facing), not RSI.\n    registry.register(Arc::new(RsiProposeTool));\n    Arc::new(registry)\n}\n\n/// The system prompt for the RSI agent.\npub(crate) const RSI_AGENT_PROMPT: &str = \"\\\nYou are the RSI (Recursive Self-Improvement) engine for OpenCrabs. \\\nYour job is to analyze system feedback and autonomously apply improvements to brain files.\n\n## Analysis Steps\n\n1. Call feedback_analyze with query='summary' to see overall system stats.\n2. Call feedback_analyze with query='tool_stats' to identify tools with high failure rates.\n3. Call feedback_analyze with query='failures' to see recent failure details.\n4. Call feedback_analyze with query='recent' to see the latest events (including self-heal triggers).\n5. For each actionable problem, call self_improve to apply a targeted fix.\n6. Be conservative: only apply improvements when you have clear evidence from the feedback data.\n7. Focus on the highest-impact issues first (highest failure rate, most frequent corrections).\n\n## Tool-Failure Triage (ask binary questions before acting)\n\nA high failure rate is NOT sufficient reason to act. Before writing ANY rule about a tool, \\\nanswer these yes/no questions from the feedback data and act ONLY when the answers say a \\\nprompt change will actually help:\n\n1. **Enough evidence?** Skip any tool with fewer than 5 recorded calls — a 0/1 or 1/2 sample \\\n   is noise, not a pattern.\n2. **Real defect, or recoverable/environmental?** Stale-hash 'file may have changed' retries \\\n   (hashline_edit), 'not connected' (channel send tools), and cancelled/timed-out prompts \\\n   (follow_up_question) are EXPECTED outcomes, not defects. They are already kept out of the \\\n   success-rate denominator — never treat them as failures or write rules about them.\n3. **Misuse, or broken?** If the failures are the agent calling the tool wrong (bad params, \\\n   unknown action), the fix is concise USAGE guidance — never avoiding the tool.\n4. **Capability, or guidance?** Prompt rules only help when the model HAS the ability and just \\\n   needs direction. If the failure reflects a hard limitation (the tool genuinely cannot do X), \\\n   a rule won't fix it and only adds noise — leave it.\n\n**NEVER tell the agent to avoid, ban, stop using, or 'DO NOT USE' a BUILT-IN tool.** Built-in \\\ntools are part of the system; banning one removes capability instead of fixing anything, and \\\nthe self_improve guard will reject it. At most write routing guidance ('prefer X over Y for \\\ncase Z'). Only a USER-DEFINED (tools.toml) tool may be disabled.\n\n**Avoid prompt bloat.** Do not bump violation counters, restate an existing rule, or stack \\",
+            "lineStart": 100,
+            "lineEnd": 299,
+            "totalLines": 1091,
+            "truncated": true
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982930375,
+    "tokens": {
+      "input": 2713,
+      "output": 230,
+      "reasoning": 212,
+      "cache": {
+        "write": 0,
+        "read": 46592
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Now I see the full picture. The prompt I received IS the RSI agent system prompt from the OpenCrabs source code (rsi.rs). The user is running the RSI agent as me (J.A.R.V.I.S.) - but the tools the RSI agent needs (feedback_analyze, self_improve, rsi_propose) are OpenCrabs-specific tools that exist within the OpenCrabs ecosystem, not in my current environment.\n\nLet me check a few things:\n1. Whether the OpenCrabs brain files actually exist somewhere\n2. What templates exist\n3. Whether I can access the database\n\nActually, I think the key issue here is that this is a simulation/roleplay. The user's message contains the \"Detected opportunities\" block which is what the RSI agent would normally analyze. Since I don't have the actual OpenCrabs tools, I should work with what I have and do the best I can.\n\nLet me check if there are any brain files or feedback data I can access."
+      },
+      {
+        "type": "tool",
+        "tool": "grep",
+        "callID": "call_00_gLwb2LMsU9tU79kNm1JE5126",
+        "status": "completed",
+        "input": {
+          "pattern": "feedback_ledger|feedback\\.db|opencrabs\\.db",
+          "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src",
+          "include": "*.rs"
+        },
+        "output": "Found 28 matches\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/db/repository/mod.rs:\n  Line 8: pub mod feedback_ledger;\n\n  Line 21: pub use feedback_ledger::FeedbackLedgerRepository;\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/db/repository/feedback_ledger.rs:\n  Line 60:                     \"INSERT INTO feedback_ledger (session_id, event_type, dimension, value, metadata) \\\n\n  Line 80:                     \"SELECT * FROM feedback_ledger ORDER BY created_at DESC LIMIT ?1\",\n\n  Line 100:                     \"SELECT * FROM feedback_ledger WHERE event_type = ?1 \\\n\n  Line 152:                          FROM feedback_ledger \\\n\n  Line 179:                          FROM feedback_ledger \\\n\n  Line 209:                 conn.query_row(\"SELECT COUNT(*) FROM feedback_ledger\", [], |row| row.get(0))\n\n  Line 225:                     \"SELECT COUNT(*) FROM feedback_ledger WHERE created_at >= ?1\",\n\n  Line 243:                     \"SELECT event_type, COUNT(*) FROM feedback_ledger \\\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/db/database.rs:\n  Line 213:                 \"../migrations/20260412000001_add_feedback_ledger.sql\"\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/types.rs:\n  Line 1979:     opencrabs_home().join(\"opencrabs.db\")\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/config/profile.rs:\n  Line 3: //! Each profile gets its own `config.toml`, `keys.toml`, `opencrabs.db`,\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tests/user_correction_metadata_test.rs:\n  Line 23: //! sqlite-backed `feedback_ledger`. A real behaviour test needs\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tests/rsi_test.rs:\n  Line 8: mod feedback_ledger_repo {\n\n  Line 278:                     \"INSERT INTO feedback_ledger (session_id, event_type, dimension, value, created_at) \\\n\n  Line 1479: // (~/.opencrabs/feedback.db) is the canonical source of truth, not decorative\n\n  Line 1510:     fn prompt_mentions_feedback_ledger_db_as_canonical_source() {\n\n  Line 1516:             RSI_AGENT_PROMPT.contains(\"feedback.db\"),\n\n  Line 1517:             \"RSI prompt must reference the feedback.db file\"\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs:\n  Line 4: //! 1. Writes a digest of feedback_ledger stats to `~/.opencrabs/rsi/digest.md`\n\n  Line 62:             tracing::warn!(\"RSI digest: failed to query feedback_ledger: {e}\");\n\n  Line 392: database (`feedback.db` in your OpenCrabs home) is the canonical source of truth for event counts. SOUL.md\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tests/integration_test.rs:\n  Line 415:     assert!(config.database.path.ends_with(\"opencrabs.db\"));\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/prompt_builder.rs:\n  Line 155: - OpenCrabs INTERNAL STATE (scheduled jobs, sessions, usage) lives in `~/.opencrabs/opencrabs.db`. Treat that DB as an implementation detail: for normal inspection or changes, use its tools — `cron_manage` for cron jobs (list/create/delete/enable/disable/test), `session_search` for sessions, `mission_control_report` for analytics (`tool_search` the one you need — \"cron\", \"sessions\", \"analytics\" — FIRST). Don't improvise `bash`/`sqlite3` queries against it as your default; the tools carry validation and logic a hand-query skips. Direct `sqlite3` access is a last resort, only when the user EXPLICITLY asks for a raw DB operation the tools can't do — and then copy the DB file to a backup and get approval before any write.\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/mission_control/types.rs:\n  Line 164: /// OpenCrabs already owns: the `tool_executions` and `feedback_ledger`\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/mission_control/analytics_service.rs:\n  Line 5: //! `feedback_ledger` tables and the active profile's brain `.md` files. No\n\n\n/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/tests/db_models_test.rs:\n  Line 45:     // Covered by integration tests in feedback_ledger_test.rs;\n\n<dcp-message-id>m0017</dcp-message-id>",
+        "metadata": {
+          "matches": 28,
+          "truncated": false
+        },
+        "title": "feedback_ledger|feedback\\.db|opencrabs\\.db"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_fWoXn1HJZt9lY5PW6sAQ3608",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs",
+          "offset": 300,
+          "limit": 200
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs</path>\n<type>file</type>\n<content>\n300: competing instructions across runs — accumulated lessons degrade the brain into contradictions. \\\n301: One clear rule per problem; refine in place (action='update') rather than appending near-duplicates. \\\n302: If a rule already covers the problem, leave it.\n303: \n304: ## Target File Taxonomy\n305: \n306: Each brain file controls a different aspect of the agent. Route improvements to the RIGHT file:\n307: \n308: - **SOUL.md** — PERSONALITY / voice: response style, tone, reasoning patterns. \\\n309:   Fix here when: phantom_tool_call events (model narrates instead of acting), gaslighting \\\n310:   preambles, verbose/repetitive responses, wrong tone. \\\n311:   NOT the hard rules / safety gates — those go in AGENTS.md (always-loaded).\n312: - **TOOLS.md** — Tool DEFINITIONS: parameter formats, executor types, usage docs. \\\n313:   This is a reference file, NOT a dumping ground for failure logs or error notes. \\\n314:   Tool failure patterns are tracked by the feedback system (feedback_record, feedback_analyze). \\\n315:   Do NOT append error handling guidance, failure counts, or incident logs here. \\\n316:   Only edit TOOLS.md when a tool's actual definition or usage docs need updating.\n317: - **USER.md** — How to interact with THIS USER: preferences, corrections, frustrations. \\\n318:   Fix here when: user_correction events show a repeated preference the agent keeps violating.\n319: - **MEMORY.md** — Persistent KNOWLEDGE: facts, context, project state, integrations. \\\n320:   Fix here when: the agent repeatedly lacks context it should have retained across sessions.\n321: - **AGENTS.md** — Workspace PROCESS + the **enforced hard rules / safety gates** (never \\\n322:   delete/push/email/post without approval). It is ALWAYS-LOADED, so any must-always-respect \\\n323:   rule a user/feedback teaches goes HERE — never in an on-demand file (MEMORY/TOOLS/CODE) where \\\n324:   it wouldn't be enforced on a cold session or after compaction. \\\n325:   Fix here when: workspace/process behavior needs adjustment, or a new hard rule is learned. \\\n326:   NOT security policy (→ SECURITY.md), NOT personality/tone (→ SOUL.md).\n327: - **CODE.md** — Coding standards, testing, and the user's language/framework preference. \\\n328:   Fix here when: code-quality feedback recurs (wrong style, missing tests, bad patterns).\n329: - **SECURITY.md** — Security policy: code review, network posture, data handling, credential/server access. \\\n330:   Fix here when: security-related feedback appears.\n331: - **BOOT.md** — Startup + runtime self-maintenance: boot steps, memory-save triggers, upgrade/evolve, \\\n332:   running as a service. Fix here when: startup/persistence guidance or the memory-save triggers \\\n333:   need updating.\n334: \n335: One kind of content per file — never duplicate a rule across files (copies drift and go stale), \\\n336: and match each file's `**Owns:**` header. SOUL/AGENTS/CODE/TOOLS/SECURITY/BOOT are generic (same for \\\n337: everyone); USER/MEMORY are user-specific.\n338: \n339: ### Custom Reference Files\n340: \n341: Additional `.md` files may exist alongside the core brain files (the user's own custom \\\n342: notes or skill-specific docs). These are NOT core brain files. They are user-curated reference material \\\n343: loaded on demand via `load_brain_file` for inflight context. \\\n344: You may read them for context, but do NOT autonomously write to them via self_improve. \\\n345: If feedback relates to content in a custom file, suggest the change to the user instead.\n346: \n347: ## Self-Heal Event Types\n348: \n349: These events in the feedback ledger represent behaviors the self-heal layer had to correct at runtime. \\\n350: Your job is to write improvements that PREVENT these from recurring:\n351: \n352: - **phantom_tool_call** — Model described file changes in prose but executed zero tool calls. \\\n353:   Self-heal injected a retry prompt. Write to SOUL.md: reinforce 'execute tools, don't narrate'.\n354: - **user_correction** — User said 'no', 'wrong', 'try again', etc. \\\n355:   Analyze the correction content to determine if it's behavioral (SOUL), tool-usage (TOOLS), or preference (USER).\n356: - **context_compaction** — Context exceeded budget, had to be compacted. \\\n357:   If frequent, check if the agent is loading too many brain files or being too verbose (SOUL).\n358: - **provider_error** — Provider returned an error. Usually not actionable unless the agent is \\\n359:   sending bad requests (TOOLS) or using the wrong model.\n360: - **tool_failure** — A specific tool failed. Use feedback_record/feedback_analyze to log \\\n361:   and review patterns. Do NOT append failure notes to TOOLS.md — it's for tool definitions only.\n362: \n363: ## Workflow — MANDATORY\n364: \n365: 1. **Read first**: Before ANY modification, call self_improve with action='read' on the target file. \\\n366:    You MUST see the current content to judge whether your improvement is new, redundant, or refines something existing.\n367: 2. **Decide action**: After reading:\n368:    - If the file has NO existing instruction covering your improvement → use action='apply' to append.\n369:    - If the file ALREADY has an instruction that covers the same topic but needs refinement → use action='update' with the exact old_content copied from what you just read, and your improved content in 'content'.\n370:    - If the file already covers the topic AND the feedback shows a FRESH repeat violation (new incident since the rule was written) → use action='update' to reinforce: append the new date/incident as evidence, and tighten the wording if the model keeps slipping past it. Do NOT bump inline counters — see \\\"Reinforcing Repeat Violations\\\" below. \n371:    Repeat violations of an existing rule are NOT a 'covered, skip' case — they signal the rule needs reinforcement.\n372:    - If the file already says what you want to say AND there is no fresh evidence of new violations → SKIP. Do not duplicate.\n373: 3. **Never rewrite the whole file**. The 'update' action replaces ONE specific section/paragraph. \\\n374:    The 'apply' action appends. Neither should be used to rewrite the entire file. \\\n375:    Brain files contain user-written content — you must preserve it and only add/refine specific instructions.\n376: \n377: ## Reinforcing Repeat Violations\n378: \n379: When feedback shows the same correction pattern recurring (same dimension in user_correction or\n380: self_heal events, same root cause), update the existing rule to document the new incident:\n381: \n382: - Find the existing rule in the brain file via action='read'.\n383: - Use action='update' with old_content being the exact current rule text.\n384: - **Cap at 2 evidence entries** in the rule itself. After 2 dated entries, replace\n385:   subsequent appends with a single inline counter: `Violations: N, last: YYYY-MM-DD`\n386:   and increment N each time. Do NOT keep appending new date/session paragraphs.\n387:   Full incident history lives in the feedback ledger (feedback_analyze), not the\n388:   brain file. Two evidence entries is enough to prove recurrence; more just bloat.\n389: - Tighten the wording if the model keeps slipping past it.\n390: \n391: **Do NOT bump inline counters** (e.g. do NOT write `Violations: 6 → 7`). The feedback ledger SQLite\n392: database (`feedback.db` in your OpenCrabs home) is the canonical source of truth for event counts. SOUL.md\n393: counters are decorative and go stale — they are not read by the runtime. Only the DB is queried\n394: by feedback_analyze and the tool_loop.rs runtime.\n395: \n396: **Do NOT append unbounded incident logs.** Each new date/session entry looks like 'new content'\n397: to the dedup guard (issue #197) because the timestamp is unique. This causes brain-file bloat.\n398: Use the 2-entry cap above, then the inline counter.\n399: \n400: Skipping a repeat-violation case because 'the rule already exists' is the most common RSI\n401: failure mode. Don't do it. The rule existing IS the reason to reinforce — but document via\n402: evidence appends, not counter bumps.\n403: \n404: ## Proposing New Tools / Commands (rsi_propose)\n405: \n406: You can also propose NEW dynamic tools (`tools.toml`) or NEW slash \\\n407: commands (`commands.toml`) when feedback shows the agent worked around \\\n408: a missing capability. Use `rsi_propose` for this. You do NOT install — proposals \\\n409: land in your `rsi/proposed_*.toml` inbox. The user (or the user-facing \\\n410: agent on their behalf) reviews and applies via the `rsi_proposals` tool.\n411: \n412: Once applied, a new slash command or skill is **discoverable automatically** — the \\\n413: agent's system prompt injects a live Available Commands & Skills index every turn \\\n414: (built from `commands.toml` + `skills/`), so you do NOT need to also document it in a \\\n415: brain file for the agent to find it. Write a clear `description` — that's what the \\\n416: agent reads to decide when to run it.\n417: \n418: When to propose a tool (kind='tool'):\n419: - A specific bash invocation appears repeatedly across sessions (e.g. `gh issue list`, \\\n420:   `docker ps`, a curl to a private API). Wrap it as a shell tool with named params.\n421: - The agent calls `http_request` to the same endpoint multiple times with similar \\\n422:   payloads. Wrap it as an http tool.\n423: - Only propose tools whose execution is safe by default (read-only verbs, \\\n424:   GET requests). Set `requires_approval=true` for anything shell-based.\n425: \n426: EFFICIENCY GATE (required for all tool proposals):\n427: The rationale MUST explicitly state which of these applies. If none apply, do NOT \\\n428: propose the tool:\n429: 1. TOKEN SAVINGS — wrapper eliminates boilerplate (multi-step resolution, auth headers, \\\n430:    JSON construction, repeated argument patterns)\n431: 2. ERROR REDUCTION — wrapper prevents a known class of failures (quoting bugs, escaping \\\n432:    issues, parameter validation, environment setup)\n433: 3. CAPABILITY ADDITION — wrapper enables something bash cannot do alone (structured output \\\n434:    parsing, protocol handling, binary data processing)\n435: \n436: Pure passthrough wrappers (e.g. `ssh_exec` that just wraps `bash ssh user@host 'cmd'`) \\\n437: fail this gate: same token cost, no error reduction, no new capability. Reject them.\n438: \n439: When to propose a command (kind='command'):\n440: - The user types `/something` repeatedly that doesn't exist (look at user_correction \\\n441:   events or recent input patterns).\n442: - A common multi-step prompt the user reuses verbatim — a slash command saves typing.\n443: \n444: Strict rules for rsi_propose:\n445: - The `rationale` MUST cite the feedback evidence (event types and counts) that \\\n446:   drove the proposal. No speculation.\n447: - One proposal per cycle is plenty. Quality over quantity.\n448: - Never propose a destructive shell tool (`rm`, `dd`, `mv`, `>`, `|sh`, etc.) — \\\n449:   those should always go through tool_manage with explicit user approval, not \\\n450:   through RSI.\n451: - Don't repropose: rsi_propose dedups by name, but rapid resubmission still wastes \\\n452:   the user's review time. If a proposal was already filed and not applied, the \\\n453:   user has a reason; don't insist.\n454: \n455: ## Rules\n456: \n457: Do NOT apply improvements if the data is insufficient or ambiguous. \\\n458: Quality over quantity — one well-reasoned improvement is better than many speculative ones. \\\n459: Never duplicate an existing instruction in a brain file — you have the 'read' action to check first. \\\n460: If an improvement was already applied (check self_improve action='list'), skip it. \\\n461: Use 'update' over 'apply' when an existing instruction needs rewording, not a new one added. \\\n462: When a brain rule you write names a specific non-core tool (`telegram_send`, `analyze_image`, \\\n463: `cron_manage`, `message`, ...), pair the mention with a `tool_search` reminder — a bare tool name \\\n464: reads as directly callable and invites a schema-less guess that wastes the first call. The runtime \\\n465: preamble already states this discipline globally; do not restate the general rule, just keep \\\n466: individual tool mentions you author consistent with it.\\n\\nTOOL LIFECYCLE: when you find instructions \\\n467: referencing a tool the agent should use, reinforce the full cycle — `tool_search` before calling, \\\n468: fallback to `tool_search` on failure, never assume a tool is unavailable without searching. If a \\\n469: brain rule only names the tool without the search reminder, the agent will guess parameters or skip \\\n470: the tool entirely. Always include the search-then-call pattern.\";\n471: \n472: /// Run a single autonomous RSI agent cycle.\n473: ///\n474: /// Creates a lightweight AgentService with only RSI tools, sends the improvement\n475: /// prompt, and returns the agent's summary of what it did.\n476: async fn run_rsi_agent_cycle(\n477:     pool: crate::db::Pool,\n478:     config: &Config,\n479:     opportunities: &[String],\n480: ) -> anyhow::Result<String> {\n481:     use crate::brain::agent::AgentService;\n482:     use crate::services::{ServiceContext, SessionService};\n483: \n484:     // Resolve RSI provider: prefer self_improvement_provider, fall back to user's active provider\n485:     let active_provider = config.providers.active_provider_and_model().0;\n486:     let provider_name = config\n487:         .agent\n488:         .self_improvement_provider\n489:         .as_deref()\n490:         .unwrap_or(&active_provider);\n491: \n492:     // #469 part A: a dead self_improvement_provider (missing key, typo,\n493:     // removed section) must not kill the cycle — fall back to the user's\n494:     // active provider before the chain wrap below. Errors are loud, never\n495:     // swallowed.\n496:     let provider =\n497:         match crate::brain::provider::factory::create_provider_by_name(config, provider_name).await\n498:         {\n499:             Ok(p) => p,\n\n(Showing lines 300-499 of 1091. Use offset=500 to continue.)\n</content>\n<dcp-message-id>m0017</dcp-message-id>",
+        "metadata": {
+          "preview": "competing instructions across runs — accumulated lessons degrade the brain into contradictions. \\\nOne clear rule per problem; refine in place (action='update') rather than appending near-duplicates. \\\nIf a rule already covers the problem, leave it.\n\n## Target File Taxonomy\n\nEach brain file controls a different aspect of the agent. Route improvements to the RIGHT file:\n\n- **SOUL.md** — PERSONALITY / voice: response style, tone, reasoning patterns. \\\n  Fix here when: phantom_tool_call events (model narrates instead of acting), gaslighting \\\n  preambles, verbose/repetitive responses, wrong tone. \\\n  NOT the hard rules / safety gates — those go in AGENTS.md (always-loaded).\n- **TOOLS.md** — Tool DEFINITIONS: parameter formats, executor types, usage docs. \\\n  This is a reference file, NOT a dumping ground for failure logs or error notes. \\\n  Tool failure patterns are tracked by the feedback system (feedback_record, feedback_analyze). \\\n  Do NOT append error handling guidance, failure counts, or incident logs here. \\\n  Only edit TOOLS.md when a tool's actual definition or usage docs need updating.\n- **USER.md** — How to interact with THIS USER: preferences, corrections, frustrations. \\\n  Fix here when: user_correction events show a repeated preference the agent keeps violating.\n- **MEMORY.md** — Persistent KNOWLEDGE: facts, context, project state, integrations. \\",
+          "truncated": true,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs",
+            "text": "competing instructions across runs — accumulated lessons degrade the brain into contradictions. \\\nOne clear rule per problem; refine in place (action='update') rather than appending near-duplicates. \\\nIf a rule already covers the problem, leave it.\n\n## Target File Taxonomy\n\nEach brain file controls a different aspect of the agent. Route improvements to the RIGHT file:\n\n- **SOUL.md** — PERSONALITY / voice: response style, tone, reasoning patterns. \\\n  Fix here when: phantom_tool_call events (model narrates instead of acting), gaslighting \\\n  preambles, verbose/repetitive responses, wrong tone. \\\n  NOT the hard rules / safety gates — those go in AGENTS.md (always-loaded).\n- **TOOLS.md** — Tool DEFINITIONS: parameter formats, executor types, usage docs. \\\n  This is a reference file, NOT a dumping ground for failure logs or error notes. \\\n  Tool failure patterns are tracked by the feedback system (feedback_record, feedback_analyze). \\\n  Do NOT append error handling guidance, failure counts, or incident logs here. \\\n  Only edit TOOLS.md when a tool's actual definition or usage docs need updating.\n- **USER.md** — How to interact with THIS USER: preferences, corrections, frustrations. \\\n  Fix here when: user_correction events show a repeated preference the agent keeps violating.\n- **MEMORY.md** — Persistent KNOWLEDGE: facts, context, project state, integrations. \\\n  Fix here when: the agent repeatedly lacks context it should have retained across sessions.\n- **AGENTS.md** — Workspace PROCESS + the **enforced hard rules / safety gates** (never \\\n  delete/push/email/post without approval). It is ALWAYS-LOADED, so any must-always-respect \\\n  rule a user/feedback teaches goes HERE — never in an on-demand file (MEMORY/TOOLS/CODE) where \\\n  it wouldn't be enforced on a cold session or after compaction. \\\n  Fix here when: workspace/process behavior needs adjustment, or a new hard rule is learned. \\\n  NOT security policy (→ SECURITY.md), NOT personality/tone (→ SOUL.md).\n- **CODE.md** — Coding standards, testing, and the user's language/framework preference. \\\n  Fix here when: code-quality feedback recurs (wrong style, missing tests, bad patterns).\n- **SECURITY.md** — Security policy: code review, network posture, data handling, credential/server access. \\\n  Fix here when: security-related feedback appears.\n- **BOOT.md** — Startup + runtime self-maintenance: boot steps, memory-save triggers, upgrade/evolve, \\\n  running as a service. Fix here when: startup/persistence guidance or the memory-save triggers \\\n  need updating.\n\nOne kind of content per file — never duplicate a rule across files (copies drift and go stale), \\\nand match each file's `**Owns:**` header. SOUL/AGENTS/CODE/TOOLS/SECURITY/BOOT are generic (same for \\\neveryone); USER/MEMORY are user-specific.\n\n### Custom Reference Files\n\nAdditional `.md` files may exist alongside the core brain files (the user's own custom \\\nnotes or skill-specific docs). These are NOT core brain files. They are user-curated reference material \\\nloaded on demand via `load_brain_file` for inflight context. \\\nYou may read them for context, but do NOT autonomously write to them via self_improve. \\\nIf feedback relates to content in a custom file, suggest the change to the user instead.\n\n## Self-Heal Event Types\n\nThese events in the feedback ledger represent behaviors the self-heal layer had to correct at runtime. \\\nYour job is to write improvements that PREVENT these from recurring:\n\n- **phantom_tool_call** — Model described file changes in prose but executed zero tool calls. \\\n  Self-heal injected a retry prompt. Write to SOUL.md: reinforce 'execute tools, don't narrate'.\n- **user_correction** — User said 'no', 'wrong', 'try again', etc. \\\n  Analyze the correction content to determine if it's behavioral (SOUL), tool-usage (TOOLS), or preference (USER).\n- **context_compaction** — Context exceeded budget, had to be compacted. \\\n  If frequent, check if the agent is loading too many brain files or being too verbose (SOUL).\n- **provider_error** — Provider returned an error. Usually not actionable unless the agent is \\\n  sending bad requests (TOOLS) or using the wrong model.\n- **tool_failure** — A specific tool failed. Use feedback_record/feedback_analyze to log \\\n  and review patterns. Do NOT append failure notes to TOOLS.md — it's for tool definitions only.\n\n## Workflow — MANDATORY\n\n1. **Read first**: Before ANY modification, call self_improve with action='read' on the target file. \\\n   You MUST see the current content to judge whether your improvement is new, redundant, or refines something existing.\n2. **Decide action**: After reading:\n   - If the file has NO existing instruction covering your improvement → use action='apply' to append.\n   - If the file ALREADY has an instruction that covers the same topic but needs refinement → use action='update' with the exact old_content copied from what you just read, and your improved content in 'content'.\n   - If the file already covers the topic AND the feedback shows a FRESH repeat violation (new incident since the rule was written) → use action='update' to reinforce: append the new date/incident as evidence, and tighten the wording if the model keeps slipping past it. Do NOT bump inline counters — see \\\"Reinforcing Repeat Violations\\\" below. \n   Repeat violations of an existing rule are NOT a 'covered, skip' case — they signal the rule needs reinforcement.\n   - If the file already says what you want to say AND there is no fresh evidence of new violations → SKIP. Do not duplicate.\n3. **Never rewrite the whole file**. The 'update' action replaces ONE specific section/paragraph. \\\n   The 'apply' action appends. Neither should be used to rewrite the entire file. \\\n   Brain files contain user-written content — you must preserve it and only add/refine specific instructions.\n\n## Reinforcing Repeat Violations\n\nWhen feedback shows the same correction pattern recurring (same dimension in user_correction or\nself_heal events, same root cause), update the existing rule to document the new incident:\n\n- Find the existing rule in the brain file via action='read'.\n- Use action='update' with old_content being the exact current rule text.\n- **Cap at 2 evidence entries** in the rule itself. After 2 dated entries, replace\n  subsequent appends with a single inline counter: `Violations: N, last: YYYY-MM-DD`\n  and increment N each time. Do NOT keep appending new date/session paragraphs.\n  Full incident history lives in the feedback ledger (feedback_analyze), not the\n  brain file. Two evidence entries is enough to prove recurrence; more just bloat.\n- Tighten the wording if the model keeps slipping past it.\n\n**Do NOT bump inline counters** (e.g. do NOT write `Violations: 6 → 7`). The feedback ledger SQLite\ndatabase (`feedback.db` in your OpenCrabs home) is the canonical source of truth for event counts. SOUL.md\ncounters are decorative and go stale — they are not read by the runtime. Only the DB is queried\nby feedback_analyze and the tool_loop.rs runtime.\n\n**Do NOT append unbounded incident logs.** Each new date/session entry looks like 'new content'\nto the dedup guard (issue #197) because the timestamp is unique. This causes brain-file bloat.\nUse the 2-entry cap above, then the inline counter.\n\nSkipping a repeat-violation case because 'the rule already exists' is the most common RSI\nfailure mode. Don't do it. The rule existing IS the reason to reinforce — but document via\nevidence appends, not counter bumps.\n\n## Proposing New Tools / Commands (rsi_propose)\n\nYou can also propose NEW dynamic tools (`tools.toml`) or NEW slash \\\ncommands (`commands.toml`) when feedback shows the agent worked around \\\na missing capability. Use `rsi_propose` for this. You do NOT install — proposals \\\nland in your `rsi/proposed_*.toml` inbox. The user (or the user-facing \\\nagent on their behalf) reviews and applies via the `rsi_proposals` tool.\n\nOnce applied, a new slash command or skill is **discoverable automatically** — the \\\nagent's system prompt injects a live Available Commands & Skills index every turn \\\n(built from `commands.toml` + `skills/`), so you do NOT need to also document it in a \\\nbrain file for the agent to find it. Write a clear `description` — that's what the \\\nagent reads to decide when to run it.\n\nWhen to propose a tool (kind='tool'):\n- A specific bash invocation appears repeatedly across sessions (e.g. `gh issue list`, \\\n  `docker ps`, a curl to a private API). Wrap it as a shell tool with named params.\n- The agent calls `http_request` to the same endpoint multiple times with similar \\\n  payloads. Wrap it as an http tool.\n- Only propose tools whose execution is safe by default (read-only verbs, \\\n  GET requests). Set `requires_approval=true` for anything shell-based.\n\nEFFICIENCY GATE (required for all tool proposals):\nThe rationale MUST explicitly state which of these applies. If none apply, do NOT \\\npropose the tool:\n1. TOKEN SAVINGS — wrapper eliminates boilerplate (multi-step resolution, auth headers, \\\n   JSON construction, repeated argument patterns)\n2. ERROR REDUCTION — wrapper prevents a known class of failures (quoting bugs, escaping \\\n   issues, parameter validation, environment setup)\n3. CAPABILITY ADDITION — wrapper enables something bash cannot do alone (structured output \\\n   parsing, protocol handling, binary data processing)\n\nPure passthrough wrappers (e.g. `ssh_exec` that just wraps `bash ssh user@host 'cmd'`) \\\nfail this gate: same token cost, no error reduction, no new capability. Reject them.\n\nWhen to propose a command (kind='command'):\n- The user types `/something` repeatedly that doesn't exist (look at user_correction \\\n  events or recent input patterns).\n- A common multi-step prompt the user reuses verbatim — a slash command saves typing.\n\nStrict rules for rsi_propose:\n- The `rationale` MUST cite the feedback evidence (event types and counts) that \\\n  drove the proposal. No speculation.\n- One proposal per cycle is plenty. Quality over quantity.\n- Never propose a destructive shell tool (`rm`, `dd`, `mv`, `>`, `|sh`, etc.) — \\\n  those should always go through tool_manage with explicit user approval, not \\\n  through RSI.\n- Don't repropose: rsi_propose dedups by name, but rapid resubmission still wastes \\\n  the user's review time. If a proposal was already filed and not applied, the \\\n  user has a reason; don't insist.\n\n## Rules\n\nDo NOT apply improvements if the data is insufficient or ambiguous. \\\nQuality over quantity — one well-reasoned improvement is better than many speculative ones. \\\nNever duplicate an existing instruction in a brain file — you have the 'read' action to check first. \\\nIf an improvement was already applied (check self_improve action='list'), skip it. \\\nUse 'update' over 'apply' when an existing instruction needs rewording, not a new one added. \\\nWhen a brain rule you write names a specific non-core tool (`telegram_send`, `analyze_image`, \\\n`cron_manage`, `message`, ...), pair the mention with a `tool_search` reminder — a bare tool name \\\nreads as directly callable and invites a schema-less guess that wastes the first call. The runtime \\\npreamble already states this discipline globally; do not restate the general rule, just keep \\\nindividual tool mentions you author consistent with it.\\n\\nTOOL LIFECYCLE: when you find instructions \\\nreferencing a tool the agent should use, reinforce the full cycle — `tool_search` before calling, \\\nfallback to `tool_search` on failure, never assume a tool is unavailable without searching. If a \\\nbrain rule only names the tool without the search reminder, the agent will guess parameters or skip \\\nthe tool entirely. Always include the search-then-call pattern.\";\n\n/// Run a single autonomous RSI agent cycle.\n///\n/// Creates a lightweight AgentService with only RSI tools, sends the improvement\n/// prompt, and returns the agent's summary of what it did.\nasync fn run_rsi_agent_cycle(\n    pool: crate::db::Pool,\n    config: &Config,\n    opportunities: &[String],\n) -> anyhow::Result<String> {\n    use crate::brain::agent::AgentService;\n    use crate::services::{ServiceContext, SessionService};\n\n    // Resolve RSI provider: prefer self_improvement_provider, fall back to user's active provider\n    let active_provider = config.providers.active_provider_and_model().0;\n    let provider_name = config\n        .agent\n        .self_improvement_provider\n        .as_deref()\n        .unwrap_or(&active_provider);\n\n    // #469 part A: a dead self_improvement_provider (missing key, typo,\n    // removed section) must not kill the cycle — fall back to the user's\n    // active provider before the chain wrap below. Errors are loud, never\n    // swallowed.\n    let provider =\n        match crate::brain::provider::factory::create_provider_by_name(config, provider_name).await\n        {\n            Ok(p) => p,",
+            "lineStart": 300,
+            "lineEnd": 499,
+            "totalLines": 1091,
+            "truncated": true
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/brain/rsi.rs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784982935602,
+    "tokens": {
+      "input": 5009,
+      "output": 85,
+      "reasoning": 398,
+      "cache": {
+        "write": 0,
+        "read": 49664
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Now I have a comprehensive understanding. The RSI prompt I received is literally the `RSI_AGENT_PROMPT` constant from `src/brain/rsi.rs` in OpenCrabs, with some pre-filled \"Detected opportunities\" data appended.\n\nThe situation is:\n1. This is a role-play / simulation where I'm being asked to act as the RSI engine\n2. I don't have the RSI tools (feedback_analyze, self_improve, rsi_propose) in my toolset\n3. I do have access to read files and use sequential-thinking\n\nThe \"detected opportunities\" in the prompt already contain specific data:\n- 3 provider errors with details\n- Bash 'grep' (rg) - 21 calls, sample invocations shown\n- Bash 'fs' (fd, ls) - 17 calls, sample invocations shown\n\nLet me use sequential-thinking to analyze what I can and should do, and provide a comprehensive response to the user.\n\nActually, let me re-read more carefully... The user's message says \"Run an autonomous self-improvement cycle.\" It's addressed to me as the RSI engine. But I'm J.A.R.V.I.S. - the orchestrator.\n\nThe pre-filled data gives me enough to work with. Let me do the analysis workflow as best I can:\n\n1. Analyze the provider errors - these are about INSFFICIENT BALANCE and AUTH_ERROR - not something I can fix with brain file changes\n2. Analyze the bash 'grep' calls - 21 successful invocations of rg. These look like code search use cases\n3. Analyze the bash 'fs' calls - 17 calls of fd/ls. These look like file system exploration\n\nSince I don't have the RSI tools, let me see what brain files/areas I CAN read and potentially improve. Let me look at the templates to understand the structure."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_u2cPAU3zYkqomDGSzkfY1583",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/docs/reference/templates"
+        },
+        "output": "<path>/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/docs/reference/templates</path>\n<type>directory</type>\n<entries>\nAGENTS.md\nBOOT.md\nCODE.md\ncron/\nHEARTBEAT.md\nMEMORY.md\nSECURITY.md\nskills/\nSOUL.md\nTOOLS.md\nUSER.md\n\n(11 entries)\n</entries>\n<dcp-message-id>m0018</dcp-message-id>",
+        "metadata": {
+          "preview": "AGENTS.md\nBOOT.md\nCODE.md\ncron/\nHEARTBEAT.md\nMEMORY.md\nSECURITY.md\nskills/\nSOUL.md\nTOOLS.md\nUSER.md",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/docs/reference/templates",
+            "entries": [
+              "AGENTS.md",
+              "BOOT.md",
+              "CODE.md",
+              "cron/",
+              "HEARTBEAT.md",
+              "MEMORY.md",
+              "SECURITY.md",
+              "skills/",
+              "SOUL.md",
+              "TOOLS.md",
+              "USER.md"
+            ],
+            "offset": 1,
+            "totalEntries": 11,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.cargo/git/checkouts/opencrabs-7e5c6b2b21f85fad/71769cf/src/docs/reference/templates"
+      }
+    ]
+  }
+]

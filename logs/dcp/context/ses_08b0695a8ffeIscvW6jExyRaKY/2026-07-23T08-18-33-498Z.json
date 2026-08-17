@@ -1,0 +1,51 @@
+[
+  {
+    "role": "user",
+    "time": 1784794709785,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Research techniques for granular control in LLM prompts without switching modes. Approaches: (1) Instruction hierarchy — how to mark some instructions as absolute/overriding vs optional. (2) Probabilistic soft constraints. (3) Chain-of-thought with validation checkpoints. (4) Reflection/self-verification loops where the model checks strict parts and ignores soft parts. (5) Any existing frameworks for 'partial control' where the model knows which parts of the prompt are hard constraints vs guidelines. Search the web.\n\n<dcp-message-id>m0126</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0126</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794709798,
+    "tokens": {
+      "input": 353,
+      "output": 55,
+      "reasoning": 110,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user is asking me to research techniques for granular control in LLM prompts without switching modes. They want me to search the web for several specific approaches. Let me use the web search tools to find current information about these topics.\n\nLet me run multiple searches in parallel covering the different aspects:\n1. Instruction hierarchy for LLM prompts\n2. Probabilistic soft constraints in LLM prompts\n3. Chain-of-thought with validation checkpoints\n4. Reflection/self-verification loops\n5. Partial control frameworks for hard vs soft constraints"
+      },
+      {
+        "type": "tool",
+        "tool": "skill_search",
+        "callID": "call_00_TAaYm7VclZuYSsIAp7lJ0392",
+        "status": "completed",
+        "input": {
+          "query": "web research granular control LLM prompts instruction hierarchy soft constraints frameworks"
+        },
+        "output": "{\n  \"status\": \"matched\",\n  \"results\": [\n    {\n      \"skill_id\": \"modern-web-guidance\",\n      \"name\": \"modern-web-guidance\",\n      \"score\": 0.6136,\n      \"reason\": \"The skill description matches these query terms: web, framework.\"\n    },\n    {\n      \"skill_id\": \"pc-control\",\n      \"name\": \"pc-control\",\n      \"score\": 0.5248,\n      \"reason\": \"The skill description matches these query terms: control.\"\n    },\n    {\n      \"skill_id\": \"loop\",\n      \"name\": \"loop\",\n      \"score\": 0.4552,\n      \"reason\": \"The skill description matches these query terms: prompt.\"\n    }\n  ],\n  \"loaded_skill_id\": null\n}\n<dcp-message-id>m0128</dcp-message-id>",
+        "metadata": {
+          "status": "matched",
+          "loadedSkillID": null,
+          "truncated": false
+        },
+        "title": "Found 3 skills"
+      }
+    ]
+  }
+]

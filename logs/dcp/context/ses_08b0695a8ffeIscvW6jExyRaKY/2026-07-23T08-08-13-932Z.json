@@ -1,0 +1,54 @@
+[
+  {
+    "role": "user",
+    "time": 1784794079469,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are the scoping step of a deep research run. Today is 2026-07-23. No user is available — do NOT ask questions; write assumptions instead.\nResearch question (verbatim from user): \"\"Практические подходы к контролю ИИ в продакшене: где нужен жёсткий контроль (типы, контракты, guardrails, верификация), а где можно дать свободу (вариативность, креатив, исследования). Интересуют реальные фреймворки, патерны проектирования системы где ИИ сам выбирает режим работы.\"\"\n\nWrite brief.md with sections:\n# Research Brief\n**Date**: 2026-07-23 · **Depth**: standard\n## Question — the refined, unambiguous research question\n## Scope — In: ... / Out: ... (explicit boundaries)\n## Assumptions — audience, time frame, region, language; every guess you made goes here\nDo nothing else. Do not plan angles yet.\n\n<dcp-message-id>m0034</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0034</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794079488,
+    "tokens": {
+      "input": 6224,
+      "output": 808,
+      "reasoning": 158,
+      "cache": {
+        "write": 0,
+        "read": 46336
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to write a brief.md file with the research brief for a deep research run. Let me analyze the research question and write the brief.\n\nResearch question: \"Практические подходы к контролю ИИ в продакшене: где нужен жёсткий контроль (типы, контракты, guardrails, верификация), а где можно дать свободу (вариативность, креатив, исследования). Интересуют реальные фреймворки, патерны проектирования системы где ИИ сам выбирает режим работы.\"\n\nToday is 2026-07-23. No user available, so I need to write assumptions myself.\n\nLet me craft the brief.md with the required sections."
+      },
+      {
+        "type": "tool",
+        "tool": "write",
+        "callID": "call_00_seZDAs8kb32XZAcMO2CR6508",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/brief.md",
+          "content": "# Research Brief\n\n**Date**: 2026-07-23 · **Depth**: standard\n\n## Question\n\nКакие существуют практические подходы и шаблоны проектирования для контроля ИИ в продакшен-системах, где требуется баланс между жёсткими ограничениями (система типов, контракты, guardrails, формальная верификация) и свободой поведения (вариативность, креативность, исследовательские режимы)? Особый интерес — архитектурные паттерны, в которых ИИ-агент автономно выбирает режим работы (controlled vs. free) в зависимости от контекста задачи.\n\n## Scope\n\n**In:**\n- Production-grade фреймворки и библиотеки для guardrails (NVIDIA NeMo Guardrails, Guardrails AI, Microsoft Guidance, LangChain/LlamaIndex safety)\n- Системы контрактной верификации ИИ-выходов (type-based, schema-based, Pydantic, structured output guarantees)\n- Архитектурные паттерны \"режимного\" ИИ: routing by task type, confidence-based fallback, гейткипинг с авто-переключением строгости\n- Индустриальный опыт (case studies) внедрения контроля в production: где пережали, где недодали\n- Паттерны проектирования: Bouncer/Validator pattern, Judge-Advisor, Multi-agent с разными level of freedom, Constitutional AI как механизм самоконтроля\n- Оценка стоимости контроля (latency, token cost, false positives vs. false negatives)\n- 2023–2026 публикации, тулы, реальные внедрения\n\n**Out:**\n- Общие рассуждения про AI safety без привязки к production-архитектуре\n- Чисто теоретические/академические работы без практической имплементации\n- Политические/регуляторные аспекты (законы, compliance-документы без технической конкретики)\n- Детальный разбор конкретных инцидентов без architectural lessons learned\n\n## Assumptions\n\n- **Audience**: Middle/senior инженер или архитектор, проектирующий production-систему с LLM-агентами. Русскоязычный, но читает английские источники.\n- **Time frame**: 2023–2026 (актуальные подходы, релевантные для современного стека LLM).\n- **Region**: Глобальный рынок (англоязычные источники + русскоязычные практики); без привязки к юрисдикциям.\n- **Language**: Основные источники — английские, brief и результат — на русском.\n- **Scale**: Интересуют системы от \"один агент на один task\" до \"multi-agent orchestration\".\n- **Tech stack**: OpenAI API / Anthropic API как baseline, но обобщаемые подходы (model-agnostic).\n- **No user available** — все предположения записаны выше; уточняющих вопросов задать нельзя.\n- **Depth \"standard\"** — 10–20 источников, не академическая выжимка, но и не поверхностный обзор.\n- **Practical orientation** — читатель будет принимать решения на основе результата: что внедрять, а что — нет.\n"
+        },
+        "output": "Wrote file successfully.\n<dcp-message-id>m0035</dcp-message-id>",
+        "metadata": {
+          "diagnostics": {},
+          "diff": "Index: /home/kasiro/brief.md\n===================================================================\n--- /home/kasiro/brief.md\n+++ /home/kasiro/brief.md\n@@ -0,0 +1,36 @@\n+# Research Brief\n+\n+**Date**: 2026-07-23 · **Depth**: standard\n+\n+## Question\n+\n+Какие существуют практические подходы и шаблоны проектирования для контроля ИИ в продакшен-системах, где требуется баланс между жёсткими ограничениями (система типов, контракты, guardrails, формальная верификация) и свободой поведения (вариативность, креативность, исследовательские режимы)? Особый интерес — архитектурные паттерны, в которых ИИ-агент автономно выбирает режим работы (controlled vs. free) в зависимости от контекста задачи.\n+\n+## Scope\n+\n+**In:**\n+- Production-grade фреймворки и библиотеки для guardrails (NVIDIA NeMo Guardrails, Guardrails AI, Microsoft Guidance, LangChain/LlamaIndex safety)\n+- Системы контрактной верификации ИИ-выходов (type-based, schema-based, Pydantic, structured output guarantees)\n+- Архитектурные паттерны \"режимного\" ИИ: routing by task type, confidence-based fallback, гейткипинг с авто-переключением строгости\n+- Индустриальный опыт (case studies) внедрения контроля в production: где пережали, где недодали\n+- Паттерны проектирования: Bouncer/Validator pattern, Judge-Advisor, Multi-agent с разными level of freedom, Constitutional AI как механизм самоконтроля\n+- Оценка стоимости контроля (latency, token cost, false positives vs. false negatives)\n+- 2023–2026 публикации, тулы, реальные внедрения\n+\n+**Out:**\n+- Общие рассуждения про AI safety без привязки к production-архитектуре\n+- Чисто теоретические/академические работы без практической имплементации\n+- Политические/регуляторные аспекты (законы, compliance-документы без технической конкретики)\n+- Детальный разбор конкретных инцидентов без architectural lessons learned\n+\n+## Assumptions\n+\n+- **Audience**: Middle/senior инженер или архитектор, проектирующий production-систему с LLM-агентами. Русскоязычный, но читает английские источники.\n+- **Time frame**: 2023–2026 (актуальные подходы, релевантные для современного стека LLM).\n+- **Region**: Глобальный рынок (англоязычные источники + русскоязычные практики); без привязки к юрисдикциям.\n+- **Language**: Основные источники — английские, brief и результат — на русском.\n+- **Scale**: Интересуют системы от \"один агент на один task\" до \"multi-agent orchestration\".\n+- **Tech stack**: OpenAI API / Anthropic API как baseline, но обобщаемые подходы (model-agnostic).\n+- **No user available** — все предположения записаны выше; уточняющих вопросов задать нельзя.\n+- **Depth \"standard\"** — 10–20 источников, не академическая выжимка, но и не поверхностный обзор.\n+- **Practical orientation** — читатель будет принимать решения на основе результата: что внедрять, а что — нет.\n",
+          "filepath": "/home/kasiro/brief.md",
+          "exists": false,
+          "truncated": false
+        },
+        "title": "home/kasiro/brief.md"
+      }
+    ]
+  }
+]

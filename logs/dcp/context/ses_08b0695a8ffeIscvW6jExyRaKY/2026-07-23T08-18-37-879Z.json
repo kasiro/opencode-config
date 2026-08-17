@@ -1,0 +1,155 @@
+[
+  {
+    "role": "user",
+    "time": 1784794707667,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Research approaches to give LLMs long-term memory that feels like it's in-context (not RAG chunks but coherent recall). Research: MemGPT/Lettuce (OS-level memory), MemWalker, MemoryBank, RAPTOR, Infini-Attention, MiMoCode's existing memory system, any approaches for 'unlimited context' on consumer hardware. Focus on practical architectures that work on weak hardware (8-16GB RAM, CPU-only). How does MiMoCode's FTS5 memory work? Is there a better approach for cohesive memory? Search the web and read documentation/papers.\n\n<dcp-message-id>m0124</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0124</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794707684,
+    "tokens": {
+      "input": 370,
+      "output": 56,
+      "reasoning": 141,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research approaches for giving LLMs long-term memory that feels in-context (coherent recall, not RAG chunks). Let me break this down:\n\n1. MemGPT/Lettuce (OS-level memory)\n2. MemWalker\n3. MemoryBank\n4. RAPTOR\n5. Infini-Attention\n6. MiMoCode's existing memory system (FTS5)\n7. Any approaches for 'unlimited context' on consumer hardware\n\nThey want practical architectures that work on weak hardware (8-16GB RAM, CPU-only).\n\nLet me start by searching the web for these approaches, and also look at MiMoCode's memory system documentation."
+      },
+      {
+        "type": "tool",
+        "tool": "skill_search",
+        "callID": "call_00_GIhFiNtzj8rvjz6h8NYx6065",
+        "status": "completed",
+        "input": {
+          "query": "research LLM long-term memory architectures in-context recall weak hardware"
+        },
+        "output": "{\n  \"status\": \"matched\",\n  \"results\": [\n    {\n      \"skill_id\": \"context-mgmt\",\n      \"name\": \"context-mgmt\",\n      \"score\": 0.6773,\n      \"reason\": \"The skill description matches these query terms: research, memory, context, recall.\"\n    },\n    {\n      \"skill_id\": \"mcp-builder\",\n      \"name\": \"mcp-builder\",\n      \"score\": 0.4627,\n      \"reason\": \"The skill description matches these query terms: llm, in, context.\"\n    },\n    {\n      \"skill_id\": \"jarvis-cycles\",\n      \"name\": \"jarvis-cycles\",\n      \"score\": 0.4391,\n      \"reason\": \"The skill description matches these query terms: research, memory, in, recall.\"\n    }\n  ],\n  \"loaded_skill_id\": null\n}\n<dcp-message-id>m0127</dcp-message-id>",
+        "metadata": {
+          "status": "matched",
+          "loadedSkillID": null,
+          "truncated": false
+        },
+        "title": "Found 3 skills"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794711607,
+    "tokens": {
+      "input": 275,
+      "output": 345,
+      "reasoning": 53,
+      "cache": {
+        "write": 0,
+        "read": 52608
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The skill search didn't match well for this specific research task. This is a deep research request about LLM memory architectures. Let me use the research tools directly — web searches, reading papers, and documentation. I'll do parallel searches for the different approaches mentioned."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_pOVGStbwbgkGlTKuV4F63581",
+        "status": "completed",
+        "input": {
+          "query": "MemGPT Lettuce OS-level memory LLM long-term memory architecture",
+          "num_results": 10
+        },
+        "output": "Title: Segre digital - català\nDescription: Diari SEGRE digital en format epaper\nURL: https://grup.segre.com/diari-digital\nRelevance Score: 1.000\n\nTitle: Tercera edició del cicle ‘Diàlegs’ - català - agenda.segre.com\nDescription: Oct 21, 2025 · DIÀLEGS és una iniciativa conjunta de l’Institut d’Estudis Catalans, la UdL, el Diari Segre i l’Orfeó Lleidatà, per a crear …\nURL: https://agenda.segre.com/show/tercera-edicio-del-cicle-dialegs\nRelevance Score: 0.500\n\nTitle: L’empresariat català considera insuficient el nou finançament\nDescription: Jan 30, 2026 · El teixit empresarial català va apuntar que des del 2014 Catalunya pateix un dèficit acumulat de 42.500 milions …\nURL: https://www.segre.com/ca/nacional-internacional/260130/l-empresariat-catala-considera-insuficient-nou-financament_1094106.html\nRelevance Score: 0.333\n\nTitle: Protagonisme per al cine català a la gala dels Goya del ... - segre.com\nDescription: Feb 19, 2026 · La quarantena edició de la gala d’entrega dels Premis Goya, que se celebrarà el dia 28 a Barcelona, comptarà amb la …\nURL: https://www.segre.com/ca/cultura/260219/protagonisme-per-cine-catala-gala-dels-goya-dia-28-barcelona_1116909.html\nRelevance Score: 0.250\n\nTitle: Congrés Català de Repoblament - català - agenda.segre.com\nDescription: Jun 5, 2025 · El 2n Congrés Català de Repoblament posarà l’accent en l’aplicació de projectes concrets i en el paper clau de les …\nURL: https://agenda.segre.com/show/congres-catala-de-repoblament\nRelevance Score: 0.200\n\nTitle: Especials - català - grup.segre.com\nDescription: Carrer del Riu, nº 6, 25007, Lleida Telèfon: 973.24.80.00 redaccio@segre.com Grup Segre Qui som Contacte Altres webs del grup …\nURL: https://grup.segre.com/especials\nRelevance Score: 0.167\n\nTitle: Subscripció Paper + Digital\nDescription: Edició en paper en idioma català cada dia amb entrega al domicili Durada d'un mes natural a partir de l'endemà de la data de …\nURL: https://botiga.segre.com/subscripcio-paper-digital-catala-mensual.html\nRelevance Score: 0.143\n\nTitle: SEGRE CATALA-30112025\nDescription: SEGRE CATALA-30112025 Us recordem que l´adquisició d´aquest producte o qualsevol d´aquesta pàgina NO dóna dret a la seva …\nURL: https://botiga.segre.com/segre-catala-30112025.html\nRelevance Score: 0.125\n\nTitle: El Girona s’emporta el derbi català a Cornellà - segre.com\nDescription: Jan 17, 2026 · El Girona es va imposar ahir per 0-2 davant de l’Espanyol amb un doblet de Vanat de penal i encadena la tercera …\nURL: https://www.segre.com/ca/esports/260117/girona-s-emporta-derbi-catala-cornella_1079894.html\nRelevance Score: 0.111\n\nTitle: Albares diu que vint països recolzen el català a la UE - segre.com\nDescription: Feb 3, 2026 · El ministre d’Exteriors, José Manuel Albares, va afirmar ahir que una vintena de països ja s’han posicionat a favor que …\nURL: https://www.segre.com/ca/nacional-internacional/260203/albares-diu-vint-paisos-recolzen-catala-ue_1097606.html\nRelevance Score: 0.100\n<dcp-message-id>m0130</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_MguetExzRGOhUHYUO0FO5978",
+        "status": "completed",
+        "input": {
+          "query": "MemWalker LLM memory tree navigation long context",
+          "num_results": 10
+        },
+        "output": "Title: Maps of Switzerland - Swiss Confederation - map.geo.admin.ch\nDescription: Interactive map of Switzerland with geographical and administrative details provided by the Swiss Confederation.\nURL: https://map.geo.admin.ch/\nRelevance Score: 1.000\n\nTitle: Karte der Schweiz mit Routenplaner - search.ch\nDescription: Die interaktive Karte der Schweiz mit aktuellen Informationen zu Verkehr, Gastronomie und mehr\nURL: https://search.ch/map/\nRelevance Score: 0.500\n\nTitle: Maps of Switzerland - Swiss Confederation - map.geo.admin.ch\nDescription: Explore Switzerland's maps, geodata, and services with the Swiss Confederation's geoportal. Discover ski routes, weekly datasets, …\nURL: https://map.geo.admin.ch/index.html?swisssearch=0,0\nRelevance Score: 0.333\n\nTitle: Karte von Schweiz (Land / Staat) | Welt-Atlas.de\nDescription: Karte von Schweiz (Land / Staat) mit Städten, Orten, Straßen, Flüssen, Seen, Bergen und Landmarks\nURL: https://www.welt-atlas.de/karte_von_schweiz_1-565\nRelevance Score: 0.250\n\nTitle: Schweizer Karte | Schweiz Tourismus - Switzerland Tourism\nDescription: Die Online Karte der Schweiz zeigt Ihnen Ferienorte, Hotels, Webcams und erleichtert das Reisen in der Schweiz und an Ihren …\nURL: https://www.myswitzerland.com/de-de/map/\nRelevance Score: 0.200\n\nTitle: Schweiz: Karte, Tipps & Infos im Reiseführer | ADAC Maps\nDescription: Der ADAC zeigt alle Top-Sehenswürdigkeiten in der Schweiz auf einer übersichtlichen Straßenkarte mit praktischen …\nURL: https://maps.adac.de/land/schweiz\nRelevance Score: 0.167\n\nTitle: Karte der Schweiz – Landkarten und Stadtpläne aller Städte\nDescription: Detaillierte Landkarte der Schweiz mit Stadtplänen aller Städte, Dörfer, Ortschaften, Strassen und Autobahnen, einschliesslich …\nURL: https://www.schweizkarte.com/\nRelevance Score: 0.143\n\nTitle: Karte: ganze-schweiz-ch\nDescription: Die interaktive Karte von ganze-schweiz-ch mit aktuellen Informationen zu Verkehr, Gastronomie und mehr\nURL: https://search.ch/map/ganze-schweiz-ch\nRelevance Score: 0.125\n\nTitle: Karte der Schweiz - SwissKarte.ch\nDescription: Landkarten der Schweizer Kantone Zürich Bern Luzern Uri Schwyz Obwalden Nidwalden Glarus Zug Freiburg Solothurn Basel-Stadt …\nURL: https://swisskarte.ch/\nRelevance Score: 0.111\n\nTitle: Schweiz: Große Karte mit den Grenzen und allen POIs\nDescription: In der Schweiz wohnen 9'104'063 Menschen auf 41'291 Quadrat­kilometern (30. September 2025). Die Schweiz hat einen Anteil von …\nURL: https://www.deine-berge.de/Staat/Europa/3/Schweiz\nRelevance Score: 0.100\n<dcp-message-id>m0130</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_34ww4mhCsSJQVGxKosyt1097",
+        "status": "completed",
+        "input": {
+          "query": "MemoryBank LLM memory mechanism long-term conversation",
+          "num_results": 10
+        },
+        "output": "Title: EJBF - Edinburgh Jazz & Blues Festival\nDescription: Edinburgh Jazz & Blues Festival’s 2026 edition is ready to electrify the city with ten days of world-class music. From Friday 17 to Sunday 26 July, the city will come...\nURL: https://ejbf.co.uk/\nRelevance Score: 1.000\n\nTitle: Jazz & Blues Festival 2026 Programme Announced - Edinburgh Festival …\nDescription: Edinburgh Jazz & Blues Festival’s 2026 edition is ready to electrify the city with ten days of world-class music. The festival offers a genre-spanning celebration - from bebop to boogie-woogie, funk to soul, …\nURL: https://www.edinburghfestivalcity.com/inspiration/662-jazz-blues-festival-2026-programme-announced\nRelevance Score: 0.500\n\nTitle: Tickets – Edinburgh Jazz & Blues Festival\nDescription: Tickets for the 2026 Edinburgh Jazz & Blues Festival can be booked online here. Tickets can also be booked by phone on 0131 226 0013 and in person at 180 High Street EH1 1QS between 10am and …\nURL: https://ejbf.co.uk/pages/tickets\nRelevance Score: 0.333\n\nTitle: Edinburgh Jazz & Blues Festival 2026\nDescription: Held over 10 days and with over 130 performances a year the festival is one of the largest jazz festivals in Europe, creating moving and memorable experiences for both residents of the city and visitors from …\nURL: https://www.edinburghfestivalcity.com/festivals/edinburgh-jazz-blues-festival\nRelevance Score: 0.250\n\nTitle: Edinburgh Jazz & Blues Festival, 17-26 July 2026 - UK Jazz News\nDescription: May 29, 2026 · The Edinburgh Jazz & Blues Festival returns for ten days in the second half of July. With over 100 events at venues throughout the capital, there are gigs for all tastes. There are several …\nURL: https://ukjazznews.com/edinburgh-jazz-blues-festival-17-26-july-2026/\nRelevance Score: 0.200\n\nTitle: Edinburgh Jazz & Blues Festival 2026 | Live Music, Jazz & Blues in ...\nDescription: Discover the Edinburgh Jazz & Blues Festival 2026, with over 130 performances across 10 days featuring world-class jazz, blues, funk and soul.\nURL: https://regionalartsjunkies.co.uk/directory-what_s_on/event/edinburgh-jazz-festival-2026/\nRelevance Score: 0.167\n\nTitle: Edinburgh Jazz & Blues Festival\nDescription: Presenting a super-charged line-up of the very best Jazz and Blues artists that the world has to offer, this lively festival will delight regulars and first-timers alike. The Edinburgh Jazz and Blues Festival …\nURL: https://edinburgh.org/festivals/edinburgh-jazz-blues-festival/\nRelevance Score: 0.143\n\nTitle: Edinburgh Jazz & Blues Festival 2026 - Dates, Tickets & Lineup\nDescription: Apr 5, 2026 · The Edinburgh Jazz & Blues Festival is one of the UK's longest-running jazz festivals, taking place each July across venues throughout Edinburgh. The 2026 edition runs 17 to 26 July, with …\nURL: https://www.festable.live/festivals/edinburgh-jazz-blues-festival/2026\nRelevance Score: 0.125\n\nTitle: Edinburgh Jazz & Blues Festival 2026 | Europe Jazz Network\nDescription: May 6, 2026 · From Friday 17 to Sunday 26 July, the city will come alive as venues across Edinburgh host an incredible line-up of jazz and blues artists from around the globe whilst also showcasing the …\nURL: https://www.europejazz.net/news/edinburgh-jazz-blues-festival-2026\nRelevance Score: 0.111\n\nTitle: Edinburgh Jazz & Blues Festival\nDescription: 6 days ago · The Edinburgh Jazz & Blues Festival returns from 17th to 26th July, presenting a programme that spans the entire history of the music from ragtime to modern jazz to Chicago blues …\nURL: https://www.whatsoninedinburgh.co.uk/event/118731-edinburgh-jazz-&-blues-festival/\nRelevance Score: 0.100\n<dcp-message-id>m0130</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_03_npg3mXtrAZRlGUuJwHt48467",
+        "status": "completed",
+        "input": {
+          "query": "RAPTOR recursive abstractive processing tree organization LLM retrieval",
+          "num_results": 10
+        },
+        "output": "Title: KASKUS - Berbagi Hobi, Berkomunitas\nDescription: Forum diskusi hobi, rumah ribuan komunitas dan pusat jual beli barang hobi di Indonesia.\nURL: https://www.kaskus.co.id/thread/65a109821532ca2dfe3f3ada/viral-video-sprei-mu-link-tersebar-di-tiktok-sampai-twitter-apa-isinya\nRelevance Score: 1.000\n\nTitle: Indah Monica - Photo Gallery | KASKUS\nDescription: Indah Monica - Photo Gallery TS by riza yulian namada newbie kaskuser\nURL: https://m.kaskus.co.id/thread/575132dc31e2e675048b4567/indah-monica---photo-gallery/\nRelevance Score: 0.500\n\nTitle: PACAR PERNAH DI GREPE GREPE - KASKUS\nDescription: Nov 3, 2018 · Closed Beranda Komunitas Story Heart to Heart PACAR PERNAH DI GREPE GREPE\nURL: https://m.kaskus.co.id/thread/5bdddc7092523384398b4567/pacar-pernah-di-grepe-grepe/\nRelevance Score: 0.333\n\nTitle: Mengenal Lebih Dekat Dood Stream, Situs Yang Banyak Dipakai …\nDescription: Bagi penggemar video \"wekwek\", menonton video di platform Doodstream, kemungkinan akan merasa jenuh jika hanya menonton satu video berulang-ulang. Tentu saja, ingin menemukan video baru dan …\nURL: https://www.kaskus.co.id/thread/63f62c6389f4a3501b2bade2/mengenal-lebih-dekat-dood-stream-situs-yang-banyak-dipakai-quotpemburu-linkquot\nRelevance Score: 0.250\n\nTitle: Video Syur Tema Ibu Tiri Indo 2Menit20 Detik Viral diTwitter ... - KASKUS\nDescription: Nov 18, 2022 · Video Syur Tema Ibu Tiri Orang Indo 2 Menit 20 Detik Viral di Twitter, Mama: Nanti Ketahuan Papa Nak SEWAKTU.com -- Belakangan video syur membuat beberapa publik heboh. …\nURL: https://www.kaskus.co.id/thread/637775857b6d7963060b7861/video-syur-tema-ibu-tiri-indo-2menit20-detik-viral-ditwittermamananti-ketahuan-papa\nRelevance Score: 0.200\n\nTitle: Nonton Bokep = Sakit Jiwa | KASKUS\nDescription: Jakarta, Kecanduan pornografi atau suka nonton video porno mungkin lebih sering dipandang sebagai suatu kelemahan moral atau bentuk hiburan semata. Namun tanpa Anda sadari, kecanduan ini bisa …\nURL: https://m.kaskus.co.id/thread/000000000000000017014967/nonton-bokep--sakit-jiwa\nRelevance Score: 0.167\n\nTitle: Video Viral Elga Puruk Cahu Live TikTok 5 Menit 44 Detik Ramai\nDescription: Link Video Viral Elga Puruk Cahu Live TikTok 5 Menit 44 Detik yang Ramai Dicari Warganet – Saat ini, segala sesuatu di media sosial bergerak dengan sangat cepat— informasi menyebar luas, dan …\nURL: https://www.kaskus.co.id/thread/67ffcbabb32dab55f3006254/video-viral-elga-puruk-cahu-live-tiktok-5-menit-44-detik-ramai-dicari-netizen\nRelevance Score: 0.143\n\nTitle: 5 Alamat Website Video Terlarang dan Cara Membukanya! | KASKUS\nDescription: Mar 18, 2019 · Pernah mau akses situs video tertentu, eh nggak taunya nggak bisa diakses dan terhalang Internet Positif atau Internet Baik guys? Memang, ini merupakan sebuah cara kerja internet …\nURL: https://m.kaskus.co.id/thread/5c8f6d662f568d067431bb4e/5-alamat-website-video-terlarang-dan-cara-membukanya\nRelevance Score: 0.125\n\nTitle: Asmara 60 Menit (Kumpulan Cerpen) (BB+) | KASKUS\nDescription: Apa yang akan terjadi ketika dua insan berbeda jenis kelamin melakukan interaksi intens selama 60 menit? Apakah akan terjadi asmara? Ataukah malah akan saling membenci? Tapi, bukankah batas …\nURL: https://m.kaskus.co.id/thread/5e009ebf337f935c6c125500/asmara-60-menit-kumpulan-cerpen-bb/\nRelevance Score: 0.111\n\nTitle: Istri Digilir 3 Pria di Depan Suami - KASKUS\nDescription: May 7, 2017 · Nasib sial dialami pasangan suami istri, Za (25) dan istrinya De (25) warga salah satu desa di Kecamatan Pino Raya Kabupaten Bengkulu Selatan (BS). Pasalnya, Zar menjadi korban …\nURL: https://m.kaskus.co.id/thread/590ffa98dad770054f8b4568/istri-digilir-3-pria-di-depan-suami/\nRelevance Score: 0.100\n<dcp-message-id>m0130</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_04_gyroVDWxOqNJ8rVRHZ2c6201",
+        "status": "completed",
+        "input": {
+          "query": "Infini-Attention infinite context Transformer LLM 2024",
+          "num_results": 10
+        },
+        "output": "Title: google mail\nDescription: Aquí nos gustaría mostrarte una descripción, pero el sitio web que estás mirando no lo permite.\nURL: https://mail.google.com/mail?hl=es\nRelevance Score: 1.000\n\nTitle: Gmail - Google Accounts\nDescription: Gmail is email that’s intuitive, efficient, and useful. 15 GB of storage, less spam, and mobile access.\nURL: https://accounts.google.com/servicelogin?service=mail\nRelevance Score: 0.500\n\nTitle: Gmail: el correo electrónico de Google\nDescription: La sencillez y facilidad de Gmail en todo tipo de dispositivos. Organiza tu vida con la bandeja de entrada de Gmail, que clasifica tus …\nURL: https://www.gmail.com/mail/help/intl/es/about.html?iframe\nRelevance Score: 0.333\n\nTitle: Gmail: espacio de almacenamiento y correo gratuitos de Google\nDescription: Gmail funciona en todos los dispositivos Android, iOS y ordenadores. Ordena tus mensajes, colabora o llama a un amigo sin salir de …\nURL: https://www.google.es/gmail/about/for-work/\nRelevance Score: 0.250\n\nTitle: How to Sign Into Your Gmail Account: Computer, Android, iOS\nDescription: Jan 12, 2026 · Do you need to sign into your Gmail account? If you have a Google account, you can access Gmail from login easily. …\nURL: https://www.wikihow.com/Log-In-to-Gmail\nRelevance Score: 0.200\n\nTitle: Download Gmail (free) for Android, APK, iOS and Web App | Gizmodo\nDescription: 2 days ago · Gmail is the most popular email service in the world. Provided by Google, it gives you free access to the email client and …\nURL: https://gizmodo.com/download/gmail\nRelevance Score: 0.167\n\nTitle: Descargar Gmail (gratis) para Android, APK, iOS y Web App | Gizmodo\nDescription: 2 days ago · Gmail —el popular servicio de correo electrónico de Google— lleva años siendo la opción preferida por millones de …\nURL: https://es.gizmodo.com/descargar/gmail\nRelevance Score: 0.143\n\nTitle: Gmail for Android - Download the APK from Uptodown\nDescription: Jul 13, 2026 · Download the APK of Gmail for Android for free. Google's mail service on your Android device. Gmail, Google's email …\nURL: https://gmail.en.uptodown.com/android\nRelevance Score: 0.125\n\nTitle: Gmail » Iniciar sesión o entrar al correo electrónico\nDescription: Sep 15, 2023 · Gmail es uno de los mejores servicios gratuitos que ha colocado Google a nuestra disposición. Iniciar sesión y entrar …\nURL: https://www.internetizado.com/google/gmail/iniciar-sesion\nRelevance Score: 0.111\n\nTitle: Gmail - Wikipedia, la enciclopedia libre\nDescription: Gmail para móviles es una versión del servicio de correo de Gmail de Google. Es un servicio gratuito, desarrollado para proveer el …\nURL: https://es.wikipedia.org/wiki/Gmail\nRelevance Score: 0.100\n<dcp-message-id>m0130</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

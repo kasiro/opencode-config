@@ -1,0 +1,51 @@
+[
+  {
+    "role": "user",
+    "time": 1784796487193,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Research ALL alternative approaches to controlling LLM behavior WITHOUT markup/tags in the prompt. I want to know what techniques exist beyond 'put a marker in the prompt text'. Specifically research: 1) System prompt separation — how effective is putting rules in system vs user message? 2) Structured output formats (JSON mode) as control mechanism 3) Tool/function calling with strict schemas 4) Constitutional AI / RLHF as latent control 5) Meta-prompting (model generates its own constraints) 6) Chain-of-thought with self-verification 7) Reflection/revision loops 8) Activation steering / representation engineering 9) LoRA adapters for different behaviors 10) Classifier-based guardrails (separate model checks output). For each: how does it compare to markup? Is it cheaper/more expensive? Does it work on small models? Search the web and report.\n\n<dcp-message-id>m0061</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0061</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796487213,
+    "tokens": {
+      "input": 433,
+      "output": 45,
+      "reasoning": 143,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants a comprehensive research report on alternative approaches to controlling LLM behavior WITHOUT using markup/tags in the prompt. This is a deep research request. Let me load the appropriate skill and conduct thorough web research.\n\nThis matches the \"deep-research\" skill quite well - it's a multi-source investigation with a cited report. Let me load that skill and then conduct the research.\n\nActually, let me think about the best approach. This is a complex research question that covers 10 distinct subtopics. I should:\n\n1. First, search the web for each topic\n2. Then synthesize the findings into a comprehensive report\n\nLet me start by doing parallel web searches for each of the 10 approaches."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_CIwUXau8Y4CT904EJSpO8544",
+        "status": "completed",
+        "input": {
+          "name": "deep-research"
+        },
+        "output": "<skill_content name=\"deep-research\">\n# Skill: deep-research\n\n# Deep Research\n\nOrchestrate parallel research sub-agents, then write one coherent cited report. Research is parallel; writing is single-point — never let multiple agents write report sections.\n\n## Step 0 — Always first\n\n1. Run `date +%Y-%m-%d` via Bash. Never assume the current year from training data.\n2. Triage:\n   - Answerable with 1-2 searches? → STOP, just use WebSearch directly. Do not use this skill.\n   - Enumeration task (N items × M fields, e.g. \"compare 20 frameworks\")? → still this skill, but use table-oriented decomposition (one sub-agent per item batch).\n   - Open-ended investigation? → continue below.\n3. Pick depth (default **standard**; user can override with words like \"quick\"/\"exhaustive\"):\n\n| Mode | Sub-agents (round 1) | Max follow-up rounds | Sources target |\n|---|---|---|---|\n| quick | 2-3 | 0 | 8+ |\n| standard | 3-5 | 1 | 15+ |\n| deep | 5-8 | 2 | 25+ |\n\nThese are hard budgets. Reflection (Phase 4) can spend them but never exceed them.\n\n## Workspace\n\nAll state lives on disk at `./research/<slug>/` — never only in context (survives compaction):\n\n```\nresearch/<slug>/\n├── brief.md         # research brief — the single contract for all phases\n├── findings/        # F1.md, F2.md ... one per sub-agent, structured evidence\n└── REPORT.md        # final deliverable\n```\n\nOn resume: re-read `brief.md` + list `findings/`, skip completed angles, continue.\n\n## Phase 1 — Scope\n\nAsk at most one round of clarifying questions (AskUserQuestion), only if genuinely ambiguous: audience, time frame, region, decision at stake. If the user said \"just run it\" or intent is clear, skip asking and write assumptions into the brief instead.\n\nThen write `brief.md`: refined question, scope boundaries (in/out), assumptions, depth mode, today's date. This brief — not the raw conversation — is what every later phase measures against.\n\n## Phase 2 — Plan\n\nDecompose the brief into 3-8 **independent** research angles. Pull from these lenses as applicable: core facts/definitions · recent developments (last 12 months) · quantitative data/benchmarks · counter-arguments & failure cases · practitioner experience (forums, issues) · academic work · key players/alternatives.\n\nList angles in `brief.md` under `## Angles`. For deep mode or contested topics, show the angle list to the user for a quick confirm before spending budget.\n\n## Phase 3 — Parallel research\n\nSpawn one sub-agent per angle **in a single message** (parallel). Build each prompt from the locked template in [reference/subagent-prompt.md](reference/subagent-prompt.md) — reproduce it verbatim, replacing only the `{variables}`. Each sub-agent:\n\n- researches ONE angle only, using WebSearch/WebFetch and the free endpoints in [reference/sources.md](reference/sources.md)\n- writes structured findings to `findings/F<n>.md` (claim / quote / URL / date / confidence per item)\n- returns only a 3-5 line summary to you — raw page content must never enter your context\n\nIf a sub-agent fails or returns thin results, note it and move on; do not block other angles.\n\n## Phase 4 — Reflect (gap check)\n\nRead all `findings/*.md`. Against `brief.md`, ask: which parts of the brief have no evidence? Which major claims rest on a single source? Where do sources conflict?\n\n- Gaps found AND follow-up budget remains → spawn targeted sub-agents with delta-queries (same template, narrower angle). Repeat once per remaining round.\n- No budget left or coverage sufficient → proceed. Record unresolved gaps; they go in the report's \"Open questions\".\n\n## Phase 5 — Write (single-point)\n\nYou alone write `REPORT.md` in one pass, following [reference/report.md](reference/report.md). Core rules:\n\n- Every non-obvious claim carries an inline citation `[n]` mapping to a Sources section; citation URLs come only from findings files — never from memory.\n- Where sources conflict, present both sides with dates; prefer newer + primary sources.\n- Mark single-source claims with `[single source]`, speculation with `[speculative]`.\n- End with: Open questions · Sources (numbered, with access date).\n\nFor deep mode, before finalizing do one critique pass: reread the report as a skeptical reviewer (unsupported claims? stale data? missing counter-view?) and fix in place.\n\nFinally, give the user a 5-10 line summary of key conclusions and the report path.\n\n## Alternative: scripted workflow (unattended runs)\n\nThe same pipeline exists as a deterministic workflow script at `/Users/mi/claude-workspace/.mimocode/workflows/deep-research-pro.js` — use it instead of the manual phases above when the run should be fully autonomous, resumable, or batch-invoked. It is convergent: re-running with the same `dir` skips completed phases (brief.md / plan.json / findings/F*.md / reflect.json / REPORT.md act as checkpoints).\n\nInvocation (workflow tool; custom scripts must be passed inline via `script`, not `name`):\n\n```\nworkflow({\n  operation: \"run\",\n  script: <full text of deep-research-pro.js, Read it first>,\n  workspace: \"<ABS_DIR>\",            # same value as args.dir\n  args: {\n    dir: \"<ABS_DIR>\",                # e.g. /path/to/research/<slug> — mkdir -p <ABS_DIR>/findings first\n    question: \"<refined research question>\",\n    today: \"<YYYY-MM-DD>\",           # REQUIRED — run `date +%Y-%m-%d` first; sandbox has no Date\n    depth: \"standard\",               # quick | standard | deep\n    context: \"<audience/language notes, optional>\"\n  }\n})\n```\n\nNotes:\n- Do HITL clarification BEFORE invoking (the script never asks the user); fold answers into `question`/`context`.\n- Interrupted or failed run? Re-invoke with identical args — it resumes from the last checkpoint. `workflow({operation:\"resume\", run_id})` also works.\n- Returns `{ angles, deltaAngles, findingsFiles, reviewCritical, report }`.\n\nBase directory for this skill: file:///home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/deep-research\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/deep-research/reference/subagent-prompt.md</file>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/deep-research/reference/report.md</file>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/deep-research/reference/sources.md</file>\n</skill_files>\n</skill_content>\n<dcp-message-id>m0064</dcp-message-id>",
+        "metadata": {
+          "name": "deep-research",
+          "dir": "/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/deep-research",
+          "truncated": false
+        },
+        "title": "Loaded skill: deep-research"
+      }
+    ]
+  }
+]

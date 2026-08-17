@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1784730691471,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Нужно найти полный тип V1 Plugin и Hooks. Выполни:\n\n1. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/index.d.ts`\n2. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/index.js`\n3. Найди все .d.ts файлы в dist/:\n```bash\nls ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/*.d.ts\n```\n4. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts`\n\nТакже проверь, есть ли тип для события tool.execute.before:\n5. Поищи \"execute.before\" или \"ToolExecute\" в .d.ts файлах:\n```bash\nrg \"execute.*before|BeforeExecute|ToolExecute\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/*.d.ts 2>/dev/null | head -20\n```\n\nВерни всё полностью.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

@@ -1,0 +1,789 @@
+[
+  {
+    "role": "user",
+    "time": 1784353312179,
+    "parts": [
+      {
+        "type": "text",
+        "text": "добавь в opencode zen free в конфиге hy3\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784353312261,
+    "tokens": {
+      "input": 52800,
+      "output": 141,
+      "reasoning": 61,
+      "cache": {
+        "write": 0,
+        "read": 1664
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants to add a model/provider configuration for \"hy3\" (likely a model or provider) using Zen Free API in OpenCode configuration. Let me first check the current OpenCode configuration to understand the structure.\n\nLet me look at the config files to see what's there and understand the format."
+      },
+      {
+        "type": "text",
+        "text": "Сейчас посмотрю текущий конфиг."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_kFP3VpggctwLRR6iSgqj4580",
+        "status": "completed",
+        "input": {
+          "command": "ls ~/.config/opencode/",
+          "description": "List opencode config files"
+        },
+        "output": "agent\nagents\nbun.lock\ndcp.jsonc\nexa-api-keys.txt\nglobal-rules.md\nlocal_off_plugins\nmcp-servers\nnode_modules\nopencode.json\npackage.json\npackage-lock.json\npersona\nplugins\nraports\nskills\ntui.json\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "agent\nagents\nbun.lock\ndcp.jsonc\nexa-api-keys.txt\nglobal-rules.md\nlocal_off_plugins\nmcp-servers\nnode_modules\nopencode.json\npackage.json\npackage-lock.json\npersona\nplugins\nraports\nskills\ntui.json\n",
+          "exit": 0,
+          "description": "List opencode config files",
+          "truncated": false
+        },
+        "title": "List opencode config files"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_01_052jKzUlZTdWuPoRwSMa1878",
+        "status": "completed",
+        "input": {
+          "command": "ls ~/.config/mimocode/ 2>/dev/null",
+          "description": "List mimocode config files"
+        },
+        "output": "agents\nbackgrounds\ndata\ndcp.jsonc\nexa-mcp-proxy.js\nexa-mcp-proxy.js.bak\nfinded_learn_data\ninstructions.md\nmimocode.json\nnode_modules\npackage.json\npackage-lock.json\nskills\ntui.json\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "agents\nbackgrounds\ndata\ndcp.jsonc\nexa-mcp-proxy.js\nexa-mcp-proxy.js.bak\nfinded_learn_data\ninstructions.md\nmimocode.json\nnode_modules\npackage.json\npackage-lock.json\nskills\ntui.json\n",
+          "exit": 0,
+          "description": "List mimocode config files",
+          "truncated": false
+        },
+        "title": "List mimocode config files"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784353318324,
+    "tokens": {
+      "input": 40236,
+      "output": 100,
+      "reasoning": 20,
+      "cache": {
+        "write": 0,
+        "read": 14208
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me look at the opencode.json and mimocode.json to understand the provider/model configuration format."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_n6slHQrwqKi95T4CiIOr9645",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/opencode/opencode.json"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/opencode.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"$schema\": \"https://opencode.ai/config.json\",\n3:   \"model\": \"opencode/deepseek-v4-flash-free\",\n4:   \"default_agent\": \"jarvis\",\n5:   \"share\": \"disabled\",\n6:   \"instructions\": [\n7:     \"~/.config/opencode/global-rules.md\",\n8:     \"~/.config/opencode/persona/soul.md\"\n9:   ],\n10:   \"permission\": {\n11:     \"bash\": {\n12:       \"*find*\": \"deny\",\n13:       \"*grep*\": \"deny\",\n14:       \"*npm*\": \"deny\",\n15:       \"*sqlite*\": \"ask\",\n16:       \"*opencode*\": \"ask\"\n17:     },\n18:     \"glob\": \"deny\",\n19:     \"grep\": \"deny\",\n20:     \"websearch\": \"deny\"\n21:   },\n22:   \"mcp\": {\n23:     \"exa\": {\n24:       \"type\": \"remote\",\n25:       \"url\": \"http://127.0.0.1:18099\",\n26:       \"enabled\": true,\n27:       \"timeout\": 120000\n28:     },\n29:     \"deepwiki\": {\n30:       \"type\": \"remote\",\n31:       \"url\": \"https://mcp.deepwiki.com/mcp\",\n32:       \"enabled\": true,\n33:       \"timeout\": 120000\n34:     },\n35:     \"sequential-thinking\": {\n36:       \"type\": \"local\",\n37:       \"command\": [\n38:         \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n39:       ],\n40:       \"timeout\": 120000,\n41:       \"enabled\": true\n42:     },\n43:     \"context7\": {\n44:       \"type\": \"remote\",\n45:       \"url\": \"https://mcp.context7.com/mcp\",\n46:       \"enabled\": true,\n47:       \"timeout\": 120000,\n48:       \"headers\": {\n49:         \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n50:       }\n51:     },\n52:     \"web-research\": {\n53:       \"type\": \"local\",\n54:       \"command\": [\n55:         \"web-research-mcp\"\n56:       ],\n57:       \"enabled\": true,\n58:       \"timeout\": 60000,\n59:       \"description\": \"Поиск через DuckDuckGo + fetch страниц\"\n60:     },\n61:     \"searxng\": {\n62:       \"type\": \"local\",\n63:       \"command\": [\n64:         \"mcp-searxng\"\n65:       ],\n66:       \"enabled\": true,\n67:       \"timeout\": 60000,\n68:       \"environment\": {\n69:         \"SEARXNG_URL\": \"http://localhost:8099\",\n70:         \"SEARXNG_MAX_RESULTS\": \"15\"\n71:       },\n72:       \"description\": \"Поиск через свой SearXNG (Docker) + web_url_read\"\n73:     },\n74:     \"crawl4ai\": {\n75:       \"type\": \"local\",\n76:       \"command\": [\n77:         \"/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python\",\n78:         \"-m\",\n79:         \"crawl4ai_mcp.server\"\n80:       ],\n81:       \"timeout\": 60000,\n82:       \"enabled\": true,\n83:       \"description\": \"Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions\"\n84:     },\n85:     \"youtube-transcript\": {\n86:       \"type\": \"local\",\n87:       \"command\": [\n88:         \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n89:       ],\n90:       \"environment\": {\n91:         \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n92:       },\n93:       \"timeout\": 60000,\n94:       \"enabled\": true\n95:     },\n96:     \"memory\": {\n97:       \"type\": \"local\",\n98:       \"command\": [\n99:         \"bun\",\n100:         \"run\",\n101:         \"--cwd\",\n102:         \"/home/kasiro/.config/opencode/mcp-servers/memory-mcp\",\n103:         \"dist/index.js\"\n104:       ],\n105:       \"enabled\": true,\n106:       \"timeout\": 15000\n107:     }\n108:   },\n109:   \"agent\": {\n110:     \"jarvis\": {\n111:       \"permission\": {\n112:         \"edit\": {\n113:           \"*\": \"deny\"\n114:         },\n115:         \"bash\": {\n116:           \"*\": \"deny\"\n117:         },\n118:         \"websearch\": \"deny\",\n119:         \"webfetch\": \"deny\",\n120:         \"searxng_*\": \"deny\",\n121:         \"crawl4ai_*\": \"deny\",\n122:         \"deepwiki_*\": \"deny\",\n123:         \"context7_*\": \"deny\",\n124:         \"exa_*\": \"deny\",\n125:         \"web-research_*\": \"deny\",\n126:         \"youtube-transcript_*\": \"deny\",\n127:         \"memory_*\": \"allow\"\n128:       }\n129:     },\n130:     \"title\": {\n131:       \"model\": \"opencode/big-pickle\"\n132:     },\n133:     \"general\": {\n134:       \"permission\": {\n135:         \"edit\": {\n136:           \"**/memory/**\": \"deny\",\n137:           \"*\": \"allow\"\n138:         },\n139:         \"bash\": {\n140:           \"*sqlite*\": \"ask\",\n141:           \"*\": \"allow\"\n142:         },\n143:         \"websearch\": \"allow\",\n144:         \"webfetch\": \"allow\",\n145:         \"skill\": {\n146:           \"agent-delegation\": \"deny\",\n147:           \"jarvis-cycles\": \"deny\",\n148:           \"context-mgmt\": \"deny\",\n149:           \"how_use_memory\": \"deny\"\n150:         },\n151:         \"memory_*\": \"deny\"\n152:       },\n153:       \"tools\": {\n154:         \"sequential-thinking_*\": true,\n155:         \"searxng_*\": true,\n156:         \"deepwiki_*\": true,\n157:         \"context7_*\": true,\n158:         \"exa_*\": true,\n159:         \"web-research_*\": true,\n160:         \"crawl4ai_*\": true,\n161:         \"youtube-transcript_*\": true\n162:       }\n163:     },\n164:     \"memory-agent\": {\n165:       \"permission\": {\n166:         \"edit\": {\n167:           \"**/memory/projects/**\": \"allow\",\n168:           \"**/memory/global/**\": \"allow\",\n169:           \"**/memory/sessions/**\": \"allow\",\n170:           \"*\": \"deny\"\n171:         },\n172:         \"read\": {\n173:           \"**/memory/**\": \"allow\",\n174:           \"*\": \"deny\"\n175:         },\n176:         \"bash\": {\n177:           \"*\": \"allow\"\n178:         },\n179:         \"websearch\": \"deny\",\n180:         \"webfetch\": \"deny\",\n181:         \"memory_*\": \"allow\",\n182:         \"skill\": \"allow\"\n183:       },\n184:       \"tools\": {\n185:         \"memory_*\": true\n186:       }\n187:     }\n188:   },\n189:   \"lsp\": {},\n190:   \"plugin\": [\n191:     \"opencode-intellisearch\",\n192:     \"@tarquinen/opencode-dcp@3.1.13\"\n193:   ],\n194:   \"compaction\": {\n195:     \"auto\": false,\n196:     \"prune\": false\n197:   },\n198:   \"tool_output\": {\n199:     \"max_lines\": 5000,\n200:     \"max_bytes\": 204800\n201:   },\n202:   \"experimental\": {\n203:     \"mcp_timeout\": 120000\n204:   }\n205: }\n\n(End of file - total 205 lines)\n</content>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "preview": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"opencode/deepseek-v4-flash-free\",\n  \"default_agent\": \"jarvis\",\n  \"share\": \"disabled\",\n  \"instructions\": [\n    \"~/.config/opencode/global-rules.md\",\n    \"~/.config/opencode/persona/soul.md\"\n  ],\n  \"permission\": {\n    \"bash\": {\n      \"*find*\": \"deny\",\n      \"*grep*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"",
+          "truncated": false,
+          "loaded": []
+        },
+        "title": "home/kasiro/.config/opencode/opencode.json"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_d7HGt53hY6as0bDjLL502570",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/mimocode/mimocode.json"
+        },
+        "output": "<path>/home/kasiro/.config/mimocode/mimocode.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"$schema\": \"https://mimo.xiaomi.com//config.json\",\n3:   \"plugin\": [\n4:     \"opencode-intellisearch\",\n5:     \"@tarquinen/opencode-dcp@latest\"\n6:   ],\n7:   \"default_agent\": \"jarvis\",\n8:   \"provider\": {\n9:     \"opencode-free\": {\n10:       \"name\": \"OpenCode Zen Free\",\n11:       \"npm\": \"@ai-sdk/openai-compatible\",\n12:       \"options\": {\n13:         \"baseURL\": \"https://opencode.ai/zen/v1\",\n14:         \"headers\": {\n15:           \"Authorization\": \"Bearer {env:OPENCODE_API_KEY}\"\n16:         }\n17:       },\n18:       \"models\": {\n19:         \"deepseek-v4-flash-free\": {\n20:           \"name\": \"DeepSeek V4 Flash Free (1M)\",\n21:           \"limit\": {\n22:             \"context\": 1000000,\n23:             \"output\": 65536\n24:           },\n25:           \"modalities\": {\n26:             \"input\": [\n27:               \"text\",\n28:               \"image\"\n29:             ],\n30:             \"output\": [\n31:               \"text\"\n32:             ]\n33:           }\n34:         },\n35:         \"mimo-v2.5-free\": {\n36:           \"name\": \"MiMo V2.5 Free (1M)\",\n37:           \"limit\": {\n38:             \"context\": 1000000,\n39:             \"output\": 65536\n40:           }\n41:         },\n42:         \"nemotron-3-ultra-free\": {\n43:           \"name\": \"Nemotron 3 Ultra Free (1M)\",\n44:           \"limit\": {\n45:             \"context\": 1000000,\n46:             \"output\": 65536\n47:           }\n48:         },\n49:         \"north-mini-code-free\": {\n50:           \"name\": \"North Mini Code Free (1M)\",\n51:           \"limit\": {\n52:             \"context\": 1000000,\n53:             \"output\": 65536\n54:           }\n55:         },\n56:         \"big-pickle\": {\n57:           \"name\": \"Big Pickle\",\n58:           \"limit\": {\n59:             \"context\": 1000000,\n60:             \"output\": 65536\n61:           }\n62:         }\n63:       }\n64:     }\n65:   },\n66:   \"mcp\": {\n67:     \"exa\": {\n68:       \"type\": \"remote\",\n69:       \"url\": \"http://127.0.0.1:18099\",\n70:       \"enabled\": true,\n71:       \"timeout\": 30000\n72:     },\n73:     \"searxng\": {\n74:       \"type\": \"local\",\n75:       \"command\": [\n76:         \"mcp-searxng\"\n77:       ],\n78:       \"environment\": {\n79:         \"SEARXNG_URL\": \"http://localhost:8099\",\n80:         \"SEARXNG_MAX_RESULTS\": \"15\"\n81:       },\n82:       \"enabled\": true,\n83:       \"timeout\": 130000\n84:     },\n85:     \"deepwiki\": {\n86:       \"type\": \"remote\",\n87:       \"url\": \"https://mcp.deepwiki.com/mcp\",\n88:       \"enabled\": true\n89:     },\n90:     \"sequential-thinking\": {\n91:       \"type\": \"local\",\n92:       \"command\": [\n93:         \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n94:       ],\n95:       \"enabled\": true\n96:     },\n97:     \"context7\": {\n98:       \"type\": \"remote\",\n99:       \"url\": \"https://mcp.context7.com/mcp\",\n100:       \"enabled\": true,\n101:       \"headers\": {\n102:         \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n103:       }\n104:     },\n105:     \"youtube-transcript\": {\n106:       \"type\": \"local\",\n107:       \"command\": [\n108:         \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n109:       ],\n110:       \"environment\": {\n111:         \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n112:       },\n113:       \"enabled\": true,\n114:       \"timeout\": 130000\n115:     },\n116:     \"agentmemory\": {\n117:       \"type\": \"local\",\n118:       \"command\": [\n119:         \"bunx\",\n120:         \"-y\",\n121:         \"@agentmemory/mcp\"\n122:       ],\n123:       \"enabled\": false,\n124:       \"timeout\": 30000\n125:     }\n126:   },\n127:   \"instructions\": [\n128:     \"/home/kasiro/.config/mimocode/instructions.md\",\n129:     \"/home/kasiro/.config/opencode/persona/soul.md\"\n130:   ],\n131:   \"permission\": {\n132:     \"bash\": {\n133:       \"rg *\": \"allow\",\n134:       \"fd *\": \"allow\",\n135:       \"bun *\": \"allow\",\n136:       \"bunx *\": \"allow\",\n137:       \"find*\": \"deny\",\n138:       \"grep*\": \"deny\",\n139:       \"npm*\": \"deny\"\n140:     },\n141:     \"glob\": \"deny\",\n142:     \"grep\": \"deny\",\n143:     \"webfetch\": \"deny\",\n144:     \"exa_*\": \"allow\",\n145:     \"deepwiki_*\": \"allow\",\n146:     \"sequential-thinking_*\": \"allow\",\n147:     \"context7_*\": \"allow\",\n148:     \"youtube-transcript_*\": \"allow\"\n149:   },\n150:   \"compaction\": {\n151:     \"auto\": true\n152:   },\n153:   \"experimental\": {\n154:     \"mcp_timeout\": 120000\n155:   }\n156: }\n\n(End of file - total 156 lines)\n</content>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "preview": "{\n  \"$schema\": \"https://mimo.xiaomi.com//config.json\",\n  \"plugin\": [\n    \"opencode-intellisearch\",\n    \"@tarquinen/opencode-dcp@latest\"\n  ],\n  \"default_agent\": \"jarvis\",\n  \"provider\": {\n    \"opencode-free\": {\n      \"name\": \"OpenCode Zen Free\",\n      \"npm\": \"@ai-sdk/openai-compatible\",\n      \"options\": {\n        \"baseURL\": \"https://opencode.ai/zen/v1\",\n        \"headers\": {\n          \"Authorization\": \"Bearer {env:OPENCODE_API_KEY}\"\n        }\n      },\n      \"models\": {\n        \"deepseek-v4-flash-free\": {\n          \"name\": \"DeepSeek V4 Flash Free (1M)\",",
+          "truncated": false,
+          "loaded": []
+        },
+        "title": "home/kasiro/.config/mimocode/mimocode.json"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784353324199,
+    "tokens": {
+      "input": 10015,
+      "output": 116,
+      "reasoning": 226,
+      "cache": {
+        "write": 0,
+        "read": 48256
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants to add \"hy3\" to the OpenCode Zen Free provider in the config. I see the config is in `mimocode.json`. The provider \"opencode-free\" already has models like:\n- deepseek-v4-flash-free\n- mimo-v2.5-free\n- nemotron-3-ultra-free\n- north-mini-code-free\n- big-pickle\n\nThe user wants to add \"hy3\" - this likely refers to a model called \"hy3\" or similar. Let me check if there's a known model ID for hy3 in the Zen Free API. \n\nActually, looking at the model naming pattern, \"hy3\" probably refers to a model in the Zen Free API. Let me check what models are available.\n\nActually, the user is just asking to add \"hy3\" to the config. Given the context of Zen Free API, this is likely the model ID for a model available through the OpenCode Zen Free API. I should check what models are available there first.\n\nLet me query the Zen Free API to see what models are available."
+      },
+      {
+        "type": "text",
+        "text": "Смотрю, какие модели доступны через Zen Free API."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_2MPan3fHWfbbvhUrHgYs8376",
+        "status": "completed",
+        "input": {
+          "command": "curl -s https://opencode.ai/zen/v1/models 2>/dev/null | head -200",
+          "description": "Fetch available models from Zen Free API",
+          "timeout": 15000
+        },
+        "output": "{\"object\":\"list\",\"data\":[{\"id\":\"claude-fable-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-8\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-7\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-6\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-4-6\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-4-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-4\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-haiku-4-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gemini-3.5-flash\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gemini-3.1-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gemini-3-flash\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.6-sol\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.6-terra\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.6-luna\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.5-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4-mini\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4-nano\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.3-codex-spark\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.3-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.2\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.2-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1-codex-max\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1-codex-mini\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5-nano\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"grok-build-0.1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"grok-4.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"deepseek-v4-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"deepseek-v4-flash\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"glm-5.2\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"glm-5.1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"glm-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"minimax-m3\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"minimax-m2.7\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"minimax-m2.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"kimi-k2.7-code\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"kimi-k2.6\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"kimi-k2.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"qwen3.6-plus\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"qwen3.5-plus\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"big-pickle\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"deepseek-v4-flash-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"mimo-v2.5-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"hy3-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"nemotron-3-ultra-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"north-mini-code-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"}]}\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "output": "{\"object\":\"list\",\"data\":[{\"id\":\"claude-fable-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-8\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-7\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-6\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-opus-4-1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-4-6\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-4-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-sonnet-4\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"claude-haiku-4-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gemini-3.5-flash\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gemini-3.1-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gemini-3-flash\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.6-sol\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.6-terra\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.6-luna\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.5-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4-mini\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.4-nano\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.3-codex-spark\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.3-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.2\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.2-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1-codex-max\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5.1-codex-mini\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5-codex\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"gpt-5-nano\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"grok-build-0.1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"grok-4.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"deepseek-v4-pro\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"deepseek-v4-flash\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"glm-5.2\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"glm-5.1\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"glm-5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"minimax-m3\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"minimax-m2.7\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"minimax-m2.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"kimi-k2.7-code\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"kimi-k2.6\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"kimi-k2.5\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"qwen3.6-plus\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"qwen3.5-plus\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"big-pickle\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"deepseek-v4-flash-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"mimo-v2.5-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"hy3-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"nemotron-3-ultra-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"},{\"id\":\"north-mini-code-free\",\"object\":\"model\",\"created\":1784353330,\"owned_by\":\"opencode\"}]}",
+          "exit": 0,
+          "description": "Fetch available models from Zen Free API",
+          "truncated": false
+        },
+        "title": "Fetch available models from Zen Free API"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784353333537,
+    "tokens": {
+      "input": 6185,
+      "output": 245,
+      "reasoning": 115,
+      "cache": {
+        "write": 0,
+        "read": 54400
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "So the model ID is `hy3-free` in the Zen Free API. The user said \"hy3\" but the actual model ID is `hy3-free`. Let me add it to the mimocode.json configuration under the opencode-free provider's models section.\n\nThe existing models in the config are:\n- deepseek-v4-flash-free\n- mimo-v2.5-free\n- nemotron-3-ultra-free\n- north-mini-code-free\n- big-pickle\n\nI need to add `hy3-free` following the same pattern."
+      },
+      {
+        "type": "text",
+        "text": "Вижу модель `hy3-free` в списке. Добавляю."
+      },
+      {
+        "type": "tool",
+        "tool": "edit",
+        "callID": "call_00_ejCE7B37KCqyyMsNZMMv1922",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/mimocode/mimocode.json",
+          "old_string": "        \"big-pickle\": {\n          \"name\": \"Big Pickle\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        }\n      }\n    }\n  },",
+          "new_string": "        \"hy3-free\": {\n          \"name\": \"Hy3 Free (1M)\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        },\n        \"big-pickle\": {\n          \"name\": \"Big Pickle\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        }\n      }\n    }\n  },"
+        },
+        "output": "Edit applied successfully.\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "diagnostics": {},
+          "diff": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -52,8 +52,15 @@\n     \"context\": 1000000,\n     \"output\": 65536\n   }\n },\n+\"hy3-free\": {\n+  \"name\": \"Hy3 Free (1M)\",\n+  \"limit\": {\n+    \"context\": 1000000,\n+    \"output\": 65536\n+  }\n+},\n \"big-pickle\": {\n   \"name\": \"Big Pickle\",\n   \"limit\": {\n     \"context\": 1000000,\n",
+          "filediff": {
+            "file": "/home/kasiro/.config/mimocode/mimocode.json",
+            "patch": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -52,8 +52,15 @@\n     \"context\": 1000000,\n     \"output\": 65536\n   }\n },\n+\"hy3-free\": {\n+  \"name\": \"Hy3 Free (1M)\",\n+  \"limit\": {\n+    \"context\": 1000000,\n+    \"output\": 65536\n+  }\n+},\n \"big-pickle\": {\n   \"name\": \"Big Pickle\",\n   \"limit\": {\n     \"context\": 1000000,\n",
+            "additions": 7,
+            "deletions": 0
+          },
+          "truncated": false
+        },
+        "title": "home/kasiro/.config/mimocode/mimocode.json"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784353337540,
+    "tokens": {
+      "input": 49,
+      "output": 93,
+      "reasoning": 10,
+      "cache": {
+        "write": 0,
+        "read": 60928
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Done. Let me verify the change looks correct."
+      },
+      {
+        "type": "text",
+        "text": "Готово. Добавил `hy3-free` в провайдер `opencode-free` в mimocode.json.\n\nМожешь использовать модель через `\"model\": \"opencode-free/hy3-free\"` или в агенте/скилле указывать её.\n\nЕсли хочешь, могу сразу заменить дефолтную модель на hy3-free или добавить её для какого-то конкретного агента.\n\n<dcp-message-id>m0006</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1784799188187,
+    "parts": [
+      {
+        "type": "text",
+        "text": "ещё раз посмотри а доступен ли вообще он и правильно ли записан\n\n<dcp-message-id>m0007</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nSkill search trigger: more than 2 hours passed since the previous user query.\nBy default: call skill_search before acting, unless the user explicitly references the current task or current artifact.\nWhen searching, rewrite the request as a Skill Query containing action, input, output, and audience when available.\nDescribe the required capability and final deliverable; treat file types such as CSV as inputs, not automatically as the target skill.\nOffice examples:\n- Excel/CSV: analyze or clean data, work with formulas and tables, or create charts and workbooks.\n- PowerPoint/PPT: create, revise, or review a presentation or executive deck.\n- Word/DOCX: draft, edit, review, or format a document or report.\n- PDF: extract or review content, generate a PDF, or preserve and inspect page layout.\nCode examples: code review, debugging, test generation, security or performance analysis, frontend design, and other specialized engineering workflows.\nFor example, \"analyze gender_submission.csv\" should express data analysis as the capability, the CSV dataset as input, and findings as output.\nThese are examples of likely specialized workflows, not requirements to call a tool.\n</system-reminder>\n\n<dcp-message-id>m0007</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799188495,
+    "tokens": {
+      "input": 62045,
+      "output": 252,
+      "reasoning": 58,
+      "cache": {
+        "write": 0,
+        "read": 1152
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to double-check:\n1. Whether the model `hy3-free` is actually available on the Zen Free API\n2. Whether I wrote it correctly in the config\n\nLet me verify both - check the API endpoint again and also read the config to confirm the entry."
+      },
+      {
+        "type": "text",
+        "text": "Проверяю."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_yyZmgqjbqKQ2YLr9Qbws3810",
+        "status": "completed",
+        "input": {
+          "command": "curl -s https://opencode.ai/zen/v1/models | python3 -c \"import json,sys; data=json.load(sys.stdin); [print(m['id']) for m in data['data'] if 'hy3' in m['id']]\"",
+          "description": "Check hy3 model availability on Zen API"
+        },
+        "output": "(no output)\n<dcp-message-id>m0008</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 0,
+          "description": "Check hy3 model availability on Zen API",
+          "truncated": false
+        },
+        "title": "Check hy3 model availability on Zen API"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_01_JHGhSmgONr1xwjlrlpPH3462",
+        "status": "completed",
+        "input": {
+          "command": "python3 -c \"\nimport json\nwith open('/home/kasiro/.config/mimocode/mimocode.json') as f:\n    cfg = json.load(f)\nmodels = cfg['provider']['opencode-free']['models']\nprint('hy3-free' in models)\nprint(json.dumps(models.get('hy3-free', 'NOT FOUND'), indent=2))\n\"",
+          "description": "Verify hy3-free entry in config"
+        },
+        "output": "True\n{\n  \"name\": \"Hy3 Free (1M)\",\n  \"limit\": {\n    \"context\": 1000000,\n    \"output\": 65536\n  }\n}\n\n<dcp-message-id>m0008</dcp-message-id>",
+        "metadata": {
+          "output": "True\n{\n  \"name\": \"Hy3 Free (1M)\",\n  \"limit\": {\n    \"context\": 1000000,\n    \"output\": 65536\n  }\n}\n",
+          "exit": 0,
+          "description": "Verify hy3-free entry in config",
+          "truncated": false
+        },
+        "title": "Verify hy3-free entry in config"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799194314,
+    "tokens": {
+      "input": 48644,
+      "output": 186,
+      "reasoning": 106,
+      "cache": {
+        "write": 0,
+        "read": 15360
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The config has `hy3-free` correctly. But the API check returned no output, which means the Python filter didn't find it... wait, it should have. Let me check again - the curl might have failed or something. Let me look more carefully.\n\nActually, looking at the earlier API response, I can see `\"id\":\"hy3-free\"` was in the list. But the curl just now might have returned nothing? Let me check the full list again to see if hy3-free is still there."
+      },
+      {
+        "type": "text",
+        "text": "Хм, первый запрос ничего не вывел. Проверю ещё раз напрямую."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_wsty4g80c52MK6T0o4M94641",
+        "status": "completed",
+        "input": {
+          "command": "curl -s https://opencode.ai/zen/v1/models | python3 -c \"\nimport json,sys\ndata = json.load(sys.stdin)\nids = [m['id'] for m in data['data']]\nprint('hy3-free in list:', 'hy3-free' in ids)\n# show all free models\nfree = [m['id'] for m in data['data'] if 'free' in m['id']]\nprint('All free models:', free)\n\"",
+          "description": "Double-check hy3-free in API response"
+        },
+        "output": "hy3-free in list: False\nAll free models: ['deepseek-v4-flash-free', 'mimo-v2.5-free', 'nemotron-3-ultra-free', 'north-mini-code-free', 'laguna-s-2.1-free']\n\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "output": "hy3-free in list: False\nAll free models: ['deepseek-v4-flash-free', 'mimo-v2.5-free', 'nemotron-3-ultra-free', 'north-mini-code-free', 'laguna-s-2.1-free']\n",
+          "exit": 0,
+          "description": "Double-check hy3-free in API response",
+          "truncated": false
+        },
+        "title": "Double-check hy3-free in API response"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799201513,
+    "tokens": {
+      "input": 126,
+      "output": 343,
+      "reasoning": 166,
+      "cache": {
+        "write": 0,
+        "read": 64256
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Interesting. The situation changed - the API response no longer has `hy3-free`. Now we have:\n- deepseek-v4-flash-free\n- mimo-v2.5-free\n- nemotron-3-ultra-free\n- north-mini-code-free\n- laguna-s-2.1-free\n\nAnd `big-pickle` is still there (but not listed as free).\n\nSo `hy3-free` was in the list earlier (I saw it in the first response) but now it's gone. And there's a new model `laguna-s-2.1-free`.\n\nThis means `hy3-free` was either temporary, renamed, or removed. Since it's not available now, I should report this to the user and offer to remove it or replace with what's actually available."
+      },
+      {
+        "type": "text",
+        "text": "Странная ситуация. В первый раз `hy3-free` был в списке, а сейчас его уже нет. Список актуальных free-моделей:\n\n| Модель | Статус |\n|--------|--------|\n| `deepseek-v4-flash-free` | ✅ |\n| `mimo-v2.5-free` | ✅ |\n| `nemotron-3-ultra-free` | ✅ |\n| `north-mini-code-free` | ✅ |\n| `laguna-s-2.1-free` | ✅ (новая, раньше не было) |\n| **`hy3-free`** | ❌ больше не в списке |\n| `big-pickle` | ✅ (в списке, хотя не с суффиксом free) |\n\nВидимо, hy3 была временно или переименована. В конфиг я её записал правильно, но API её уже не отдаёт.\n\nУдалить `hy3-free` из конфига? Или добавить `laguna-s-2.1-free` вместо/вместе?"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_4uIB1YUsYENUut4W6Aau7095",
+        "status": "completed",
+        "input": {
+          "command": "curl -s https://opencode.ai/zen/v1/models | python3 -c \"\nimport json,sys\ndata = json.load(sys.stdin)\nfor m in data['data']:\n    print(m['id'])\n\"",
+          "description": "Show all available models"
+        },
+        "output": "claude-fable-5\nclaude-opus-4-8\nclaude-opus-4-7\nclaude-opus-4-6\nclaude-opus-4-5\nclaude-opus-4-1\nclaude-sonnet-5\nclaude-sonnet-4-6\nclaude-sonnet-4-5\nclaude-sonnet-4\nclaude-haiku-4-5\ngemini-3.6-flash\ngemini-3.5-flash-lite\ngemini-3.5-flash\ngemini-3.1-pro\ngemini-3-flash\ngpt-5.6-sol\ngpt-5.6-terra\ngpt-5.6-luna\ngpt-5.5\ngpt-5.5-pro\ngpt-5.4\ngpt-5.4-pro\ngpt-5.4-mini\ngpt-5.4-nano\ngpt-5.3-codex-spark\ngpt-5.3-codex\ngpt-5.2\ngpt-5.2-codex\ngpt-5.1\ngpt-5.1-codex-max\ngpt-5.1-codex\ngpt-5.1-codex-mini\ngpt-5\ngpt-5-codex\ngpt-5-nano\ngrok-build-0.1\ngrok-4.5\ndeepseek-v4-pro\ndeepseek-v4-flash\nglm-5.2\nglm-5.1\nglm-5\nminimax-m3\nminimax-m2.7\nminimax-m2.5\nkimi-k2.7-code\nkimi-k2.6\nkimi-k2.5\nqwen3.6-plus\nqwen3.5-plus\nbig-pickle\ndeepseek-v4-flash-free\nmimo-v2.5-free\nnemotron-3-ultra-free\nnorth-mini-code-free\nlaguna-s-2.1-free\n\n<dcp-message-id>m0010</dcp-message-id>",
+        "metadata": {
+          "output": "claude-fable-5\nclaude-opus-4-8\nclaude-opus-4-7\nclaude-opus-4-6\nclaude-opus-4-5\nclaude-opus-4-1\nclaude-sonnet-5\nclaude-sonnet-4-6\nclaude-sonnet-4-5\nclaude-sonnet-4\nclaude-haiku-4-5\ngemini-3.6-flash\ngemini-3.5-flash-lite\ngemini-3.5-flash\ngemini-3.1-pro\ngemini-3-flash\ngpt-5.6-sol\ngpt-5.6-terra\ngpt-5.6-luna\ngpt-5.5\ngpt-5.5-pro\ngpt-5.4\ngpt-5.4-pro\ngpt-5.4-mini\ngpt-5.4-nano\ngpt-5.3-codex-spark\ngpt-5.3-codex\ngpt-5.2\ngpt-5.2-codex\ngpt-5.1\ngpt-5.1-codex-max\ngpt-5.1-codex\ngpt-5.1-codex-mini\ngpt-5\ngpt-5-codex\ngpt-5-nano\ngrok-build-0.1\ngrok-4.5\ndeepseek-v4-pro\ndeepseek-v4-flash\nglm-5.2\nglm-5.1\nglm-5\nminimax-m3\nminimax-m2.7\nminimax-m2.5\nkimi-k2.7-code\nkimi-k2.6\nkimi-k2.5\nqwen3.6-plus\nqwen3.5-plus\nbig-pickle\ndeepseek-v4-flash-free\nmimo-v2.5-free\nnemotron-3-ultra-free\nnorth-mini-code-free\nlaguna-s-2.1-free\n",
+          "exit": 0,
+          "description": "Show all available models",
+          "truncated": false
+        },
+        "title": "Show all available models"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799210182,
+    "tokens": {
+      "input": 609,
+      "output": 48,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 64768
+      }
+    },
+    "parts": [
+      {
+        "type": "text",
+        "text": "Если хочешь, могу добавить `laguna-s-2.1-free` — она сейчас есть в API и подходит по паттерну. А `hy3-free` — удалить, раз его больше нет.\n\n<dcp-message-id>m0011</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1784799269368,
+    "parts": [
+      {
+        "type": "text",
+        "text": "1. удали hy3 в mimocode и opencode\n2. laguna-s-2.1-free изучи что за модель и для чего она\n\n<dcp-message-id>m0012</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nSkill search trigger: classify this later user query before acting.\n- If it is a continuation, modification, or retry of the current task, do not call skill_search.\n- If the output type, primary action, business object, or required capability changed, call skill_search.\nWhen searching, rewrite the request as a Skill Query containing action, input, output, and audience when available.\nDescribe the required capability and final deliverable; treat file types such as CSV as inputs, not automatically as the target skill.\nOffice examples:\n- Excel/CSV: analyze or clean data, work with formulas and tables, or create charts and workbooks.\n- PowerPoint/PPT: create, revise, or review a presentation or executive deck.\n- Word/DOCX: draft, edit, review, or format a document or report.\n- PDF: extract or review content, generate a PDF, or preserve and inspect page layout.\nCode examples: code review, debugging, test generation, security or performance analysis, frontend design, and other specialized engineering workflows.\nFor example, \"analyze gender_submission.csv\" should express data analysis as the capability, the CSV dataset as input, and findings as output.\nThese are examples of likely specialized workflows, not requirements to call a tool.\n</system-reminder>\n\n<dcp-message-id>m0012</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799269385,
+    "tokens": {
+      "input": 8436,
+      "output": 250,
+      "reasoning": 305,
+      "cache": {
+        "write": 0,
+        "read": 57472
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants two things:\n\n1. Remove `hy3-free` from both `mimocode.json` and `opencode.json`\n2. Research what `laguna-s-2.1-free` is — what model, what it's for\n\nLet me do both in parallel. For the research, I'll search the web to find info about \"laguna-s-2.1\" model.\n\nFor the config edits:\n- In `mimocode.json` — remove the `hy3-free` entry I just added\n- In `opencode.json` — check if there's a hy3 entry there too\n\nWait, I only added `hy3-free` to `mimocode.json`. The user said \"в mimocode и opencode\" — let me check if `opencode.json` also has a provider/models section. Looking at the opencode.json I read earlier, it doesn't have a provider/models section. It just has a `model` field (line 3: `\"model\": \"opencode/deepseek-v4-flash-free\"`). So there's nothing to remove in opencode.json regarding provider definitions.\n\nBut let me check — maybe opencode.json also has a provider section I missed? No, I read the full file (205 lines), it doesn't have one.\n\nSo I just need to remove `hy3-free` from `mimocode.json` and research laguna-s-2.1-free.\n\nLet me do both."
+      },
+      {
+        "type": "text",
+        "text": "Сделаю оба дела параллельно."
+      },
+      {
+        "type": "tool",
+        "tool": "edit",
+        "callID": "call_00_LDsd93u2sS5yhwvBsbk35508",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/mimocode/mimocode.json",
+          "old_string": "        \"hy3-free\": {\n          \"name\": \"Hy3 Free (1M)\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        },\n        ",
+          "new_string": "        "
+        },
+        "output": "Edit applied successfully.\n<dcp-message-id>m0013</dcp-message-id>",
+        "metadata": {
+          "diagnostics": {},
+          "diff": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -52,15 +52,8 @@\n     \"context\": 1000000,\n     \"output\": 65536\n   }\n },\n-\"hy3-free\": {\n-  \"name\": \"Hy3 Free (1M)\",\n-  \"limit\": {\n-    \"context\": 1000000,\n-    \"output\": 65536\n-  }\n-},\n \"big-pickle\": {\n   \"name\": \"Big Pickle\",\n   \"limit\": {\n     \"context\": 1000000,\n",
+          "filediff": {
+            "file": "/home/kasiro/.config/mimocode/mimocode.json",
+            "patch": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -52,15 +52,8 @@\n     \"context\": 1000000,\n     \"output\": 65536\n   }\n },\n-\"hy3-free\": {\n-  \"name\": \"Hy3 Free (1M)\",\n-  \"limit\": {\n-    \"context\": 1000000,\n-    \"output\": 65536\n-  }\n-},\n \"big-pickle\": {\n   \"name\": \"Big Pickle\",\n   \"limit\": {\n     \"context\": 1000000,\n",
+            "additions": 0,
+            "deletions": 7
+          },
+          "truncated": false
+        },
+        "title": "home/kasiro/.config/mimocode/mimocode.json"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_hpVaZOqTkWYlahfqvTyK5956",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/opencode/opencode.json"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/opencode.json</path>\n<type>file</type>\n<content>\n1: {\n2:   \"$schema\": \"https://opencode.ai/config.json\",\n3:   \"model\": \"opencode/deepseek-v4-flash-free\",\n4:   \"default_agent\": \"jarvis\",\n5:   \"share\": \"disabled\",\n6:   \"instructions\": [\n7:     \"~/.config/opencode/global-rules.md\",\n8:     \"~/.config/opencode/persona/soul.md\"\n9:   ],\n10:   \"permission\": {\n11:     \"bash\": {\n12:       \"*find*\": \"deny\",\n13:       \"*grep*\": \"deny\",\n14:       \"*npm*\": \"deny\",\n15:       \"*sqlite*\": \"ask\",\n16:       \"*opencode*\": \"ask\"\n17:     },\n18:     \"glob\": \"deny\",\n19:     \"grep\": \"deny\",\n20:     \"websearch\": \"deny\"\n21:   },\n22:   \"mcp\": {\n23:     \"exa\": {\n24:       \"type\": \"remote\",\n25:       \"url\": \"http://127.0.0.1:18099\",\n26:       \"enabled\": true,\n27:       \"timeout\": 120000\n28:     },\n29:     \"deepwiki\": {\n30:       \"type\": \"remote\",\n31:       \"url\": \"https://mcp.deepwiki.com/mcp\",\n32:       \"enabled\": true,\n33:       \"timeout\": 120000\n34:     },\n35:     \"sequential-thinking\": {\n36:       \"type\": \"local\",\n37:       \"command\": [\n38:         \"/home/kasiro/.bun/bin/mcp-server-sequential-thinking\"\n39:       ],\n40:       \"timeout\": 120000,\n41:       \"enabled\": true\n42:     },\n43:     \"context7\": {\n44:       \"type\": \"remote\",\n45:       \"url\": \"https://mcp.context7.com/mcp\",\n46:       \"enabled\": true,\n47:       \"timeout\": 120000,\n48:       \"headers\": {\n49:         \"Authorization\": \"Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500\"\n50:       }\n51:     },\n52:     \"web-research\": {\n53:       \"type\": \"local\",\n54:       \"command\": [\n55:         \"web-research-mcp\"\n56:       ],\n57:       \"enabled\": true,\n58:       \"timeout\": 60000,\n59:       \"description\": \"Поиск через DuckDuckGo + fetch страниц\"\n60:     },\n61:     \"searxng\": {\n62:       \"type\": \"local\",\n63:       \"command\": [\n64:         \"mcp-searxng\"\n65:       ],\n66:       \"enabled\": true,\n67:       \"timeout\": 60000,\n68:       \"environment\": {\n69:         \"SEARXNG_URL\": \"http://localhost:8099\",\n70:         \"SEARXNG_MAX_RESULTS\": \"15\"\n71:       },\n72:       \"description\": \"Поиск через свой SearXNG (Docker) + web_url_read\"\n73:     },\n74:     \"crawl4ai\": {\n75:       \"type\": \"local\",\n76:       \"command\": [\n77:         \"/home/kasiro/Документы/python_projects/crawl4ai-mcp/.venv/bin/python\",\n78:         \"-m\",\n79:         \"crawl4ai_mcp.server\"\n80:       ],\n81:       \"timeout\": 60000,\n82:       \"enabled\": true,\n83:       \"description\": \"Crawl4AI MCP — краулинг, извлечение данных, sitemap, browser sessions\"\n84:     },\n85:     \"youtube-transcript\": {\n86:       \"type\": \"local\",\n87:       \"command\": [\n88:         \"/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp\"\n89:       ],\n90:       \"environment\": {\n91:         \"EXA_API_KEY\": \"57c7932c-0ffa-4f75-8173-da5b8a343752\"\n92:       },\n93:       \"timeout\": 60000,\n94:       \"enabled\": true\n95:     },\n96:     \"memory\": {\n97:       \"type\": \"local\",\n98:       \"command\": [\n99:         \"bun\",\n100:         \"run\",\n101:         \"--cwd\",\n102:         \"/home/kasiro/.config/opencode/mcp-servers/memory-mcp\",\n103:         \"dist/index.js\"\n104:       ],\n105:       \"enabled\": true,\n106:       \"timeout\": 15000\n107:     },\n108:     \"chrome-devtools\": {\n109:       \"type\": \"local\",\n110:       \"command\": [\n111:         \"/home/kasiro/.bun/bin/chrome-devtools-mcp\",\n112:         \"--executablePath=/opt/brave-bin/brave\"\n113:       ],\n114:       \"enabled\": true,\n115:       \"timeout\": 60000\n116:     }\n117:   },\n118:   \"agent\": {\n119:     \"jarvis\": {\n120:       \"permission\": {\n121:         \"edit\": {\n122:           \"*\": \"deny\"\n123:         },\n124:         \"bash\": {\n125:           \"*\": \"deny\"\n126:         },\n127:         \"websearch\": \"deny\",\n128:         \"webfetch\": \"deny\",\n129:         \"searxng_*\": \"deny\",\n130:         \"crawl4ai_*\": \"deny\",\n131:         \"deepwiki_*\": \"deny\",\n132:         \"context7_*\": \"deny\",\n133:         \"exa_*\": \"deny\",\n134:         \"web-research_*\": \"deny\",\n135:         \"youtube-transcript_*\": \"deny\",\n136:         \"memory_*\": \"allow\"\n137:       }\n138:     },\n139:     \"title\": {\n140:       \"model\": \"opencode/big-pickle\"\n141:     },\n142:     \"general\": {\n143:       \"permission\": {\n144:         \"edit\": {\n145:           \"**/memory/**\": \"deny\",\n146:           \"*\": \"allow\"\n147:         },\n148:         \"bash\": {\n149:           \"*sqlite*\": \"ask\",\n150:           \"*\": \"allow\"\n151:         },\n152:         \"websearch\": \"allow\",\n153:         \"webfetch\": \"allow\",\n154:         \"skill\": {\n155:           \"agent-delegation\": \"deny\",\n156:           \"jarvis-cycles\": \"deny\",\n157:           \"context-mgmt\": \"deny\",\n158:           \"how_use_memory\": \"deny\"\n159:         },\n160:         \"memory_*\": \"deny\"\n161:       },\n162:       \"tools\": {\n163:         \"sequential-thinking_*\": true,\n164:         \"searxng_*\": true,\n165:         \"deepwiki_*\": true,\n166:         \"context7_*\": true,\n167:         \"exa_*\": true,\n168:         \"web-research_*\": true,\n169:         \"crawl4ai_*\": true,\n170:         \"youtube-transcript_*\": true\n171:       }\n172:     },\n173:     \"memory-agent\": {\n174:       \"permission\": {\n175:         \"edit\": {\n176:           \"**/memory/projects/**\": \"allow\",\n177:           \"**/memory/global/**\": \"allow\",\n178:           \"**/memory/sessions/**\": \"allow\",\n179:           \"*\": \"deny\"\n180:         },\n181:         \"read\": {\n182:           \"**/memory/**\": \"allow\",\n183:           \"*\": \"deny\"\n184:         },\n185:         \"bash\": {\n186:           \"*\": \"allow\"\n187:         },\n188:         \"websearch\": \"deny\",\n189:         \"webfetch\": \"deny\",\n190:         \"memory_*\": \"allow\",\n191:         \"skill\": \"allow\"\n192:       },\n193:       \"tools\": {\n194:         \"memory_*\": true\n195:       }\n196:     },\n197:     \"explore\": {\n198:       \"disable\": true\n199:     }\n200:   },\n201:   \"lsp\": {},\n202:   \"plugin\": [\n203:     \"opencode-intellisearch\",\n204:     \"@tarquinen/opencode-dcp@3.1.13\"\n205:   ],\n206:   \"compaction\": {\n207:     \"auto\": false,\n208:     \"prune\": false\n209:   },\n210:   \"tool_output\": {\n211:     \"max_lines\": 5000,\n212:     \"max_bytes\": 204800\n213:   },\n214:   \"experimental\": {\n215:     \"mcp_timeout\": 120000\n216:   }\n217: }\n\n(End of file - total 217 lines)\n</content>\n<dcp-message-id>m0013</dcp-message-id>",
+        "metadata": {
+          "preview": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"opencode/deepseek-v4-flash-free\",\n  \"default_agent\": \"jarvis\",\n  \"share\": \"disabled\",\n  \"instructions\": [\n    \"~/.config/opencode/global-rules.md\",\n    \"~/.config/opencode/persona/soul.md\"\n  ],\n  \"permission\": {\n    \"bash\": {\n      \"*find*\": \"deny\",\n      \"*grep*\": \"deny\",\n      \"*npm*\": \"deny\",\n      \"*sqlite*\": \"ask\",\n      \"*opencode*\": \"ask\"\n    },\n    \"glob\": \"deny\",\n    \"grep\": \"deny\",\n    \"websearch\": \"deny\"",
+          "truncated": false,
+          "loaded": []
+        },
+        "title": "home/kasiro/.config/opencode/opencode.json"
+      },
+      {
+        "type": "tool",
+        "tool": "exa_web_search_exa",
+        "callID": "call_02_Nl1s7kqnR1X76BYOUGOS6855",
+        "status": "completed",
+        "input": {
+          "query": "laguna-s-2.1 model AI language model capabilities",
+          "numResults": 5
+        },
+        "output": "Title: poolside/Laguna-S-2.1\nURL: https://huggingface.co/poolside/Laguna-S-2.1\nPublished: 2026-07-21T09:34:37.885Z\nAuthor: N/A\nHighlights:\nLaguna S 2.1 is a 118B total parameter Mixture-of-Experts model with 8B activated parameters per token, designed for agentic coding and long-horizon work. It sits between Laguna XS 2.1(33B-A3B) and Laguna M.1 (225B-A23B) in the Laguna series and shares the family recipe: a token-choice router with softplus gating over 256 routed experts plus one shared expert, grouped-query attention, and interleaved full/sliding-window attention.\n...\n- Mixed SWA and global attention layout: 48 layers in a 1:3 global-to-SWA ratio (12 global attention layers, 36 sliding-window layers, window 512), with softplus attention gating and per-layer-type rotary scales\n- 1M context: 1,048,576-token context window\n- Native reasoning support: interleaved thinking between tool calls, with per-request control via`enable_thinking`\n- Speculative decoding: a trained DFlash draft model is available for lower-latency serving\n- Quantized variants: FP8, NVFP4, INT4 and GGUF\n- OpenMDW-1.1 license: Use and modify the model and associated materials freely for commercial and non-commercial purposes (learn more about OpenMDW)\n...\n- Number of parameters: 118B total, ~8B activated per token\n- Layers: 48 (12 global attention, 36 sliding-window attention)\n- Experts: 256 routed (top-10) plus 1 shared expert\n- Attention: grouped-query, 8 KV heads, head dim 128; per-head softplus output gating\n- Sliding window: 512 tokens\n- Context window: 1,048,576 tokens\n- Vocabulary: 100,352 tokens (Laguna family tokenizer)\n- Modality: text-to-text\n- Reasoning: interleaved thinking with preserved thinking\n...\nLaguna S 2.1 uses the same`laguna` architecture as Laguna XS 2.1, so the same engine integrations apply (vLLM, SGLang, Transformers, TRT-LLM, llama.cpp). At 118B parameters the BF16 checkpoint needs multiple GPUs (roughly 236GB of weights); quantized variants reduce this substantially.\n...\nOptional: speculative decoding with DFlash. Pair with the Laguna S 2.1 DFlash draft model by adding`--speculative-config '{\"model\":\"poolside/Laguna-S-2.1-DFlash\",\"num_speculative_tokens\":7,\"method\":\"dflash\"}'`.\n...\nGGUF conversions are available at poolside/Laguna-S-2.1-GGUF. Serve with poolside's llama.cpp fork, branch laguna, which carries full Laguna support including DFlash speculative decoding. (Base Laguna support is also in upstream review: ggml-org/llama.cpp#25165.)\n...\nLaguna S 2.1 has native reasoning support and works best with preserved thinking: keep`reasoning_content` from prior assistant messages in the message history. The model will generally reason before calling tools and between tool calls, and may stop reasoning in follow-up steps if prior thinking blocks are dropped.\n...\nThinking is controlled per request via the chat template:\n...\n```\nextra_body={\"chat_template_kwargs\": {\"enable_thinking\": False}}\n\n```\n...\nor at the server level with`--default-chat-template-kwargs '{\"enable_thinking\": true}'`. For agentic coding use cases we recommend enabling thinking and preserving reasoning in the message history.\n...\nLaguna S 2.1 is designed for software engineering and agentic coding use cases, and you are responsible for confirming that it is appropriate for your intended application. Laguna S 2.1 is subject to the OpenMDW-1.1 License, and should be used consistently with Poolside's Acceptable Use Policy. We advise against circumventing Laguna S 2.1 safety guardrails without implementing substantially equivalent mitigations appropriate for your use case.\n...\nUse with llama.cpp\n\n---\n\nTitle: Introducing Laguna S 2.1 — Poolside\nURL: https://poolside.ai/blog/introducing-laguna-s-2-1\nPublished: 2026-07-21T00:00:00.000Z\nAuthor: Poolside team\nHighlights:\nToday we’re releasing Laguna S 2.1, a significant step forward in our development of models that pursue longer horizon work and make effective use of reasoning.\n...\nLaguna S 2.1 is a 118B total parameter Mixture-of-Experts (MoE) model with 8B activated parameters per token and supports a context window of up to 1M tokens in thinking and no-thinking modes. It went from the start of training to launch in under nine weeks, and on long-horizon coding benchmarks it holds its own against models many times its size. For every benchmark score we publish today, we are releasing full trajectories for every trial in the final evaluation set at trajectories.poolside.ai.\n...\nLaguna S 2.1 is, as far as we can measure, the most capable agentic coding model in its weight class by a wide margin.\n...\nS 2.1 scores 70.2% on Terminal-Bench 2.1 in our agent harness with thinking enabled. Its compact size makes it uniquely suitable for complex work on local machines.\n...\nTerminal-Bench 2.1 evaluates a wide, high-quality set of long-horizon tasks where an agent model is connected to its environment through a terminal. Laguna S 2.1 is a standout model in its size category on this benchmark.\n...\nOn DeepSWE v1.1, Laguna S 2.1 scores 40.4 in thinking mode in pool harness.\n...\nIt is worth noting that Laguna S 2.1 scored 40.4% in our agent harness, pool, not mini-swe-agent\n...\nOne of our favorite things about Laguna S 2.1 is its resourcefulness: It will find clever ways to get to the goal even if the direct path is not available. We saw a great demonstration of this when we asked it to build a browser engine from scratch; knowing it would be a challenge for Laguna to verify its work given its lack of vision capabilities. In one 50-minute session of 181 steps, with no human intervention, Laguna S 2.1 built a working HTML/CSS rendering engine from an empty folder, then proved it renders like a real browser by measuring itself against one. Throughout its work, the model found increasingly complex ways to validate its work despite its limitations, leading to running headless Chromium to read canvases back and comparing screenshots numerically. See the full trajectory here.\n...\nLaguna S 2.1 is capable of pursuing meaningful engineering and research work. In one example, one of our researchers pointed it at our agent harness, used for training/evaluation and user interaction with our models. In an automated loop, Laguna S 2.1 made our harness 5.2% faster with ~70% lower memory allocation. See the full trajectory here.\n...\nWe found Laguna S 2.1 to be an exceptionally persistent problem solver across domains, finding ways to utilize all tools its environment has to offer, and pushing until it gets the job done. It is this characteristic that makes it so competitive even when compared to models multiple times its size.\n...\nLaguna S 2.1 has two thinking modes: off and max (enabled by default) where it determines the right thinking/test-time compute budget for a given problem. We have observed coherent, productive thinking over several hours and hundreds of thousands of tokens in length.\n...\nMax thinking lifts S 2.1’s score on Terminal-Bench 2.1 from 60.4% to 70.2% and on DeepSWE from 16.5% to 40.4%. We are releasing this model without user-configurable effort (low-medium-high) control today to get Laguna S 2.1 into the hands of users immediately.\n...\nWe are excited about the capabilities of Laguna S 2.1, in general as well as in the context of its size. In order to learn quickly we are making the model available with some known limitations that we are working on for the next iteration:\n...\nLonger than expected thinking duration/overthinking: Laguna S 2.1 may think for long sequences before making progress, especially when working through competition mathematics problems. In future models we will introduce effort control for thinking as well as seeking to improve thinking efficiency.\n...\nWhat we've done in this model is not necessarily add more intelligence, but improve the behaviors that lead to a more capable model: more verification, less taking things for granted, not declaring victory early, and being more persistent.”\n...\nWe believe in scaling laws and will keep training larger models. What Laguna S 2.1 suggests is that raw intelligence is one axis, and the model's way of working (persistence, verification, willingness to backtrack) is a second axis that matters immensely. We're investing in both: our next, larger, Laguna series model began pre-training last week.\n...\nLaguna S 2.1 is a scale-up of the Laguna XS family, trained on exactly the same pre-training data as XS 2.1: the step from XS 2.1 to S 2.1 was scale, training-code fixes, and small recipe changes, not new data. S 2.1 is also our first model where RL was done in FP8 precision, accelerating that part of the training.\n...\nThe long agentic sessions in this post routinely accumulate hundreds of thousands of tokens of working context. Extending to a 1M-token context window enables the strongest performance on hard tasks.\n...\nThe majority of what separates S 2.1 from the XS models comes from post-training, in two stages: an SFT stage that bootstraps capabilities partly with synthetic data, then RL, reserved for tasks the model can't yet solve at a high pass rate.\n...\nMore generous rollout budgets: substantially longer timeouts, more tokens per turn, and more turns per task than any model before it (likely one reason for its persistence).\n...\nBetter sandbox infrastructure: RL moved to a new sandboxing service, enabling background processes, selective network blocking to shrink reward-hacking surface and artifact caching to avoid overloading external services.\n...\nLaguna S 2.1 began pre-training on 4,096 NVIDIA H200 GPUs on May 22, 2026, 60 days ago. The Model Factory supports a high cadence of releases because building on foundations of work done, whether in pre-training data, architecture ablations or our evaluations stack, is automatic. In particular, advancements in post-training have enabled us to unlock more from test-time compute. Of all models we have trained to date, Laguna S 2.1 has the greatest delta in evaluations and perceived quality between its non-thinking mode and thinking mode: its internal monologue is very effective, especially for harder, complex problems.\n...\nThe first bet: we continue to focus on agentic coding capabilities. The path to intelligence runs through coding capability and the flexible interface that is software. This is increasingly evident as model intelligence advances: we now see hours- and days-long coherent work from models acting as agents, using software to interact with their environment. Laguna S 2.1 shows capabilities in this domain that were reserved for frontier models just 6 months ago at a small enough size to run on a single NVIDIA DGX Spark.\n...\nThe second bet is that the web can be decompressed: almost everything humanity has written records the answer, not the thinking that got there, and we believe reinforcement learning can recover that thinking. This release is evidence for the first bet. The second we're still actively developing and excited to share more about in the future.\n...\nLaguna S 2.1 is available on Hugging Face from day one under OpenMDW-1.1, with BF16, FP8, INT4 and NVFP4 weights, official GGUF and MLX conversions, and official DFlash draft models.\n...\nFor hosted access, Laguna S 2.1 is available through Baseten’s Model Library and Frontier Gateway, OpenRouter, including a free endpoint and a dedicated 1M-context deployment, and Vercel AI Gateway.\n...\nYou can also use Laguna S 2.1 through Kilo, Hermes Agent, pi, OpenCode, OpenClaw and Cline, as well as pool, our terminal-based coding agent. In pool, toggle thinking per session with`/thought-level`.\n...\nFor developers who want to go further, Laguna S 2.1 can be post-trained with NVIDIA NeMo AutoModel and Prime Intellect’s Prime Lab. ZML’s LLMD framework runs it across a wide range of hardware.\n\n---\n\nTitle: laguna-s-2.1\nURL: https://ollama.com/library/laguna-s-2.1\nPublished: 2026-07-21T09:34:37.885Z\nAuthor: N/A\nHighlights:\n## Our most capable model to date, designed for long-horizon work. 70.2% on Terminal-Bench 2.1 at 118B-A8B.\n...\nOur most capable model to date, designed for long-horizon work. 70.2% on Terminal-Bench 2.1 at 118B-A8B.\n...\nLaguna S 2.1 is a Mixture-of-Experts model built for agentic coding and extended reasoning. It is the larger sibling of Laguna XS 2.1, trading a bigger memory footprint for stronger coding and reasoning performance while keeping a small activated-parameter count so it stays practical to run on a single high-memory machine.\n...\n- Total Parameters: 118B (8B activated per token)\n- Architecture: 48 layers with mixed attention (12 global, 36 sliding window at 512)\n- Experts: 256 routed (top-10 per token) with 1 shared expert\n- Context Window: 256K tokens\n- License: OpenMDW-1.1\n...\n| Tag | Size | Context | Type |\n| --- | --- | --- | --- |\n| laguna-s-2.1:latest | 75GB | 256K | Text |\n| laguna-s-2.1:q4_k_m | 75GB | 256K | Text |\n| laguna-s-2.1:q8_0 | 128GB | 256K | Text |\n| laguna-s-2.1:f16 | 235GB | 256K | Text |\n...\nSigmoid expert gating with normalised expert weights and per-layer rotary scales. Attention alternates one global layer for every three sliding-window layers, with grouped-query attention (8 KV heads) keeping the KV cache small at long context. Supports tool calling and interleaved thinking, with thinking enabled or disabled per request.\n...\nTool calling and thinking work through Ollama’s built-in template:\n...\nThe q4_k_m weights need roughly 75GB of memory, so a 128GB unified-memory machine (Apple Silicon or DGX Spark) is the practical minimum, and measured single-stream decode is around 13-18 tokens/s on that class of hardware. It also runs on datacenter GPUs such as the NVIDIA H200, where far higher memory bandwidth gives correspondingly faster generation.\n...\n- Increase the load timeout. A cold start reads 75GB from disk, which can exceed Ollama’s default 5 minute model load timeout on slower storage. Set`OLLAMA_LOAD_TIMEOUT=20m` if the first run times out.\n- Raise`num_ctx` deliberately. Ollama defaults to a small context; long context costs memory on top of the 75GB of weights, so raise it only as far as your machine allows.\n...\nThinking consumes output tokens before the final answer appears, so allow a generous`num_predict` on reasoning prompts or the reply can be cut off mid-thought.\n...\nVerified on macOS (Apple Silicon, Metal), NVIDIA DGX Spark (GB10), and NVIDIA H200, with Ollama 0.31 and 0.32.\n\n---\n\nTitle: Poolside releases Laguna S 2.1, the West’s most capable\nURL: https://www.globenewswire.com/news-release/2026/07/21/3330818/0/en/Poolside-releases-Laguna-S-2-1-the-West-s-most-capable-open-weight-model.html\nPublished: 2026-07-21T17:00:00.000Z\nAuthor: Poolside\nHighlights:\nThe 118-billion-parameter model matches models several times its size on agentic coding and is small enough to run on a single desktop. It is available today under an OpenMDW-1.1 license.\n...\nSAN FRANCISCO, July 21, 2026 (GLOBE NEWSWIRE) -- Poolside today released Laguna S 2.1, a 118-billion-parameter open-weight foundation model built for agentic coding. On Terminal-Bench 2.1 and SWE-Bench Pro, Laguna S 2.1 matches or exceeds models several times its size, including DeepSeek-V4-Flash, NVIDIA's Nemotron 3 Ultra or Thinking Machines' Inkling. It is small enough to run on a single NVIDIA DGX Spark, and the weights are available today on Hugging Face under an OpenMDW-1.1 license. Laguna S 2.1 is the first scale up from the XS model released a few weeks ago and while the model is not yet at the frontier, it's already very capable.\n...\nLaguna S 2.1 arrives as the question of who supplies the West’s open-weight models has moved from research circles into boardrooms and Washington. Over the past year, developer usage has shifted sharply toward open-weight systems that teams can download, inspect, and run on their own infrastructure, and most of the leading options in that category now come from Chinese labs. As several US labs have moved their most capable systems behind closed APIs and government-gated rollouts, the West has been left without a competitive open-weight option. Laguna S 2.1 is built to be that option, and to compete with the incumbents on the terms buyers now care about: cost, control, and the ability to keep data in house.\n...\nPoolside is releasing Laguna S 2.1 alongside a key set of agentic coding evaluations run using pool, Poolside’s agent harness, so researchers and developers can reproduce the results on their own hardware.\n...\n| Model | Size | Terminal-Bench 2.1 | SWE-bench Multilingual | SWE-Bench Pro (Public Dataset) | DeepSWE v1.1 |\n| --- | --- | --- | --- | --- | --- |\n| Laguna S 2.1 | 118B-A8B | 70.2% | 78.5%* | 59.4% | 40.4% |\n| Laguna M.1 (April 2026) | 225B-A23B | 44.9% | 63.1% | 49.2% | - |\n| Tencent Hy3 | 295B-A21B | 71.7% | 75.8% | 57.9% | - |\n| Thinking Machines Inkling | 975B-A41B | 63.8% | - | 54.3% | - |\n| Nemotron 3 Ultra | 550B-A55B | 56.4% | 67.7% | - | - |\n| MiniMax M3 | 428B-A23B | 66.0% | - | 59.0% | - |\n| DeepSeek V4-Flash Max | 284B-A13B | 61.8%** | 73.3% | 52.6% | - |\n| DeepSeek V4-Pro Max | 1.6T-A49B | 64.0%** | 76.2% | 55.4% | 9.0% |\n| Qwen3.7-Max | - | 74.5%** | 78.3% | 60.6% | - |\n| Claude Sonnet 5 | - | 80.4% | - | 63.2% | 54.0% |\n| GPT-5.6 Luna Max | - | 82.5% | - | - | 67.0% |\n...\nAs a further demonstration of long-horizon reasoning, Poolside publishes a complete trajectory of Laguna S 2.1 independently proving Erdős Problem #397, a combinatorics problem that until recently only the largest frontier reasoning models had resolved.\n...\nRunning Laguna S 2.1 locally changes the arithmetic of deploying coding agents. Small enough to run on a single DGX Spark, it lets teams move high-volume agentic work off metered APIs and onto hardware they control. For the government, defense, and other highly regulated organizations that Poolside already serves, self-hosting keeps sensitive code and data inside their own environment. Laguna S 2.1 also occupies a size class that no Western lab has released an open-weight model into in 11 months, since gpt-oss-120b’ release in August last year.\n...\nLaguna S 2.1 is the latest model out of Poolside’s Model Factory, the company’s internal platform for training, evaluating, and iterating on foundation models. The Factory automates the work that traditionally makes model development slow, from architecture ablations to reinforcement learning from code execution, running experiments that once took weeks in under an hour. It is what lets Poolside ship on a roughly five-week cadence. For reference, Laguna S 2.1 took less than 4 weeks to train end to end on 4,000 H200 GPUs.\n...\n“The West needs open-weight models it can trust, run, and build on,” said Jason Warner, co-CEO of Poolside. “Laguna S 2.1 is our answer. It is a model that enterprises and governments can put into production today, on their own hardware, at a cost that makes agentic coding practical at scale.”\n...\n“Laguna S 2.1 does the work of models several times its size because of how we build, not despite it,” said Eiso Kant, co-founder and co-CEO of Poolside. “The Model Factory automates the work that traditionally makes model development slow and error prone, allowing its researchers to run an order of magnitude more experiments.”\n...\nLaguna S 2.1 is available today. Weights are on Hugging Face under an OpenMDW-1.1 license. The model is also available through Poolside’s API and on OpenRouter, and runs in pool, Poolside’s agent harness.\n...\nPoolside is a foundation AI lab building open-weight models for software engineering on the path to human-level artificial intelligence. Founded in 2023 and headquartered in San Francisco, Poolside trains its models from scratch on its own data and infrastructure, using reinforcement learning from code execution feedback so its models improve from their own successes and failures, the way human developers do. Poolside deploys directly into the development environments of government, defense, and other highly regulated organizations. Learn more at https://poolside.ai.\n\n---\n\nTitle: N/A\nURL: https://vercel.com/changelog/laguna-s-2-1-is-now-available-on-ai-gateway\nPublished: N/A\nAuthor: Rohan Taneja\nHighlights:\nLaguna S 2.1 from Poolside is now available on AI Gateway. There are 2 versions of the model available:\n...\n- Free version (256K context window): `poolside/laguna-s-2.1-free`\n- Paid version (1M context window): `poolside/laguna-s-2.1`\n...\nLaguna S 2.1 is an open-weight Mixture-of-Experts model that supports a context window of up to 1M tokens and runs in thinking and no-thinking modes.\n...\nThe model specializes in agentic coding and long-running tasks, including writing and debugging code, running tests, building browser-based tooling, and working on MLOps pipelines and AI research. In thinking mode, Laguna S 2.1 reports 70.2% on Terminal-Bench 2.1, 78.5% on SWE-bench Multilingual, and 59.4% on SWE-Bench Pro.\n...\nmodels, tracking\n...\nand cost, and configuring\n...\n, and performance optimizations for higher\n...\nprovider uptime.\n...\nincludes built-in custom\n...\n, Zero Data\n...\nsupport, budgets for API keys,\n...\nrules, and\n<dcp-message-id>m0013</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799278150,
+    "tokens": {
+      "input": 10470,
+      "output": 502,
+      "reasoning": 344,
+      "cache": {
+        "write": 0,
+        "read": 63232
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Now I have all the information. Let me summarize:\n\n1. **hy3-free** — удалил из mimocode.json. В opencode.json его и не было (он не содержит provider/models секции — там только общая модель и mcp).\n\n2. **Laguna S 2.1 (laguna-s-2.1-free)** — это модель от Poolside (американская AI-компания, основана в 2023).\n\nПро модель:\n- Архитектура: MoE (Mixture-of-Experts), 118B параметров всего, 8B активных на токен\n- 256 экспертов (top-10), 48 слоёв\n- Контекст: 256K (free) / 1M (full)\n- Лицензия: OpenMDW-1.1 (свободная, коммерческая)\n- Специализация: **agentic coding** — агентное программирование, долгие задачи (часы работы)\n- Поддерживает мышление (thinking mode) и вызов инструментов\n- Сравнение в бенчмарках: Terminal-Bench 2.1 — 70.2%, SWE-bench Multilingual — 78.5%\n- Конкурирует с DeepSeek V4 Flash, Nemotron 3 Ultra, MiniMax M3\n- Создана Poolside — западная альтернатива китайским open-weight моделям\n- Доступна через OpenRouter, включая free endpoint\n\nВ OpenCode/Zen она появилась как laguna-s-2.1-free."
+      },
+      {
+        "type": "text",
+        "text": "Всё сделал. Вот полный отчёт.\n\n---\n\n## 1. Удаление hy3\n\n**mimocode.json** — `hy3-free` удалён.  \n**opencode.json** — там его и не было (нет секции provider/models).\n\nКстати, в первом запросе `hy3-free` действительно был в ответе API, но сейчас пропал. Возможно, его переименовали в `laguna-s-2.1-free`.\n\n---\n\n## 2. Laguna S 2.1 (laguna-s-2.1-free) — что за модель\n\n**Разработчик:** Poolside — американская AI-компания из Сан-Франциско (основана в 2023).\n\n**Архитектура:** MoE (Mixture-of-Experts)\n\n| Параметр | Значение |\n|----------|----------|\n| Параметры | 118B всего / ~8B активных на токен |\n| Эксперты | 256 routed (top-10) + 1 shared |\n| Контекст | 256K (free), до 1M (full) |\n| Лицензия | OpenMDW-1.1 (свободная, коммерческая) |\n| Режим | thinking on/off, tool calling |\n\n**Для чего:** agentic coding — агентное программирование, долгие задачи, работа с кодом через терминал (часы работы без вмешательства).\n\n**Бенчмарки (thinking mode):**\n- Terminal-Bench 2.1 — **70.2%**\n- SWE-bench Multilingual — **78.5%**\n- DeepSWE v1.1 — **40.4%**\n\nОбходит DeepSeek V4 Flash (61.8%) и Nemotron 3 Ultra (56.4%) на Terminal-Bench. Позиционируется как западная open-weight альтернатива китайским моделям.\n\n**Особенность:** очень настойчивая — не сдаётся, перепроверяет себя, умеет работать часами. Построена на RL с обратной связью от выполнения кода.\n\n---\n\nЕсли хочешь — могу добавить `laguna-s-2.1-free` в конфиг вместо удалённого hy3.\n\n<dcp-message-id>m0014</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1784799344513,
+    "parts": [
+      {
+        "type": "text",
+        "text": "замени hy3 в mimocode и opencode на laguna\n\n<dcp-message-id>m0015</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nSkill search trigger: classify this later user query before acting.\n- If it is a continuation, modification, or retry of the current task, do not call skill_search.\n- If the output type, primary action, business object, or required capability changed, call skill_search.\nWhen searching, rewrite the request as a Skill Query containing action, input, output, and audience when available.\nDescribe the required capability and final deliverable; treat file types such as CSV as inputs, not automatically as the target skill.\nOffice examples:\n- Excel/CSV: analyze or clean data, work with formulas and tables, or create charts and workbooks.\n- PowerPoint/PPT: create, revise, or review a presentation or executive deck.\n- Word/DOCX: draft, edit, review, or format a document or report.\n- PDF: extract or review content, generate a PDF, or preserve and inspect page layout.\nCode examples: code review, debugging, test generation, security or performance analysis, frontend design, and other specialized engineering workflows.\nFor example, \"analyze gender_submission.csv\" should express data analysis as the capability, the CSV dataset as input, and findings as output.\nThese are examples of likely specialized workflows, not requirements to call a tool.\n</system-reminder>\n\n<dcp-message-id>m0015</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08c4136ddffeZghx6P6LM3A9aS/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08c4136ddffeZghx6P6LM3A9aS/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0015</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799344533,
+    "tokens": {
+      "input": 11653,
+      "output": 179,
+      "reasoning": 791,
+      "cache": {
+        "write": 0,
+        "read": 63232
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to add `laguna-s-2.1-free` to both configs:\n1. `mimocode.json` — add to the `opencode-free` provider's models section\n2. `opencode.json` — this file doesn't have a provider/models section, so the user probably means to add it as a model reference somewhere. Let me think... the user said \"замени hy3 в mimocode и opencode на laguna\". \n\nSince `hy3-free` was only in mimocode.json (I just removed it), and opencode.json doesn't have a provider/models section... The user might want me to:\n- Add `laguna-s-2.1-free` to the `opencode-free` provider in `mimocode.json`\n- In `opencode.json`, maybe add a reference or use it somewhere\n\nActually, looking at the opencode.json more carefully, there's no provider/models section. The user probably means:\n- mimocode.json: add to the provider models\n- opencode.json: maybe set it as a model for some agent, or just note it\n\nBut \"замени hy3 в mimocode и opencode на laguna\" — replace hy3 in mimocode and opencode with laguna. Since I already removed hy3 from mimocode, I need to add laguna there. And for opencode, I need to find where hy3 was referenced. But hy3 wasn't ever in opencode.json...\n\nLet me re-read: the user previously said \"добавь в opencode zen free в конфиге hy3\" — I only added to mimocode.json because that's where the provider/models section is. Then \"удали hy3 в mimocode и opencode\" — and I said it wasn't in opencode.json.\n\nNow \"замени hy3 в mimocode и opencode на laguna\" — I think the user wants me to:\n1. Add `laguna-s-2.1-free` to mimocode.json's models\n2. Also somehow make it available in opencode.json\n\nSince opencode.json doesn't have providers/models, maybe I should just set the default model or something. Or perhaps add the entry to both configs' awareness.\n\nActually, I think the simplest interpretation: add `laguna-s-2.1-free` model entry to the `opencode-free` provider in `mimocode.json`, and maybe also put a reference in `opencode.json` if applicable. But since opencode.json doesn't have provider configs...\n\nWait—maybe the user just doesn't understand the config separation and wants me to put it wherever it makes sense. I already have it clear: mimocode.json has the provider/models, opencode.json doesn't. So let me just add it to mimocode.json and explain about opencode.json.\n\nBut actually, to be thorough, let me check if there's maybe a way to reference models in opencode.json. Looking at it again:\n\nopencode.json has:\n- `\"model\": \"opencode/deepseek-v4-flash-free\"` — the default model\n- Agent-specific model overrides like `\"title\": { \"model\": \"opencode/big-pickle\" }`\n\nSo the format is `provider/model-id`. If I add `laguna-s-2.1-free` to the `opencode-free` provider in mimocode.json, it can be referenced as `opencode-free/laguna-s-2.1-free` in opencode.json.\n\nLet me just:\n1. Add `laguna-s-2.1-free` to mimocode.json\n2. That's the main config. opencode.json doesn't have provider definitions, so the model just needs to be in mimocode.json to be usable.\n\nI'll add it and report back."
+      },
+      {
+        "type": "tool",
+        "tool": "edit",
+        "callID": "call_00_iEAHQa4M8uYHDWVcsknZ3519",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/mimocode/mimocode.json",
+          "old_string": "        \"big-pickle\": {",
+          "new_string": "        \"laguna-s-2.1-free\": {\n          \"name\": \"Laguna S 2.1 Free (256K)\",\n          \"limit\": {\n            \"context\": 256000,\n            \"output\": 65536\n          },\n          \"modalities\": {\n            \"input\": [\"text\"],\n            \"output\": [\"text\"]\n          }\n        },\n        \"big-pickle\": {"
+        },
+        "output": "Edit applied successfully.\n<dcp-message-id>m0016</dcp-message-id>",
+        "metadata": {
+          "diagnostics": {},
+          "diff": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -52,8 +52,19 @@\n     \"context\": 1000000,\n     \"output\": 65536\n   }\n },\n+\"laguna-s-2.1-free\": {\n+  \"name\": \"Laguna S 2.1 Free (256K)\",\n+  \"limit\": {\n+    \"context\": 256000,\n+    \"output\": 65536\n+  },\n+  \"modalities\": {\n+    \"input\": [\"text\"],\n+    \"output\": [\"text\"]\n+  }\n+},\n \"big-pickle\": {\n   \"name\": \"Big Pickle\",\n   \"limit\": {\n     \"context\": 1000000,\n",
+          "filediff": {
+            "file": "/home/kasiro/.config/mimocode/mimocode.json",
+            "patch": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -52,8 +52,19 @@\n     \"context\": 1000000,\n     \"output\": 65536\n   }\n },\n+\"laguna-s-2.1-free\": {\n+  \"name\": \"Laguna S 2.1 Free (256K)\",\n+  \"limit\": {\n+    \"context\": 256000,\n+    \"output\": 65536\n+  },\n+  \"modalities\": {\n+    \"input\": [\"text\"],\n+    \"output\": [\"text\"]\n+  }\n+},\n \"big-pickle\": {\n   \"name\": \"Big Pickle\",\n   \"limit\": {\n     \"context\": 1000000,\n",
+            "additions": 11,
+            "deletions": 0
+          },
+          "truncated": false
+        },
+        "title": "home/kasiro/.config/mimocode/mimocode.json"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799356386,
+    "tokens": {
+      "input": 7279,
+      "output": 264,
+      "reasoning": 10,
+      "cache": {
+        "write": 0,
+        "read": 68608
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Now let me verify both configs look correct."
+      },
+      {
+        "type": "text",
+        "text": "Проверю оба конфига."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_9AwJPMcoP9r1nnh1gFL80238",
+        "status": "completed",
+        "input": {
+          "command": "python3 -c \"\nimport json\n\n# mimocode.json\nwith open('/home/kasiro/.config/mimocode/mimocode.json') as f:\n    m = json.load(f)\nmodels = m['provider']['opencode-free']['models']\nprint('=== mimocode.json — opencode-free models ===')\nfor k, v in models.items():\n    print(f'  {k}: {v[\\\"name\\\"]}')\n\nprint()\n\n# opencode.json\nwith open('/home/kasiro/.config/opencode/opencode.json') as f:\n    o = json.load(f)\nprint('=== opencode.json — default model ===')\nprint(f'  model: {o[\\\"model\\\"]}')\nagents = o.get('agent', {})\nfor name, cfg in agents.items():\n    if 'model' in cfg:\n        print(f'  agent.{name}.model: {cfg[\\\"model\\\"]}')\n\"",
+          "description": "Verify both configs"
+        },
+        "output": "=== mimocode.json — opencode-free models ===\n  deepseek-v4-flash-free: DeepSeek V4 Flash Free (1M)\n  mimo-v2.5-free: MiMo V2.5 Free (1M)\n  nemotron-3-ultra-free: Nemotron 3 Ultra Free (1M)\n  north-mini-code-free: North Mini Code Free (1M)\n  laguna-s-2.1-free: Laguna S 2.1 Free (256K)\n  big-pickle: Big Pickle\n  hy3: HY3 Free\n\n=== opencode.json — default model ===\n  model: opencode/deepseek-v4-flash-free\n  agent.title.model: opencode/big-pickle\n\n<dcp-message-id>m0017</dcp-message-id>",
+        "metadata": {
+          "output": "=== mimocode.json — opencode-free models ===\n  deepseek-v4-flash-free: DeepSeek V4 Flash Free (1M)\n  mimo-v2.5-free: MiMo V2.5 Free (1M)\n  nemotron-3-ultra-free: Nemotron 3 Ultra Free (1M)\n  north-mini-code-free: North Mini Code Free (1M)\n  laguna-s-2.1-free: Laguna S 2.1 Free (256K)\n  big-pickle: Big Pickle\n  hy3: HY3 Free\n\n=== opencode.json — default model ===\n  model: opencode/deepseek-v4-flash-free\n  agent.title.model: opencode/big-pickle\n",
+          "exit": 0,
+          "description": "Verify both configs",
+          "truncated": false
+        },
+        "title": "Verify both configs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799361181,
+    "tokens": {
+      "input": 187,
+      "output": 127,
+      "reasoning": 281,
+      "cache": {
+        "write": 0,
+        "read": 76160
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Interesting! There's still a `hy3` entry in mimocode.json! It seems my earlier edit to remove `hy3-free` actually left behind a different entry called `hy3` (note: the key is just `hy3`, not `hy3-free`). That wasn't there before my first edit — wait, actually I need to check. Earlier the models were:\n\n```\ndeepseek-v4-flash-free\nmimo-v2.5-free\nnemotron-3-ultra-free\nnorth-mini-code-free\nbig-pickle\n```\n\nBut now I see:\n```\ndeepseek-v4-flash-free\nmimo-v2.5-free\nnemotron-3-ultra-free\nnorth-mini-code-free\nlaguna-s-2.1-free\nbig-pickle\nhy3: HY3 Free\n```\n\nWait, there's now also a `hy3` (without `-free`) entry with name \"HY3 Free\". Where did that come from? This must have been in the original config for opencode.json's provider .json file or something... Actually no, I only edited mimocode.json. Let me check if somehow a `hy3` entry got added elsewhere.\n\nActually, looking more carefully at the output — there's `hy3: HY3 Free`. Let me check the current mimocode.json directly."
+      },
+      {
+        "type": "text",
+        "text": "Хм, вижу `hy3: HY3 Free` всё ещё есть в mimocode.json. Проверю, что там."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_lvrwMjSYcUpS4gsyDZPY6326",
+        "status": "completed",
+        "input": {
+          "description": "Find all hy3 references in configs",
+          "command": "rg -n \"hy3\" /home/kasiro/.config/mimocode/mimocode.json /home/kasiro/.config/opencode/opencode.json"
+        },
+        "output": "/home/kasiro/.config/mimocode/mimocode.json:74:        \"hy3\": {\n\n<dcp-message-id>m0018</dcp-message-id>",
+        "metadata": {
+          "output": "/home/kasiro/.config/mimocode/mimocode.json:74:        \"hy3\": {\n",
+          "exit": 0,
+          "description": "Find all hy3 references in configs",
+          "truncated": false
+        },
+        "title": "Find all hy3 references in configs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799367297,
+    "tokens": {
+      "input": 133,
+      "output": 89,
+      "reasoning": 54,
+      "cache": {
+        "write": 0,
+        "read": 76672
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "There's a `hy3` entry (not `hy3-free`) in mimocode.json at line 74. This might have been there before my edits, or maybe it was part of the original config that I didn't notice. Let me read that section."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_d3Xtf0U3OwvykPsPwfcn1439",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/mimocode/mimocode.json",
+          "offset": 65,
+          "limit": 30
+        },
+        "output": "<path>/home/kasiro/.config/mimocode/mimocode.json</path>\n<type>file</type>\n<content>\n65:           }\n66:         },\n67:         \"big-pickle\": {\n68:           \"name\": \"Big Pickle\",\n69:           \"limit\": {\n70:             \"context\": 1000000,\n71:             \"output\": 65536\n72:           }\n73:         },\n74:         \"hy3\": {\n75:           \"name\": \"HY3 Free\",\n76:           \"limit\": {\n77:             \"context\": 1000000,\n78:             \"output\": 65536\n79:           }\n80:         }\n81:       }\n82:     }\n83:   },\n84:   \"mcp\": {\n85:     \"exa\": {\n86:       \"type\": \"remote\",\n87:       \"url\": \"http://127.0.0.1:18099\",\n88:       \"enabled\": true,\n89:       \"timeout\": 30000\n90:     },\n91:     \"searxng\": {\n92:       \"type\": \"local\",\n93:       \"command\": [\n94:         \"mcp-searxng\"\n\n(Showing lines 65-94 of 174. Use offset=95 to continue.)\n</content>\n<dcp-message-id>m0019</dcp-message-id>",
+        "metadata": {
+          "preview": "          }\n        },\n        \"big-pickle\": {\n          \"name\": \"Big Pickle\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        },\n        \"hy3\": {\n          \"name\": \"HY3 Free\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        }\n      }\n    }\n  },\n  \"mcp\": {",
+          "truncated": true,
+          "loaded": []
+        },
+        "title": "home/kasiro/.config/mimocode/mimocode.json"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799370658,
+    "tokens": {
+      "input": 334,
+      "output": 113,
+      "reasoning": 855,
+      "cache": {
+        "write": 0,
+        "read": 76928
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "So there's a `hy3` entry (without the `-free` suffix) that was already in the original config at line 74, right after `big-pickle`. My first edit added `hy3-free` between `big-pickle` and... wait, let me re-read the original config.\n\nLooking at the original config I read first, the models section was:\n```\n\"deepseek-v4-flash-free\": {...},\n\"mimo-v2.5-free\": {...},\n\"nemotron-3-ultra-free\": {...},\n\"north-mini-code-free\": {...},\n\"big-pickle\": {...}\n```\n\nThat was the original. There was no `hy3` or `hy3-free` originally (before my first edit).\n\nThen I added `hy3-free` (my first edit):\n```\n...big-pickle...,\nhy3-free: { name: \"Hy3 Free (1M)\", ... }\n```\n\nThen the user said to remove it. I removed `hy3-free`:\n```\n...big-pickle...\n```\n\nBut now I see `hy3` appeared. That's strange. Let me check — did my first edit to REMOVE `hy3-free` somehow leave a `hy3` entry? Let me re-read my edit:\n\nThe remove edit was:\n```\nold:         \"hy3-free\": {\n          \"name\": \"Hy3 Free (1M)\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        },\n        \nnew:         \n```\n\nThis should have removed the entire hy3-free block. But somehow `hy3` (without -free) appeared after `big-pickle`.\n\nActually, I think I might be confusing things. Let me look at the original file again from the very first read... \n\nLooking at the original mimocode.json read (m0003), the models were listed from lines 19-64:\n```\n\"deepseek-v4-flash-free\": {...},   // line 19\n\"mimo-v2.5-free\": {...},          // line 35\n\"nemotron-3-ultra-free\": {...},    // line 41\n\"north-mini-code-free\": {...},     // line 49\n\"big-pickle\": {...}               // line 56\n```\nAnd the models section closed at line 63. There was NO hy3 entry originally.\n\nSo where did this `hy3` at line 74 come from? This must have been added somehow. Let me think...\n\nWhen I added \"laguna-s-2.1-free\" with the edit:\n```\nold:         \"big-pickle\": {\nnew:         \"laguna-s-2.1-free\": {\n          \"name\": \"Laguna S 2.1 Free (256K)\",\n          ...\n        },\n        \"big-pickle\": {\n```\n\nThis inserted laguna BEFORE big-pickle. But there's now also a \"hy3\" entry AFTER big-pickle. That means this hy3 entry was in the file already, but looked to be part of the original file that I just didn't notice. Actually no - I re-read the original and it clearly wasn't there.\n\nWait... could it be that the mimocode.json was modified externally? Or maybe the opencode.json/provider section has its own `hy3`?\n\nActually, I think what happened is: the first time I read the file, I might not have gotten all lines. Let me check - the original read showed models ending at line 64 with the closing of the models/providers section. But looking at the current read, the file now has 174 lines (was 156 originally). So the file grew — the `hy3` entry and the `laguna-s-2.1-free` entry I added both contributed.\n\nActually wait, the original file was 156 lines. Now it's 174 lines. The `hy3` entry at line 74 must have been added somehow.\n\nHmm, actually I think this might be an opencode.json provider section that got modified. Let me check if opencode.json has providers."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_vXhSAYN3ydRJjAahdtcB9257",
+        "status": "completed",
+        "input": {
+          "description": "Check if opencode.json has provider section",
+          "command": "python3 -c \"\nimport json\nwith open('/home/kasiro/.config/opencode/opencode.json') as f:\n    o = json.load(f)\nprint('provider' in o)\nprint(list(o.keys()))\n\""
+        },
+        "output": "False\n['$schema', 'model', 'default_agent', 'share', 'instructions', 'permission', 'mcp', 'agent', 'lsp', 'plugin', 'compaction', 'tool_output', 'experimental']\n\n<dcp-message-id>m0020</dcp-message-id>",
+        "metadata": {
+          "output": "False\n['$schema', 'model', 'default_agent', 'share', 'instructions', 'permission', 'mcp', 'agent', 'lsp', 'plugin', 'compaction', 'tool_output', 'experimental']\n",
+          "exit": 0,
+          "description": "Check if opencode.json has provider section",
+          "truncated": false
+        },
+        "title": "Check if opencode.json has provider section"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784799382154,
+    "tokens": {
+      "input": 100,
+      "output": 182,
+      "reasoning": 166,
+      "cache": {
+        "write": 0,
+        "read": 78208
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "OK so opencode.json doesn't have a provider section. The `hy3` entry at line 74 of mimocode.json wasn't there originally, but now it is. Let me just remove it and the `hy3-free` (which I already removed) and make sure laguna is in there properly.\n\nActually I think what happened is: this is some external/background modification. Or maybe the config was updated by the software itself. Regardless, now I need to:\n\n1. Remove `hy3` (without -free) from mimocode.json - it's at lines 74-80\n2. Confirm `laguna-s-2.1-free` is correctly added\n3. opencode.json doesn't have provider section, so nothing to do there\n\nLet me just update mimocode.json properly."
+      },
+      {
+        "type": "text",
+        "text": "Нашёл старый `hy3` (без `-free`) в mimocode.json — видимо, остался от прошлых изменений. Убираю его."
+      },
+      {
+        "type": "tool",
+        "tool": "edit",
+        "callID": "call_00_FsrKQcML69GSxJQelJyx6863",
+        "status": "completed",
+        "input": {
+          "file_path": "/home/kasiro/.config/mimocode/mimocode.json",
+          "old_string": "        },\n        \"hy3\": {\n          \"name\": \"HY3 Free\",\n          \"limit\": {\n            \"context\": 1000000,\n            \"output\": 65536\n          }\n        }\n      }\n    }\n  },",
+          "new_string": "        }\n      }\n    }\n  },"
+        },
+        "output": "Edit applied successfully.\n<dcp-message-id>m0021</dcp-message-id>",
+        "metadata": {
+          "diagnostics": {},
+          "diff": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -69,15 +69,8 @@\n         \"limit\": {\n           \"context\": 1000000,\n           \"output\": 65536\n         }\n-      },\n-      \"hy3\": {\n-        \"name\": \"HY3 Free\",\n-        \"limit\": {\n-          \"context\": 1000000,\n-          \"output\": 65536\n-        }\n       }\n     }\n   }\n },\n",
+          "filediff": {
+            "file": "/home/kasiro/.config/mimocode/mimocode.json",
+            "patch": "Index: /home/kasiro/.config/mimocode/mimocode.json\n===================================================================\n--- /home/kasiro/.config/mimocode/mimocode.json\n+++ /home/kasiro/.config/mimocode/mimocode.json\n@@ -69,15 +69,8 @@\n         \"limit\": {\n           \"context\": 1000000,\n           \"output\": 65536\n         }\n-      },\n-      \"hy3\": {\n-        \"name\": \"HY3 Free\",\n-        \"limit\": {\n-          \"context\": 1000000,\n-          \"output\": 65536\n-        }\n       }\n     }\n   }\n },\n",
+            "additions": 0,
+            "deletions": 7
+          },
+          "truncated": false
+        },
+        "title": "home/kasiro/.config/mimocode/mimocode.json"
+      }
+    ]
+  }
+]

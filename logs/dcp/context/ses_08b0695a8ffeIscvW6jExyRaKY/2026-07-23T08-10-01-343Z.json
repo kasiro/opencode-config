@@ -1,0 +1,93 @@
+[
+  {
+    "role": "user",
+    "time": 1784794194673,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are a research sub-agent. Today is 2026-07-23. Research context: Meta-control — AI that decides when to be controlled vs free. Your ONLY task: research router models (LLM-as-judge), adaptive guardrails (changing restriction levels based on confidence), confidence-gated freedom, systems where the model itself decides when constraints apply. Rules: (1) Run up to 6 web searches, start with 2-3 parallel queries. (2) WebFetch 3-6 most promising. (3) Write findings to /home/kasiro/research/ai-control/findings/F6.md in format:\n\n# F6: Meta-control\n## Findings\n### [1] <one-sentence claim>\n- quote: \"...\"\n- url: <URL>\n- source_type: primary|secondary|community\n- published: <date>\n- confidence: high|medium|low\n\nAim for 5-12 findings. Return a 3-5 line summary.\n\n<dcp-message-id>m0056</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0056</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794194693,
+    "tokens": {
+      "input": 454,
+      "output": 289,
+      "reasoning": 104,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research meta-control - specifically router models (LLM-as-judge), adaptive guardrails, confidence-gated freedom, and systems where the model decides when constraints apply. I need to:\n\n1. Run up to 6 web searches, starting with 2-3 parallel queries\n2. Fetch 3-6 most promising results\n3. Write findings to /home/kasiro/research/ai-control/findings/F6.md\n\nLet me start with parallel searches on these topics."
+      },
+      {
+        "type": "text",
+        "text": "Starting research on meta-control / router models / adaptive guardrails. Running initial parallel searches."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_apos7pH0gN9RUY8plABX5383",
+        "status": "completed",
+        "input": {
+          "query": "LLM-as-judge router model AI decides when to apply constraints adaptive guardrails",
+          "num_results": 10,
+          "time_range": "year"
+        },
+        "output": "🔍 No results found for \"LLM-as-judge router model AI decides when to apply constraints adaptive guardrails\". Try different search terms or check if SearXNG search engines are working.\n<dcp-message-id>m0063</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_cXX43rfKmBEuYrm842jj5516",
+        "status": "completed",
+        "input": {
+          "query": "confidence-gated AI systems meta-control self-regulation model freedom vs constraints",
+          "num_results": 10,
+          "time_range": "year"
+        },
+        "output": "Title: Governed Autonomy in 2026: How AI Systems Self-Regulate Without Losing ...\nDescription: Learn how Logiciel's Governed Autonomy Model enables AI systems to self-regulate safely combining innovation, feedback loops, and Governance-as-Code to build trusted autonomy at scale.\nURL: https://logiciel.io/blog/governed-autonomy-ai-self-regulation\nRelevance Score: 1.000\n\nTitle: AI governance through controlled autonomy and guarded freedom\nDescription: Deciding between controlled autonomy and guarded freedom in AI governance largely depends on the nature of the enterprise, its industry and the specific risks involved.\nURL: https://www.cio.com/article/4112119/ai-governance-through-controlled-autonomy-and-guarded-freedom.html\nRelevance Score: 0.500\n\nTitle: Confidence-Gated Autonomy Throttling Loops for Socially Trusted ...\nDescription: Recent 2025 findings indicate that autonomous agents are safer and more effective when they dynamically throttle autonomy based on confidence, uncertainty, and human-context signals; production systems should operationalize this with explicit continue/clarify/escalate control loops and emotionally legible handoffs.\nURL: https://www.curvelabs.org/research-backed-self-improvement-for-autonomous-ai-agents/2026-03-01-1902/confidence-gated-autonomy-throttling-loops-for-socially-trusted-autonomous-agents\nRelevance Score: 0.333\n\nTitle: State of AI trust in 2026: Shifting to the agentic era\nDescription: Their responses were assessed using the McKinsey AI Trust Maturity Model, a framework based on five dimensions of RAI: strategy, risk management, data and technology, governance, and, new this year, agentic AI governance and controls, reflecting the growing importance of governing increasingly autonomous AI systems (Exhibit 1).\nURL: https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/tech-forward/state-of-ai-trust-in-2026-shifting-to-the-agentic-era\nRelevance Score: 0.250\n\nTitle: MetaCognition Patterns for AI Agent Self-Monitoring and Adaptive Control\nDescription: An analysis of metacognitive architectures for AI agents — from cognitive science foundations to engineering patterns for self-monitoring, dual observation, anomaly detection, and adaptive control in multi-component agent runtimes.\nURL: https://zylos.ai/research/2026-03-14-metacognition-ai-agent-self-monitoring-adaptive-control/\nRelevance Score: 0.200\n\nTitle: Inside our approach to the Model Spec - OpenAI\nDescription: Learn how OpenAI's Model Spec serves as a public framework for model behavior, balancing safety, user freedom, and accountability as AI systems advance.\nURL: https://openai.com/index/our-approach-to-the-model-spec/\nRelevance Score: 0.167\n\nTitle: How to Navigate AI Governance: Self-Regulation vs Government Control in ...\nDescription: Complete guide to understanding and participating in the AI governance debate. Learn self-regulation vs government control approaches, hybrid models, and compliance strategies for 2026.\nURL: https://is4.ai/blog/our-blog-1/ai-governance-self-regulation-vs-government-control-2026-503\nRelevance Score: 0.143\n\nTitle: Metacognition of ChatGPT in confidence judgements - Frontiers\nDescription: Abstract Recent advances in Large Language Models (LLMs) have raised critical concerns regarding AI alignment and safety, particularly with respect to the reliability of their outputs. In humans, metacognition plays a key role in making cognition robust and adaptive. LLMs frequently express high confidence in their responses, raising the question of whether such confidence reflects human-like ...\nURL: https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2026.1694192/full\nRelevance Score: 0.125\n<dcp-message-id>m0063</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_ieB0QoYOKKrwvzHsTCLO4462",
+        "status": "completed",
+        "input": {
+          "query": "\"meta-control\" AI router guardrails confidence threshold dynamic restriction",
+          "num_results": 10,
+          "time_range": "year"
+        },
+        "output": "Title: Rethinking Meta-Control: A New Era for Robotic Precision\nDescription: Exploring a new meta-control architecture for Euler-Lagrange systems using self-attention to enhance robotic precision.\nURL: https://www.machinebrief.com/news/rethinking-meta-control-a-new-era-for-robotic-precision-xxlj\nRelevance Score: 1.000\n\nTitle: Why AI systems don't learn and what to do about it\nDescription: 3.2 Meta-Control in AI systems While a full specification of the possible routing circuits and meta signals is outside the scope of this paper, we refer the reader to Appendix B for advanced operating modes, and Appendix C for further ethological examples of meta-signals.\nURL: https://arxiv.org/html/2603.15381v1\nRelevance Score: 0.500\n\nTitle: [2511.14756] HMC: Learning Heterogeneous Meta-Control for Contact-Rich ...\nDescription: Learning from real-world robot demonstrations holds promise for interacting with complex real-world environments. However, the complexity and variability of interaction dynamics often cause purely positional controllers to struggle with contacts or varying payloads. To address this, we propose a Heterogeneous Meta-Control (HMC) framework for Loco-Manipulation that adaptively stitches multiple ...\nURL: https://arxiv.org/abs/2511.14756\nRelevance Score: 0.333\n\nTitle: Gazebo/PX4 Experimental Dataset for Reinforcement Learning Meta-Control ...\nDescription: Selected ROS 2 bag files and processed data files are also provided to support result verification, algorithm comparison, and further research on reinforcement-learning-based safety control, control barrier functions, and autonomous UAV navigation in stochastic dynamic environments.\nURL: https://ieee-dataport.org/documents/gazebopx4-experimental-dataset-reinforcement-learning-meta-control-based-dynamic-obstacle\nRelevance Score: 0.250\n\nTitle: [PDF] HMC: Learning Heterogeneous Meta-Control for Contact-Rich Loco ...\nDescription: A Heterogeneous Meta-Control (HMC) framework for Loco-Manipulation that adaptively stitches multiple control modalities: position, impedance, and hybrid force-position, and HMC-Policy to unify different controllers into a heterogeneous architecture is proposed. Learning from real-world robot demonstrations holds promise for interacting with complex real-world environments. However, the ...\nURL: https://www.semanticscholar.org/paper/HMC%3A-Learning-Heterogeneous-Meta-Control-for-Wei-Peng/ed78c948c4012d13ebbbbc312bb4b10b61b4cd93\nRelevance Score: 0.200\n\nTitle: Dynamic Predictive Feedback Mechanism for Intelligent Bandwidth ... - MDPI\nDescription: This work proposes the Dynamic Predictive Feedback (DPF) mechanism—a unified adaptive control framework that combines predictive analytics, real-time feedback, and meta-control adaptation for intelligent bandwidth management.\nURL: https://www.mdpi.com/2673-8732/5/4/54\nRelevance Score: 0.167\n\nTitle: RG-TTA: Regime-Guided Meta-Control for Test-Time Adaptation in ...\nDescription: This turns out to be the strongest performer experimentally. RG-DynaTTA combines regime-guidance with dynamic test-time adaptation for fine-grained control over which model components update in response to which regimes.\nURL: https://www.aimodels.fyi/papers/arxiv/rg-tta-regime-guided-meta-control-test\nRelevance Score: 0.143\n<dcp-message-id>m0063</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

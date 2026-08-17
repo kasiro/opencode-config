@@ -17,8 +17,6 @@ permission:
   task: deny
   skill:
     agent-delegation: deny
-    jarvis-cycles: deny
-    context-mgmt: deny
     how_use_memory: deny
   external_directory:
     "*": "allow"

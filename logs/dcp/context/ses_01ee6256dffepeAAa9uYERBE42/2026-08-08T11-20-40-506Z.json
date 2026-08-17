@@ -1,0 +1,57 @@
+[
+  {
+    "role": "user",
+    "time": 1786187996127,
+    "parts": [
+      {
+        "type": "text",
+        "text": "как мне в hermes agent от NousResearch включить YOLO mode?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786187996605,
+    "tokens": {
+      "input": 31432,
+      "output": 464,
+      "reasoning": 180,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Сэр спрашивает про Hermes agent от NousResearch — как включить YOLO mode. Это исследовательский вопрос про конкретный продукт. Мне нужно узнать, что это за агент. NousResearch — это лаборатория, у них есть Hermes модели. Но \"Hermes agent\" с YOLO mode — это может быть что-то новое в 2026 году.\n\nМои знания могут быть устаревшими. Согласно правилам — research-before-conclusions, delegate-first. Нужно делегировать general'у поиск в интернете.\n\nДавай сформулирую задачу для general: найти, что такое Hermes agent от NousResearch, как включить YOLO mode. Искать через searxng/exa, смотреть официальную документацию NousResearch.\n\nЗапущу поиск."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, сейчас проверю по официальным источникам NousResearch."
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_00_niQGGe3tLr3igY4A4cAM6102",
+        "status": "completed",
+        "input": {
+          "description": "Поиск YOLO mode Hermes agent",
+          "prompt": "Задача: Найти, как включить YOLO mode в Hermes agent от NousResearch.\n\nКонтекст: NousResearch (nousresearch.com, github.com/NousResearch) — ИИ-лаборатория. У них есть линейка моделей Hermes, и, предположительно, агентный продукт \"Hermes\" (возможно CLI-агент, выпущенный в 2025-2026). Сэр спрашивает про \"YOLO mode\" — режим, в котором агент действует без подтверждений.\n\nТребования:\n1. Начни с поиска: searxng и/или exa по запросам \"Hermes agent NousResearch\", \"NousResearch Hermes YOLO mode\", \"Hermes CLI agent yolo\", \"nous research hermes agent docs\".\n2. Найди официальную документацию (docs.nousresearch.com, github NousResearch/Hermes или подобное).\n3. Определи точно: что такое Hermes agent, существует ли YOLO mode, как он включается (флаг CLI, переменная окружения, конфиг-файл, команда).\n4. Если YOLO mode называется иначе (например \"autonomous mode\", \"--yes\", \"skip confirmations\") — укажи это.\n\nФормат ответа:\n- Что такое Hermes agent (1-2 предложения)\n- Команда/способ включения YOLO mode (точная команда или конфиг)\n- Источники (ссылки на документацию/README)\n- Если не нашёл — честно скажи, что именно удалось найти по теме\n\nВерни структурированный ответ на русском языке.",
+          "subagent_type": "general"
+        },
+        "output": "<task id=\"ses_01ee5ff69ffe6E4WOg6AxGwcnG\" state=\"completed\">\n<task_result>\nВсё найдено и подтверждено первоисточником — официальной документацией из репозитория. Вот структурированный ответ.\n\n---\n\n## Что такое Hermes Agent\n\n**Hermes Agent** — открытый самоулучшающийся ИИ-агент от лаборатории **Nous Research** (native-приложение и CLI/TUI для macOS, Windows, Linux). Ключевая фишка — встроенный цикл обучения: создаёт скиллы из опыта, совершенствует их при использовании и запоминает контекст между сессиями. Репозиторий: `github.com/NousResearch/hermes-agent`, дока: `hermes-agent.nousresearch.com/docs`.\n\n## YOLO mode — существует, включается 3 способами\n\nYOLO mode **полностью отключает все запросы на подтверждение опасных команд** для текущей сессии. Внутренне он просто выставляет переменную окружения `HERMES_YOLO_MODE`, которая проверяется перед каждым выполнением команды.\n\n**1. CLI-флаг** (при старте сессии):\n```bash\nhermes --yolo\n# или\nhermes chat --yolo\n```\n\n**2. Slash-команда** (во время сессии, переключатель on/off):\n```\n/yolo\n```\nКаждое использование инвертирует режим: `⚡ YOLO mode ON` → `⚠ YOLO mode OFF`. Работает и в CLI, и в gateway-сессиях.\n\n**3. Переменная окружения**:\n```bash\nexport HERMES_YOLO_MODE=1\n```\n\n**4. Эквивалент через конфиг** (`~/.hermes/config.yaml`) — полностью выключает проверки, «эквивалентно запуску с `--yolo`»:\n```yaml\napprovals:\n  mode: off        # smart | manual | off\n```\n\n### Важные нюансы\n\n- ⚠️ **Hardline blocklist не обходится даже в YOLO**: `rm -rf /`, форк-бомбы, `mkfs.*` на смонтированном root, запись в `/dev/sd*`, `curl ... | sh` на уровне rootfs — Hermes откажется выполнять их **в любом режиме** (`tools/approval.py::UNRECOVERABLE_BLOCKLIST`).\n- 🔒 Пользовательские правила `approvals.deny` в конфиге работают «yolo-with-exceptions»: блокируют конкретные паттерны (`git push --force*`, `dd if=* of=/dev/*`) **даже при включённом YOLO**.\n- ⚠️ **Известный баг** ([issue #33605](https://github.com/NousResearch/hermes-agent/issues/33605)): статус-бар CLI показывает `⚠ YOLO`, когда `HERMES_YOLO_MODE` установлена в **любое** непустое значение, включая `false`, `0`, `off` — то есть выключить переменную-флаг нельзя «значением false», нужно её убрать вовсе.\n- 🔄 **Новое поведение** ([issue #26114](https://github.com/NousResearch/hermes-agent/issues/26114)): разработчики добавили graduated-режим **advise mode** (теперь дефолтный) — промежуточный между полным блокированием и YOLO; YOLO остаётся как «всё или ничего» для сессии.\n- 👀 В активном YOLO агент показывает красный баннер при старте сессии и фрагмент `⚠ YOLO` в статус-баре.\n\n## Источники\n\n1. **Официальная документация (Security)** — https://hermes-agent.nousresearch.com/docs/user-guide/security/ — раздел «YOLO Mode» (сайт отдаёт 403 на прямые боты, поэтому читал исходник из репо)\n2. **Исходник доки на GitHub** — https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/security.md\n3. **Главная Hermes Agent** — https://hermes-agent.nousresearch.com/ и https://github.com/NousResearch/hermes-agent\n4. **Issue: баг с `HERMES_YOLO_MODE=false`** — https://github.com/NousResearch/hermes-agent/issues/33605\n5. **Issue: advise mode как дефолт** — https://github.com/NousResearch/hermes-agent/issues/26114\n6. **DeepWiki (обзор security-модели)** — https://deepwiki.com/NousResearch/hermes-agent/5.4-security-and-command-approval\n\n---\n\n**Итог для сэра:** YOLO mode существует именно под этим названием, включается командой `hermes --yolo` (или `hermes chat --yolo`), переключается `/yolo` в сессии и включается `HERMES_YOLO_MODE=1`. Имя «YOLO» — официальное, никаких других названий у него нет; частичный аналог без флага — `approvals.mode: off` в конфиге, а «умеренная» альтернатива — advise mode (дефолт).\n</task_result>\n</task>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_01ee6256dffepeAAa9uYERBE42",
+          "sessionId": "ses_01ee5ff69ffe6E4WOg6AxGwcnG",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Поиск YOLO mode Hermes agent"
+      }
+    ]
+  }
+]

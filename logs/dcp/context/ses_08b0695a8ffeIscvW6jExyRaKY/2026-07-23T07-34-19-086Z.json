@@ -1,0 +1,167 @@
+[
+  {
+    "role": "user",
+    "time": 1784792038885,
+    "parts": [
+      {
+        "type": "text",
+        "text": "что нового в mimocode 0.1.7?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nSkill search trigger: this is the first user query in the session.\nYou should call skill_search before starting the task.\nFirst rewrite the request as a Skill Query containing action, input, output, and audience when available.\nDescribe the required capability and final deliverable; treat file types such as CSV as inputs, not automatically as the target skill.\nOffice examples:\n- Excel/CSV: analyze or clean data, work with formulas and tables, or create charts and workbooks.\n- PowerPoint/PPT: create, revise, or review a presentation or executive deck.\n- Word/DOCX: draft, edit, review, or format a document or report.\n- PDF: extract or review content, generate a PDF, or preserve and inspect page layout.\nCode examples: code review, debugging, test generation, security or performance analysis, frontend design, and other specialized engineering workflows.\nFor example, \"analyze gender_submission.csv\" should express data analysis as the capability, the CSV dataset as input, and findings as output.\nThese are examples of likely specialized workflows, not requirements to call a tool.\n</system-reminder>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784792039032,
+    "tokens": {
+      "input": 56954,
+      "output": 60,
+      "reasoning": 70,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user is asking about what's new in MiMoCode 0.1.7. This is a question about MiMoCode itself, so I should load the `mimocode-docs` skill which covers documentation about MiMoCode features. Let me first search for the right skill and then look into the release notes/changelog."
+      },
+      {
+        "type": "tool",
+        "tool": "skill_search",
+        "callID": "call_00_CuEfzEUuZjUy71VvTmgw1544",
+        "status": "completed",
+        "input": {
+          "query": "what's new in mimocode 0.1.7 changelog release notes"
+        },
+        "output": "{\n  \"status\": \"matched\",\n  \"results\": [\n    {\n      \"skill_id\": \"arxiv\",\n      \"name\": \"arxiv\",\n      \"score\": 0.6773,\n      \"reason\": \"The skill description matches these query terms: what, s, new, in.\"\n    },\n    {\n      \"skill_id\": \"jarvis-cycles\",\n      \"name\": \"jarvis-cycles\",\n      \"score\": 0.6377,\n      \"reason\": \"The skill description matches these query terms: s, in, 1.\"\n    },\n    {\n      \"skill_id\": \"evolve\",\n      \"name\": \"evolve\",\n      \"score\": 0.6375,\n      \"reason\": \"The skill description matches these query terms: what, new, in, mimocode.\"\n    }\n  ],\n  \"loaded_skill_id\": null\n}\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "status": "matched",
+          "loadedSkillID": null,
+          "truncated": false
+        },
+        "title": "Found 3 skills"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784792045965,
+    "tokens": {
+      "input": 41533,
+      "output": 47,
+      "reasoning": 29,
+      "cache": {
+        "write": 0,
+        "read": 15360
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The skill search didn't find an exact match, but `mimocode-docs` is the relevant skill. Let me load it directly."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_gW6tc32fTqHPDxzLX3L26891",
+        "status": "completed",
+        "input": {
+          "name": "mimocode-docs"
+        },
+        "output": "<skill_content name=\"mimocode-docs\">\n# Skill: mimocode-docs\n\n# MiMoCode\n\nYou are MiMoCode. This skill lets you explain your own features, tell users how to use them, and help configure yourself. When a user asks \"what can you do\", \"how do I set X\", \"where does Y live\", or \"how does Z work\", answer from here — don't guess.\n\n## Identity\n\nMiMoCode (CLI binary `mimo`) is an agentic coding tool with a terminal UI, built as a fork of OpenCode. Beyond OpenCode's core (multi-provider, TUI, LSP, MCP, plugins) it adds: persistent memory, intelligent context management, subagent orchestration, goal-driven autonomous loops, compose workflows, and self-improvement via dream/distill.\n\n## Feature Map\n\n| Feature | What it is | How to reach it |\n|---------|-----------|-----------------|\n| **Agents / modes** | `build` (default, full tools), `plan` (read-only analysis), `compose` (specs-driven orchestration), plus custom modes you define | `Tab` cycles primary agents; add your own via `.mimocode/agent/<name>.md` (see @reference/guide.md) |\n| **Subagents** | Primary agent spawns `general`/`explore` helpers, parallel + background, with lifecycle/cancel | automatic; `actor` tooling |\n| **Persistent memory** | SQLite FTS5 across sessions: `MEMORY.md`, `checkpoint.md`, `notes.md`, `tasks/<id>/progress.md` | auto-injected on resume |\n| **Context management** | Auto-checkpoints, context reconstruction near limit, budgeted injection | automatic; tune via `checkpoint`/`compaction` config |\n| **Task tree** | `T1`, `T1.1`… tree, integrated with checkpoints | `task` tooling |\n| **Goal / stop condition** | Judge model verifies a stop condition before the agent halts | `/goal` |\n| **Compose mode** | Structured spec→ship lifecycle with built-in plan/tdd/debug/review/verify/merge skills | `compose` agent |\n| **Voice input** | Streaming ASR (TenVAD + MiMo ASR); needs `sox` | `/voice` |\n| **Dream** | Consolidates recent traces into project memory | `/dream` |\n| **Distill** | Packages repeated manual workflows into skills/subagents/commands | `/distill` |\n| **Scheduled prompts** | Cron/loop: inject a prompt on a schedule or repeating loop (UTC, 5-field) | `cron` tool · `/loop` · `/loops` |\n| **Dynamic workflows** | JS scripts that orchestrate many subagents deterministically (fan-out, pipelines, nesting); built-ins `compose`, `deep-research` & `fact-check` | `.mimocode/workflows/*.js` + `workflow` tool |\n| **Skills / self-extension** | Add tools, hooks, skills under `.mimocode/` | see the `evolve` skill |\n| **MCP** | Local & remote Model Context Protocol servers | `mcp` config + `mimo mcp` |\n\n## Configuration Basics\n\nConfig file (JSON or JSONC), discovered by walking up from cwd:\n- **Project**: `.mimocode/mimocode.json` (or `.jsonc`)\n- **Global**: `~/.config/mimocode/mimocode.json`\n\nAdd `\"$schema\": \"https://mimo.xiaomi.com/mimocode/config.json\"` for editor validation. All top-level keys are optional; project config merges over global.\n\n```jsonc\n{\n  \"$schema\": \"https://mimo.xiaomi.com/mimocode/config.json\",\n  \"model\": \"provider/model\",\n  \"permission\": { \"external_directory\": { \"/tmp/**\": \"allow\" } }\n}\n```\n\nFor the full key reference (model, provider, mcp, permission, agent, checkpoint, compaction, memory, dream, distill, voice, workflow, experimental, command, keybinds, and more) see @reference/config.md. For the permission model (per-tool allow/ask/deny rules) see @reference/permissions.md.\n\n## How-To Guide\n\nFor task-oriented walkthroughs — signing in & choosing a model, making memory remember project rules, writing custom slash commands, remapping keybinds, adding MCP servers, scheduling prompts (cron/loop), and using compose mode — see @reference/guide.md. For authoring and running **dynamic workflows** (the in-script API, where to save `.js` workflow files, and the `workflow` tool) see @reference/workflows.md.\n\n**Built-in workflows** (runnable by name via the `workflow` tool, no file needed):\n- **`compose`** — deterministic spec→ship pipeline (brainstorm → design → implement/TDD → verify → review → merge), auto-parallelized across per-task worktrees. Pass `args.task`.\n- **`deep-research`** — comprehensive research report generator (brief → plan → parallel research → reflect → write → cold review). Pass `args: { dir, question, today, depth?, context? }`. Convergent/resumable.\n- **`fact-check`** — adversarial fact verification (plan → search → extract → group → 3-juror crosscheck → JSON findings). Pass the question as `args`.\n\n## Where Things Live On Disk\n\nBase dirs follow `MIMOCODE_HOME` (if set, absolute) else XDG. Data typically lives at `~/.local/share/mimocode/` (memory, logs, extracted builtin skills), config at `~/.config/mimocode/`, cache at `~/.cache/mimocode/`. See @reference/config.md for the full layout and env vars.\n\n## Commands\n\n`mimo` subcommands (`mcp`, `run`, `agent`, `models`, `providers`, `upgrade`, `stats`, `export`/`import`, `github`/`pr`, `serve`, …) and slash commands (`/goal`, `/dream`, `/distill`, `/voice`, `/loop`, `/connect`, `/<skill-name>`) are documented in @reference/commands.md.\n\n## Helping the User Configure\n\nWhen asked to change a behavior:\n1. Identify the config key from @reference/config.md.\n2. Read the existing `.mimocode/mimocode.json` (project) or global config if present — don't clobber it.\n3. Edit minimally: add or change only the relevant key, preserving `$schema` and other settings.\n4. State which file you changed and whether it needs a restart (config is re-read on next turn for most keys; TUI plugins need restart).\n\nDon't invent config keys. If a requested behavior has no key, say so and suggest the closest supported option or the `evolve` route (a hook/tool).\n\n## Answering Feature Questions\n\n- Confirm the feature exists in the map above before describing it.\n- Give the trigger (command / key / config), then a one-line how.\n- For extending capabilities (new tools/hooks/skills), defer to the `evolve` skill rather than duplicating it.\n- If unsure whether a detail is current, verify against the config schema or README rather than asserting.\n\nBase directory for this skill: file:///home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs/reference/guide.md</file>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs/reference/config.md</file>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs/reference/commands.md</file>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs/reference/permissions.md</file>\n<file>/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs/reference/workflows.md</file>\n</skill_files>\n</skill_content>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "name": "mimocode-docs",
+          "dir": "/home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/skills/mimocode-docs",
+          "truncated": false
+        },
+        "title": "Loaded skill: mimocode-docs"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784792051847,
+    "tokens": {
+      "input": 8556,
+      "output": 291,
+      "reasoning": 102,
+      "cache": {
+        "write": 0,
+        "read": 50304
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The mimocode-docs skill gives me the feature map for 0.1.7, but the user specifically asked \"что нового в mimocode 0.1.7?\" — what's new in 0.1.7. The skill describes the current version's features but doesn't tell me what changed specifically from previous versions. Let me look for release notes or changelog files. Let me check if there's a changelog or release notes somewhere in the installed mimocode files."
+      },
+      {
+        "type": "text",
+        "text": "Давайте проверю, что изменилось в этой версии. Поищу changelog."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_sUXWAxElTgYNiS4fpAws0681",
+        "status": "completed",
+        "input": {
+          "command": "ls /home/kasiro/.local/share/mimocode/builtin_skills/0.1.7/ 2>/dev/null",
+          "description": "List builtin skills directory"
+        },
+        "output": "skills\n\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "output": "skills\n",
+          "exit": 0,
+          "description": "List builtin skills directory",
+          "truncated": false
+        },
+        "title": "List builtin skills directory"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_01_wWG1wBMSmQi4sBwAXBzd5014",
+        "status": "completed",
+        "input": {
+          "command": "fd -H -e md -e txt \"CHANGE|CHANGELOG|RELEASE|HISTORY|NEWS|whatsnew\" /home/kasiro/.local/share/mimocode/ 2>/dev/null | head -20",
+          "description": "Find changelog files"
+        },
+        "output": "(no output)\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 0,
+          "description": "Find changelog files",
+          "truncated": false
+        },
+        "title": "Find changelog files"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_02_lRBGGavruJo7T3mzpybd5430",
+        "status": "completed",
+        "input": {
+          "command": "mimo --version 2>/dev/null || mimo -v 2>/dev/null || mimo version 2>/dev/null || echo \"version check failed\"",
+          "description": "Check mimo version"
+        },
+        "output": "0.1.7\n\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "output": "0.1.7\n",
+          "exit": 0,
+          "description": "Check mimo version",
+          "truncated": false
+        },
+        "title": "Check mimo version"
+      }
+    ]
+  }
+]

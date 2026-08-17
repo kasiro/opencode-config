@@ -1,0 +1,128 @@
+[
+  {
+    "role": "user",
+    "time": 1784796518120,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are a research sub-agent. Today is 2026-07-23.\n\nResearch context: We are investigating alternative techniques for controlling LLM behavior without embedding markup/tags in the prompt. Audience is technical AI engineers. Date: 2026-07-23.\n\nYour ONLY task — research this single angle, nothing else:\nSystem prompt separation vs user message efficacy for behavior control — how effective is putting rules in the system message vs the user message? AND structured output formats (JSON mode, grammar-constrained decoding) as a control mechanism.\n\nRules:\n1. Run up to 6 web searches. Start with 2-3 differently-phrased queries in parallel; refine based on what comes back. Prefer primary sources (official docs, papers, original announcements) over aggregators and SEO farms.\n2. WebFetch the 3-6 most promising results to read actual content. Do not cite a page you did not fetch.\n3. Judge each source: official/primary > reputable media/peer-reviewed > forums/blogs > content farms. Discard low-quality sources rather than citing them.\n4. Extract findings as information-dense claims: include exact entities, numbers, dates, versions. One claim per finding.\n5. Write your findings to /home/kasiro/research/llm-control-alt/findings/F1.md in EXACTLY this format:\n\n# F1: System prompt separation + structured output formats\n\n## Findings\n\n### [1] <one-sentence claim>\n- quote: \"<short verbatim supporting quote>\"\n- url: <source URL>\n- source_type: primary | secondary | community\n- published: <date if known, else unknown>\n- confidence: high | medium | low\n\n### [2] ...\n\n## Dead ends\n- <queries or sources that yielded nothing useful, one line each>\n\n## Suggested follow-ups\n- <at most 3 narrower questions worth a deeper look, or \"none\">\n\n6. Aim for 5-12 findings. Depth beats breadth: 6 solid sourced claims beat 15 vague ones.\n7. If the angle turns out unanswerable or results are thin, still write the file with whatever you found and say so under Dead ends.\n\nReturn to the orchestrator ONLY:\n- 3-5 line summary of your strongest findings\n- the file path you wrote\n- number of findings and your overall confidence\nDo NOT return raw page content or the full findings list.\n\n<dcp-message-id>m0074</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0074</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796518135,
+    "tokens": {
+      "input": 747,
+      "output": 263,
+      "reasoning": 56,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research two specific angles:\n\n1. System prompt separation vs user message efficacy for behavior control\n2. Structured output formats (JSON mode, grammar-constrained decoding) as a control mechanism\n\nLet me start with 3 parallel web searches to cover both angles."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_A0e754I6YVrb5SuaRwiR2778",
+        "status": "completed",
+        "input": {
+          "query": "system prompt vs user message effectiveness LLM behavior control research",
+          "time_range": "year",
+          "num_results": 10
+        },
+        "output": "🔍 No results found for \"system prompt vs user message effectiveness LLM behavior control research\". Try different search terms or check if SearXNG search engines are working.\n<dcp-message-id>m0076</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_3gyO8fQRXbELORxlVmm15219",
+        "status": "completed",
+        "input": {
+          "query": "system message user message efficacy difference LLM instruction following",
+          "time_range": "year",
+          "num_results": 10
+        },
+        "output": "🔍 No results found for \"system message user message efficacy difference LLM instruction following\". Try different search terms or check if SearXNG search engines are working.\n<dcp-message-id>m0076</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_ofHXfh9uMCkNcHCGaOZc6532",
+        "status": "completed",
+        "input": {
+          "query": "structured output JSON mode grammar-constrained decoding LLM control mechanism",
+          "time_range": "year",
+          "num_results": 10
+        },
+        "output": "🔍 No results found for \"structured output JSON mode grammar-constrained decoding LLM control mechanism\". Try different search terms or check if SearXNG search engines are working.\n<dcp-message-id>m0076</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796522106,
+    "tokens": {
+      "input": 220,
+      "output": 71,
+      "reasoning": 26,
+      "cache": {
+        "write": 0,
+        "read": 53120
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "All three SearXNG searches returned no results. Let me check the SearXNG instance status and also try alternative search approaches."
+      },
+      {
+        "type": "text",
+        "text": "SearXNG returned no results. Let me check the instance and try alternative queries."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_instance_info",
+        "callID": "call_00_7sHyXhcDxMZoU9Zys3Ny8099",
+        "status": "completed",
+        "input": {
+          "includeEngines": true
+        },
+        "output": "{\n  \"available\": true,\n  \"categories\": [\n    \"apps\",\n    \"books\",\n    \"cargo\",\n    \"currency\",\n    \"define\",\n    \"dictionaries\",\n    \"files\",\n    \"general\",\n    \"icons\",\n    \"images\",\n    \"it\",\n    \"lyrics\",\n    \"map\",\n    \"movies\",\n    \"music\",\n    \"news\",\n    \"other\",\n    \"packages\",\n    \"q&a\",\n    \"radio\",\n    \"repos\",\n    \"science\",\n    \"scientific publications\",\n    \"shopping\",\n    \"social media\",\n    \"software wikis\",\n    \"translate\",\n    \"videos\",\n    \"weather\",\n    \"web\",\n    \"wikimedia\"\n  ],\n  \"defaults\": {\n    \"locale\": \"ru\",\n    \"theme\": \"simple\"\n  },\n  \"locales\": {\n    \"af\": \"Afrikaans\",\n    \"ar\": \"العربية (Arabic)\",\n    \"bg\": \"Български (Bulgarian)\",\n    \"bn\": \"বাংলা (Bangla)\",\n    \"bo\": \"བོད་སྐད་ (Tibetan)\",\n    \"ca\": \"Català (Catalan)\",\n    \"cs\": \"Čeština (Czech)\",\n    \"cy\": \"Cymraeg (Welsh)\",\n    \"da\": \"Dansk (Danish)\",\n    \"de\": \"Deutsch (German)\",\n    \"dv\": \"ދިވެހި (Dhivehi)\",\n    \"el-GR\": \"Ελληνικά, Ελλάδα (Greek, Greece)\",\n    \"en\": \"English\",\n    \"eo\": \"Esperanto\",\n    \"es\": \"Español (Spanish)\",\n    \"et\": \"Eesti (Estonian)\",\n    \"eu\": \"Euskara (Basque)\",\n    \"fa-IR\": \"فارسی, ایران (Persian, Iran)\",\n    \"fi\": \"Suomi (Finnish)\",\n    \"fil\": \"Filipino\",\n    \"fr\": \"Français (French)\",\n    \"ga\": \"Gaeilge (Irish)\",\n    \"gl\": \"Galego (Galician)\",\n    \"he\": \"עברית (Hebrew)\",\n    \"hr\": \"Hrvatski (Croatian)\",\n    \"hu\": \"Magyar (Hungarian)\",\n    \"ia\": \"Interlingua\",\n    \"id\": \"Indonesia (Indonesian)\",\n    \"it\": \"Italiano (Italian)\",\n    \"ja\": \"日本語 (Japanese)\",\n    \"ko\": \"한국어 (Korean)\",\n    \"lt\": \"Lietuvių (Lithuanian)\",\n    \"lv\": \"Latviešu (Latvian)\",\n    \"ml\": \"മലയാളം (Malayalam)\",\n    \"ms\": \"Melayu (Malay)\",\n    \"nb-NO\": \"Norsk bokmål, Norge (Norwegian bokmål, Norway)\",\n    \"nl\": \"Nederlands (Dutch)\",\n    \"nl-BE\": \"Nederlands, België (Dutch, Belgium)\",\n    \"oc\": \"Occitan\",\n    \"pa\": \"ਪੰਜਾਬੀ (Punjabi)\",\n    \"pap\": \"Papiamento\",\n    \"pl\": \"Polski (Polish)\",\n    \"pt\": \"Português (Portuguese)\",\n    \"pt-BR\": \"Português, Brasil (Portuguese, Brazil)\",\n    \"ro\": \"Română (Romanian)\",\n    \"ru\": \"Русский (Russian)\",\n    \"si\": \"සිංහල (Sinhala)\",\n    \"sk\": \"Slovenčina (Slovak)\",\n    \"sl\": \"Slovenščina (Slovenian)\",\n    \"sr\": \"Српски (Serbian)\",\n    \"sv\": \"Svenska (Swedish)\",\n    \"szl\": \"Ślōnski (Silesian)\",\n    \"ta\": \"தமிழ் (Tamil)\",\n    \"te\": \"తెలుగు (Telugu)\",\n    \"th\": \"ไทย (Thai)\",\n    \"tr\": \"Türkçe (Turkish)\",\n    \"tt\": \"Татар (Tatar)\",\n    \"uk\": \"Українська (Ukrainian)\",\n    \"vi\": \"Tiếng việt (Vietnamese)\",\n    \"zh-HK\": \"中文, 中國香港特別行政區 (Chinese, Hong Kong SAR China)\",\n    \"zh-Hans-CN\": \"中文, 中国 (Chinese, China)\",\n    \"zh-Hant-TW\": \"中文, 台灣 (Chinese, Taiwan)\"\n  },\n  \"plugins\": [\n    {\n      \"enabled\": true,\n      \"name\": \"calculator\"\n    },\n    {\n      \"enabled\": true,\n      \"name\": \"self_info\"\n    },\n    {\n      \"enabled\": true,\n      \"name\": \"time_zone\"\n    },\n    {\n      \"enabled\": false,\n      \"name\": \"tor_check\"\n    },\n    {\n      \"enabled\": false,\n      \"name\": \"infiniteScroll\"\n    },\n    {\n      \"enabled\": true,\n      \"name\": \"unit_converter\"\n    },\n    {\n      \"enabled\": true,\n      \"name\": \"hash_plugin\"\n    },\n    {\n      \"enabled\": false,\n      \"name\": \"oa_doi_rewrite\"\n    },\n    {\n      \"enabled\": true,\n      \"name\": \"tracker_url_remover\"\n    }\n  ],\n  \"engines\": {\n    \"enabled\": [\n      \"1337x\",\n      \"1x\",\n      \"360search\",\n      \"360search videos\",\n      \"500px\",\n      \"9gag\",\n      \"abcnyheter\",\n      \"acfun\",\n      \"adobe stock\",\n      \"adobe stock audio\",\n      \"adobe stock video\",\n      \"alpine linux packages\",\n      \"anaconda\",\n      \"annas archive\",\n      \"ansa\",\n      \"aol\",\n      \"aol images\",\n      \"aol videos\",\n      \"apk mirror\",\n      \"apple app store\",\n      \"apple maps\",\n      \"arch linux wiki\",\n      \"artic\",\n      \"artstation\",\n      \"arxiv\",\n      \"askubuntu\",\n      \"ayo\",\n      \"baidu\",\n      \"baidu images\",\n      \"baidu kaifa\",\n      \"bandcamp\",\n      \"bilibili\",\n      \"bing\",\n      \"bing images\",\n      \"bing news\",\n      \"bing videos\",\n      \"bitbucket\",\n      \"bitchute\",\n      \"boardreader\",\n      \"bpb\",\n      \"brave\",\n      \"brave.images\",\n      \"brave.news\",\n      \"brave.videos\",\n      \"bt4g\",\n      \"btdigg\",\n      \"cachy os packages\",\n      \"caddy.community\",\n      \"cara\",\n      \"chefkoch\",\n      \"codeberg\",\n      \"crates.io\",\n      \"crossref\",\n      \"crowdview\",\n      \"currency\",\n      \"dailymotion\",\n      \"ddg definitions\",\n      \"deezer\",\n      \"destatis\",\n      \"deviantart\",\n      \"devicons\",\n      \"dictzone\",\n      \"discuss.python\",\n      \"docker hub\",\n      \"dogpile\",\n      \"dogpile images\",\n      \"dogpile news\",\n      \"dogpile videos\",\n      \"duckduckgo\",\n      \"duckduckgo images\",\n      \"duckduckgo news\",\n      \"duckduckgo videos\",\n      \"duckduckgo weather\",\n      \"duckduckgo web\",\n      \"duden\",\n      \"emojipedia\",\n      \"encyclosearch\",\n      \"erowid\",\n      \"etymonline\",\n      \"fastbot\",\n      \"fdroid\",\n      \"findthatmeme\",\n      \"fireball\",\n      \"fireball news\",\n      \"fireball videos\",\n      \"flaticon\",\n      \"flickr\",\n      \"free software directory\",\n      \"frinkiac\",\n      \"fynd\",\n      \"fyyd\",\n      \"gabanza\",\n      \"geizhals\",\n      \"genius\",\n      \"gentoo\",\n      \"gitea.com\",\n      \"github\",\n      \"gitlab\",\n      \"gmx\",\n      \"goodreads\",\n      \"google\",\n      \"google images\",\n      \"google news\",\n      \"google play apps\",\n      \"google play movies\",\n      \"google scholar\",\n      \"google videos\",\n      \"habrahabr\",\n      \"hackernews\",\n      \"hex\",\n      \"hoogle\",\n      \"huggingface\",\n      \"huggingface datasets\",\n      \"huggingface spaces\",\n      \"il post\",\n      \"imdb\",\n      \"imgur\",\n      \"ina\",\n      \"infospace\",\n      \"ipernity\",\n      \"iqiyi\",\n      \"jisho\",\n      \"kickass\",\n      \"lemmy comments\",\n      \"lemmy communities\",\n      \"lemmy posts\",\n      \"lemmy users\",\n      \"lib.rs\",\n      \"library genesis\",\n      \"library of congress\",\n      \"lingva\",\n      \"lobste.rs\",\n      \"lucide\",\n      \"mankier\",\n      \"mastodon hashtags\",\n      \"mastodon users\",\n      \"material icons\",\n      \"mdn\",\n      \"media.ccc.de\",\n      \"mediathekviewweb\",\n      \"metacpan\",\n      \"microsoft learn\",\n      \"minecraft wiki\",\n      \"mixcloud\",\n      \"mojeek\",\n      \"mojeek images\",\n      \"mojeek news\",\n      \"moviepilot\",\n      \"mozhi\",\n      \"mwmbl\",\n      \"mymemory translated\",\n      \"national vulnerability database\",\n      \"naver\",\n      \"naver images\",\n      \"naver news\",\n      \"naver videos\",\n      \"niconico\",\n      \"nixos wiki\",\n      \"npm\",\n      \"nyaa\",\n      \"odysee\",\n      \"ollama\",\n      \"openairedatasets\",\n      \"openairepublications\",\n      \"openalex\",\n      \"openlibrary\",\n      \"openmeteo\",\n      \"openrepos\",\n      \"openstreetmap\",\n      \"openverse\",\n      \"packagist\",\n      \"pdbe\",\n      \"peertube\",\n      \"pexels\",\n      \"photon\",\n      \"pi-hole.community\",\n      \"pinterest\",\n      \"piratebay\",\n      \"pixabay images\",\n      \"pixabay videos\",\n      \"pkg.go.dev\",\n      \"podchaser\",\n      \"presearch\",\n      \"presearch images\",\n      \"presearch news\",\n      \"presearch videos\",\n      \"privacywall\",\n      \"privacywall images\",\n      \"privacywall videos\",\n      \"pub.dev\",\n      \"public domain image archive\",\n      \"pubmed\",\n      \"pypi\",\n      \"quark\",\n      \"quark images\",\n      \"qwant\",\n      \"qwant images\",\n      \"qwant news\",\n      \"qwant videos\",\n      \"radio browser\",\n      \"reddit\",\n      \"reloado\",\n      \"resulthunter\",\n      \"resulthunter images\",\n      \"reuters\",\n      \"rottentomatoes\",\n      \"rubygems\",\n      \"rumble\",\n      \"searchch\",\n      \"searchmysite\",\n      \"searchtoday\",\n      \"selfhst icons\",\n      \"semantic scholar\",\n      \"senscritique\",\n      \"sepiasearch\",\n      \"seznam\",\n      \"sogou\",\n      \"sogou images\",\n      \"sogou videos\",\n      \"sogou wechat\",\n      \"solidtorrents\",\n      \"soundcloud\",\n      \"sourcehut\",\n      \"stackoverflow\",\n      \"startpage\",\n      \"startpage images\",\n      \"startpage news\",\n      \"steam\",\n      \"superuser\",\n      \"tagesschau\",\n      \"tineye\",\n      \"tmdb\",\n      \"tokyotoshokan\",\n      \"tootfinder\",\n      \"unsplash\",\n      \"uxwing\",\n      \"vimeo\",\n      \"voidlinux\",\n      \"vuhuv\",\n      \"vuhuv images\",\n      \"vuhuv videos\",\n      \"wiby\",\n      \"wikibooks\",\n      \"wikicommons.audio\",\n      \"wikicommons.files\",\n      \"wikicommons.images\",\n      \"wikicommons.videos\",\n      \"wikidata\",\n      \"wikimini\",\n      \"wikinews\",\n      \"wikipedia\",\n      \"wikiquote\",\n      \"wikisource\",\n      \"wikispecies\",\n      \"wikiversity\",\n      \"wikivoyage\",\n      \"wiktionary\",\n      \"wolframalpha\",\n      \"wordnik\",\n      \"woxikon.de synonyme\",\n      \"wttr.in\",\n      \"yacy\",\n      \"yacy images\",\n      \"yahoo\",\n      \"yandex\",\n      \"yandex images\",\n      \"yandex music\",\n      \"yep\",\n      \"youtube\",\n      \"zapmeta\"\n    ]\n  }\n}\n<dcp-message-id>m0078</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

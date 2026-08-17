@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1785090971402,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Сэр использует herdr.dev терминал. Определи в какой он оболочке и как лучше сделать обёртку для iulita.\n\n1. Определи текущий shell сэра:\n```bash\necho $SHELL\necho $0\nwhoami\necho $HOME\n```\n\n2. Есть ли ~/.bashrc, ~/.bash_profile, ~/.profile, ~/.zshrc?\n```bash\nls -la ~/.bashrc ~/.bash_profile ~/.profile ~/.zshrc 2>/dev/null\n```\n\n3. Где и как определяется ANTHROPIC_API_KEY?\n```bash\ngrep -r \"ANTHROPIC_API_KEY\" ~/.bashrc ~/.bash_profile ~/.profile ~/.zshrc ~/.config/fish/secrets.fish ~/.config/fish/config.fish ~/.config/environment.d/ 2>/dev/null | head -10\n```\n\n4. Создай универсальный скрипт-обёртку вместо fish-функции:\n```bash\nsudo mv /usr/local/bin/iulita /usr/local/bin/iulita-bin\n```\n\n5. Создай скрипт-обёртку /usr/local/bin/iulita:\n```bash\nsudo tee /usr/local/bin/iulita << 'ENDOFFILE'\n#!/bin/sh\n# Iulita wrapper — запуск без ANTHROPIC переменных (нужны для nekofree)\nexec env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita-bin \"$@\"\nENDOFFILE\nsudo chmod +x /usr/local/bin/iulita\n```\n\n6. Проверь:\n```bash\nwhich iulita\nls -la /usr/local/bin/iulita*\n/usr/local/bin/iulita --version\n```\n\n7. Если в ~/.bash_profile или ~/.profile есть ANTHROPIC_API_KEY — сообщи об этом.\n\nВерни полный вывод.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

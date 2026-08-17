@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1785090781579,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Добавь fish-функцию для запуска Iulita без переменных ANTHROPIC.\n\nПроверь что оболочка fish:\n```bash\necho $SHELL\nwhich fish\n```\n\nДобавь в ~/.config/fish/config.fish (или создай если нет) функцию, которая запускает Iulita без ANTHROPIC_API_KEY и ANTHROPIC_BASE_URL:\n\n```bash\n# Iulita wrapper — запуск без переменных ANTHROPIC (нужны для nekofree)\nfunction iulita\n    env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita $argv\nend\n```\n\nКоманды:\n```bash\n# Создай директорию если нет\nmkdir -p ~/.config/fish\n\n# Добавь функцию в конец config.fish\ncat >> ~/.config/fish/config.fish << 'ENDOFFISH'\n\n# Iulita wrapper — запуск без переменных ANTHROPIC (нужны для nekofree)\nfunction iulita\n    env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita $argv\nend\nENDOFFISH\n```\n\nПроверь что добавлено:\n```bash\ntail -10 ~/.config/fish/config.fish\n```\n\nТакже проверь что сама функция работает:\n```bash\nenv ANTHROPIC_API_KEY=test env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita --version 2>&1\n```\n\nВерни вывод всех команд.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

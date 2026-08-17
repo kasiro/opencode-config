@@ -1,0 +1,86 @@
+[
+  {
+    "role": "user",
+    "time": 1784796534518,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are a research sub-agent. Today is 2026-07-23.\n\nResearch context: We are investigating alternative techniques for controlling LLM behavior without embedding markup/tags in the prompt. Audience is technical AI engineers. Date: 2026-07-23.\n\nYour ONLY task — research this single angle, nothing else:\nActivation steering / representation engineering (steering vectors, sparse autoencoders, probing classifiers that control model internals rather than inputs) AND LoRA adapters for different behavioral profiles (switching adapters at inference time for different constraints/styles) AND classifier-based guardrails (separate model that checks/validates output, preventing undesired generations).\n\nRules:\n1. Run up to 6 web searches. Start with 2-3 differently-phrased queries in parallel; refine based on what comes back. Prefer primary sources (official docs, papers, original announcements) over aggregators and SEO farms.\n2. WebFetch the 3-6 most promising results to read actual content. Do not cite a page you did not fetch.\n3. Judge each source: official/primary > reputable media/peer-reviewed > forums/blogs > content farms. Discard low-quality sources rather than citing them.\n4. Extract findings as information-dense claims: include exact entities, numbers, dates, versions. One claim per finding.\n5. Write your findings to /home/kasiro/research/llm-control-alt/findings/F5.md in EXACTLY this format:\n\n# F5: Activation steering, LoRA adapters & classifier guardrails\n\n## Findings\n\n### [1] <one-sentence claim>\n- quote: \"<short verbatim supporting quote>\"\n- url: <source URL>\n- source_type: primary | secondary | community\n- published: <date if known, else unknown>\n- confidence: high | medium | low\n\n### [2] ...\n\n## Dead ends\n- <queries or sources that yielded nothing useful, one line each>\n\n## Suggested follow-ups\n- <at most 3 narrower questions worth a deeper look, or \"none\">\n\n6. Aim for 5-12 findings. Depth beats breadth: 6 solid sourced claims beat 15 vague ones.\n7. If the angle turns out unanswerable or results are thin, still write the file with whatever you found and say so under Dead ends.\n\nReturn to the orchestrator ONLY:\n- 3-5 line summary of your strongest findings\n- the file path you wrote\n- number of findings and your overall confidence\nDo NOT return raw page content or the full findings list.\n\n<dcp-message-id>m0084</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0084</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784796534578,
+    "tokens": {
+      "input": 778,
+      "output": 223,
+      "reasoning": 52,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to research activation steering, LoRA adapters for behavioral profiles, and classifier-based guardrails for LLM behavior control. Let me start with parallel web searches on these topics.\n\nLet me run 3 parallel searches to cover the three angles."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_A78rWGnfmfCIx5Snw2lp6722",
+        "status": "completed",
+        "input": {
+          "query": "activation steering representation engineering steering vectors LLM control 2025 2026",
+          "num_results": 10
+        },
+        "output": "Title: Get directions and show routes in Google Maps\nDescription: Important: To keep yourself and others safe, stay aware of your surroundings when you use directions on Google Maps. When in …\nURL: https://support.google.com/maps/answer/144339?hl=en-GB&co=GENIE.Platform%3DDesktop\nRelevance Score: 1.000\n\nTitle: Use navigation in Google Maps - Android - Google Maps Help\nDescription: Use navigation in Google Maps To get easy, turn-by-turn navigation to places, use the Google Maps app. Maps shows you directions …\nURL: https://support.google.com/maps/answer/3273406?hl=en-GB&co=GENIE.Platform%3DAndroid\nRelevance Score: 0.500\n\nTitle: Google Maps - Reddit\nDescription: The difference between google maps and earth is pretty significant all of a sudden. Cost savings? Different image source? Google …\nURL: https://www.reddit.com/r/GoogleMaps/\nRelevance Score: 0.333\n\nTitle: Google Street View Finds - Reddit\nDescription: Find a strange/weird/inspiring/disturbing/downright hysterical image captured on Google Street View? Post it here!\nURL: https://www.reddit.com/r/googlestreetviewfinds/\nRelevance Score: 0.250\n\nTitle: Create Google Maps links based on coordinates - Stack Overflow\nDescription: Jan 21, 2024 · The currently accepted answer ends up adding an additional history entry in browsers at the moment as Google Maps …\nURL: https://stackoverflow.com/questions/30544268/create-google-maps-links-based-on-coordinates\nRelevance Score: 0.200\n\nTitle: Google Maps shows \"For development purposes only\"\nDescription: Now google maps is free for development only. If you want to use map free like earlier, then create an account with valid details …\nURL: https://stackoverflow.com/questions/50977913/google-maps-shows-for-development-purposes-only\nRelevance Score: 0.167\n\nTitle: Obtener indicaciones y mostrar rutas en Google Maps\nDescription: Con Google Maps, puedes obtener indicaciones para ir a un sitio en coche, en transporte público, a pie, en transporte compartido, en …\nURL: https://support.google.com/maps/answer/144339?hl=es&co=GENIE.Platform%3DDesktop\nRelevance Score: 0.143\n\nTitle: I'm done - Google Maps has become unusable : r/GoogleMaps - Reddit\nDescription: Mar 21, 2024 · I'm done - Google Maps has become unusable Pretty much ever since I've had a phone with GPS I've used Google …\nURL: https://www.reddit.com/r/GoogleMaps/comments/1bk6oyr/im_done_google_maps_has_become_unusable/\nRelevance Score: 0.125\n\nTitle: What parameters should I use in a Google Maps URL to go to a lat-lon ...\nDescription: In May 2017 Google announced the Google Maps URLs API that allows to construct universal cross-platform links. Now you can …\nURL: https://stackoverflow.com/questions/2660201/what-parameters-should-i-use-in-a-google-maps-url-to-go-to-a-lat-lon\nRelevance Score: 0.111\n\nTitle: Google Maps Help\nDescription: Official Google Maps Help Center where you can find tips and tutorials on using Google Maps and other answers to frequently asked …\nURL: https://support.google.com/maps/?hl=en-GB\nRelevance Score: 0.100\n<dcp-message-id>m0088</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_qJxvbCka9Tp3kYDBxa6z0453",
+        "status": "completed",
+        "input": {
+          "query": "LoRA adapters switching behavioral profiles inference time LLM safety constraints",
+          "num_results": 10
+        },
+        "output": "Title: Blancheporte | Mode, Lingerie & Linge de Maison\nDescription: 1 day ago · Blancheporte, la marque de vêtements femme et décoration maison pour toutes celles qui aiment la mode et embellir leur intérieur à petit prix !\nURL: https://www.blancheporte.fr/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 1.000\n\nTitle: Vêtements Femme : Mode Femme à bas prix | Blancheporte\nDescription: Toute la nouvelle collection Mode Femme à petits prix sur Blancheporte ️ Un large choix de vêtements femme tendance pour remplir votre dressing.\nURL: https://www.blancheporte.fr/fr_FR/c/femme/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.500\n\nTitle: Vêtements Homme Pas Cher Habit Homme | Blancheporte\nDescription: Vêtements homme Envie de renouveler votre penderie ou tout simplement d’ajouter une pièce tendance à votre dressing ? Blancheporte vous présente sa...\nURL: https://www.blancheporte.fr/fr_FR/c/homme/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.333\n\nTitle: Identification\nDescription: Vêtements Femme, Linge de Maison, Grande Taille : Qualité & Petits Prix – Blancheporte\nURL: https://www.blancheporte.fr/fr_FR/Login-Show?rurl=1&msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.250\n\nTitle: Pantalons Femme Pas Cher - Blancheporte\nDescription: Pantalon femme Envie d’un nouveau pantalon à la fois flatteur, confortable et pratique ? Découvrez la collection Blancheporte pour toutes les femmes : quelle que soit votre morphologie, quels que soient …\nURL: https://www.blancheporte.fr/fr_FR/c/femme/univers-femme/toute-la-mode-femme/pantalon/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.200\n\nTitle: Panier & commande par référence - Blancheporte\nDescription: Vêtements Femme, Linge de Maison, Grande Taille : Qualité & Petits Prix – Blancheporte\nURL: https://www.blancheporte.fr/fr_FR/Cart-Show?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.167\n\nTitle: Robes Femme : été ou hiver - Mi-longue, Longue ou Courte\nDescription: Découvrez une collection variée de robes pour femme avec des couleurs, motifs et coupes pour tous les goûts chez Blancheporte.\nURL: https://www.blancheporte.fr/fr_FR/c/femme/univers-femme/toute-la-mode-femme/robe/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.143\n\nTitle: Linge de maison, Linge de lit & Décoration Nouvelle ... - Blancheporte\nDescription: Textile et déco pour votre maison de qualité à petits prix. Linge de lit, housses, linge de toilette, rideaux, et bien plus encore. ️ Satisfaits ou remboursés\nURL: https://www.blancheporte.fr/fr_FR/c/maison/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.125\n\nTitle: Manches Longues ou courtes Pas Cher - Blancheporte\nDescription: Découvrez les chemises femme à petits prix sur Blancheporte.fr. ️ Manches courtes ou longues, ils accompagneront tous vos looks.\nURL: https://www.blancheporte.fr/fr_FR/c/femme/univers-femme/toute-la-mode-femme/chemisier-et-tunique/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.111\n\nTitle: Lingerie pour femme de qualité à petits prix | Blancheporte\nDescription: Blancheporte signe une vaste collection de lingerie pour toutes les femmes. À la recherche de confort, d’élégance ou bien de séduction, de lingerie sculptante, gainante ou invisible sous les vêtements ? …\nURL: https://www.blancheporte.fr/fr_FR/c/lingerie/?msockid=2f63f2a715cf622e1a9ce538148363f9\nRelevance Score: 0.100\n<dcp-message-id>m0088</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_CeHeErZfVf6enHkDylWg5927",
+        "status": "completed",
+        "input": {
+          "query": "classifier-based guardrails LLM output validation separate model safety filtering 2025",
+          "num_results": 10
+        },
+        "output": "Title: Best Disneyland Quick Service Restaurants 2025. We've Tried All.\nDescription: Jan 9, 2025 · Our list ranks Disneyland quick service restaurants including top theme park favorites and all the best menu items.\nURL: https://mickeyvisit.com/best-disneyland-quick-service-restaurants/\nRelevance Score: 1.000\n\nTitle: My Top 9 Quick Service Restaurants at Disneyland - Mouse Hacking\nDescription: Mar 26, 2026 · In this post, I’m taking a look at my favorite quick service restaurants at Disneyland. Read on to see what makes the list! This post discusses my favorite quick service dining options at …\nURL: https://www.mousehacking.com/blog/best-quick-service-restaurants-at-disneyland\nRelevance Score: 0.500\n\nTitle: Top 10 Disneyland Counter Service Restaurants\nDescription: 3 days ago · Looking for the best counter service restaurants at Disneyland for an inexpensive and quick meal? We cover our 10 favorite dining options in California's castle park, offering entree and dessert …\nURL: https://www.disneytouristblog.com/best-disneyland-counter-service-restaurants/\nRelevance Score: 0.333\n\nTitle: Best Disneyland Restaurants RANKED 2026. We've Tried All\nDescription: Jan 2, 2026 · Our ranking to all the best Disneyland restaurants includes the best table and quick service spots in Disneyland Park, Disney California Adventure, Downtown Disney, and all the …\nURL: https://mickeyvisit.com/best-disneyland-restaurants/\nRelevance Score: 0.250\n\nTitle: Best Disneyland Quick-Service Restaurants - Undercover Tourist\nDescription: Feb 10, 2026 · Every trip, we like to hop over to one of our favorite Disneyland quick-service restaurants to grab a bite of tasty food. Here are our picks.\nURL: https://www.undercovertourist.com/blog/best-disneyland-quick-service-restaurants/\nRelevance Score: 0.200\n\nTitle: Quick-Service Restaurants at Disneyland: A Complete List\nDescription: Oct 30, 2024 · Discover all of the quick-service restaurants at Disneyland, from the parks to the resort's hotels to Downtown Disney, in this complete list.\nURL: https://dadsguidetowdw.com/quick-service-restaurants-disneyland\nRelevance Score: 0.167\n\nTitle: Dining - Disneyland\nDescription: Fantasmic! Dining Packages. Good Boy! Grocers.\nURL: https://disneyland.disney.go.com/dining/?msockid=1941f3c071ee6c6b3befe45f70786d0a\nRelevance Score: 0.143\n\nTitle: 14 Best Quick Service Restaurants at Disneyland Park\nDescription: 6 days ago · From sit-down quality meals at counter-service prices to cheap, portable eats, read on as we break down the best quick-service restaurants Disneyland has to offer.\nURL: https://www.parksavers.com/14-best-quick-service-restaurants-at-disneyland-park/\nRelevance Score: 0.125\n\nTitle: The Complete List of All the Restaurants at Disneyland (45 Restaurants)\nDescription: Mar 20, 2026 · My favorite list of all the restaurants at Disneyland with tips, must-eats, hidden gems, and where to sit down or snack on the go.\nURL: https://disneyparknerds.com/list-of-all-the-restaurants-at-disneyland/\nRelevance Score: 0.111\n\nTitle: Disneyland Resort Dining Guide: Every Restaurant by Park & Hotel\nDescription: Disneyland Resort has 96 restaurants, lounges, snack stands, and bars across 2 theme parks, 1 dining district, 3 resort hotels. Table-service restaurants generally take reservations in advance and fill …\nURL: https://disneyblog.com/food/disneyland-resort/\nRelevance Score: 0.100\n<dcp-message-id>m0088</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

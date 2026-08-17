@@ -1,0 +1,226 @@
+[
+  {
+    "role": "user",
+    "time": 1784801873600,
+    "parts": [
+      {
+        "type": "text",
+        "text": "изучи сколько стоит сиделка на дому по уходу за пожилыми людьми в Новосибирске в день/месяц/час\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nSkill search trigger: this is the first user query in the session.\nYou should call skill_search before starting the task.\nFirst rewrite the request as a Skill Query containing action, input, output, and audience when available.\nDescribe the required capability and final deliverable; treat file types such as CSV as inputs, not automatically as the target skill.\nOffice examples:\n- Excel/CSV: analyze or clean data, work with formulas and tables, or create charts and workbooks.\n- PowerPoint/PPT: create, revise, or review a presentation or executive deck.\n- Word/DOCX: draft, edit, review, or format a document or report.\n- PDF: extract or review content, generate a PDF, or preserve and inspect page layout.\nCode examples: code review, debugging, test generation, security or performance analysis, frontend design, and other specialized engineering workflows.\nFor example, \"analyze gender_submission.csv\" should express data analysis as the capability, the CSV dataset as input, and findings as output.\nThese are examples of likely specialized workflows, not requirements to call a tool.\n</system-reminder>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_07184b14fffeXSwf4onuhMG259/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_07184b14fffeXSwf4onuhMG259/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784801873627,
+    "tokens": {
+      "input": 58049,
+      "output": 32,
+      "reasoning": 48,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants to research the cost of home caregivers (сиделки) for elderly care in Novosibirsk, Russia, with prices per day/month/hour.\n\nLet me first search for a relevant skill, then do the research."
+      },
+      {
+        "type": "tool",
+        "tool": "skill_search",
+        "callID": "call_d84f0bde41a04cd8846a4f37",
+        "status": "completed",
+        "input": {
+          "query": "research pricing services caregiver elderly care Novosibirsk"
+        },
+        "output": "{\n  \"status\": \"matched\",\n  \"results\": [\n    {\n      \"skill_id\": \"mcp-builder\",\n      \"name\": \"mcp-builder\",\n      \"score\": 0.6,\n      \"reason\": \"The skill description matches these query terms: service.\"\n    },\n    {\n      \"skill_id\": \"smithery-ai-cli\",\n      \"name\": \"smithery-ai-cli\",\n      \"score\": 0.4658,\n      \"reason\": \"The skill description matches these query terms: service.\"\n    },\n    {\n      \"skill_id\": \"deep-research\",\n      \"name\": \"deep-research\",\n      \"score\": 0.4069,\n      \"reason\": \"The skill description matches these query terms: research.\"\n    }\n  ],\n  \"loaded_skill_id\": null\n}\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "status": "matched",
+          "loadedSkillID": null,
+          "truncated": false
+        },
+        "title": "Found 3 skills"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784801889555,
+    "tokens": {
+      "input": 37454,
+      "output": 160,
+      "reasoning": 24,
+      "cache": {
+        "write": 0,
+        "read": 20480
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "No exact skill match. Let me just do a web search for this information - it's a straightforward pricing research task."
+      },
+      {
+        "type": "text",
+        "text": "Принял задачу, сэр. Исследую цены на сиделок в Новосибирске."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_b6b82617188b494992952f28",
+        "status": "completed",
+        "input": {
+          "query": "сиделка на дому уход за пожилыми Новосибирск цены стоимость в час день месяц 2025 2026",
+          "num_results": 10
+        },
+        "output": "Title: Datenträgerverwaltung in Windows | Microsoft Support\nDescription: Öffnen Sie die Datenträgerverwaltung: Sie können die Datenträgerverwaltung auf verschiedene Arten öffnen: Startmenü (empfohlen): …\nURL: https://support.microsoft.com/de-DE/Windows/Experience/Storage-FileManagement/disk-management-in-windows\nRelevance Score: 1.000\n\nTitle: сиделка в Новосибирске - цены и отзывы | Услуги на Авито | Поиск ...\nDescription: 71 объявление об услугах по сиделка в Новосибирске. На Авито вы можете заказать услуги сиделка и других специалистов по низким ценам.\nURL: https://www.avito.ru/novosibirsk/predlozheniya_uslug/nyani_sidelki-ASgBAgICAUSYC6ifAQ?q=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0\nRelevance Score: 1.000\n\nTitle: Windows 10: Datenträgerverwaltung öffnen - so geht's - CHIP\nDescription: May 29, 2024 · Mit nur zwei Klicks öffnen Sie die Datenträgerverwaltung in Windows 10: Klicken Sie mit der rechten Maustaste unten …\nURL: https://www.chip.de/ratgeber/software/windows-10-datentraegerverwaltung-oeffnen-so-geht-s_6e19e087-ac34-4348-852f-f2f6c6534470.html\nRelevance Score: 0.500\n\nTitle: Сиделка для пожилого человека - Агентство сиделок Новосибирск «Добрые люди»\nDescription: Доступная цена услуг сиделки для пожилых людей, которая рассчитывается индивидуально, в зависимости от списка обязанностей и степени занятости.\nURL: https://sidelkansk.ru/service/uxod-za-pozhilyimi\nRelevance Score: 0.500\n\nTitle: Windows 11: Datenträgerverwaltung schnell öffnen - So geht's\nDescription: Feb 26, 2024 · Suchen Sie nach der Datenträgerverwaltung und klicken Sie auf diese. Danach wird die Datenträgerverwaltung …\nURL: https://www.chip.de/ratgeber/software/windows-11-datentraegerverwaltung-schnell-oeffnen-so-geht-s_803f18e1-8a61-4a91-8cea-8af9d9699d0b.html\nRelevance Score: 0.333\n\nTitle: Сиделка для Пожилого Человека в Новосибирске - цены за месяц, час\nDescription: Нужна ответственная сиделка для пожилого человека? На YouHelp вы найдете проверенных специалистов с медицинским образованием и опытом работы. Начните поиск прямо сейчас!\nURL: https://youhelp.ru/novosibirsk/nurse-for-the-elderly/\nRelevance Score: 0.333\n\nTitle: Datenträgerverwaltung Windows 11 | Partitionen & Laufwerke\nDescription: Oct 2, 2025 · Wie öffne ich die Datenträgerverwaltung in Windows 11? Der schnellste Weg führt über das Startmenü. Gib einfach …\nURL: https://www.win-tipps.de/datentraegerverwaltung-windows-11/\nRelevance Score: 0.250\n\nTitle: Няни, сиделки в Новосибирске | Услуги на Авито\nDescription: На Авито вы можете заказать услуги опытных нянь для детей разных возрастов, сиделок для пожилых людей с проживанием или без, а также посмотреть отзывы, договориться о цене и вызвать нужных ...\nURL: https://www.avito.ru/novosibirsk/predlozheniya_uslug/nyani_sidelki-ASgBAgICAUSYC6ifAQ\nRelevance Score: 0.250\n\nTitle: Datenträgerverwaltung in Windows | Partitionen einfach verwalten\nDescription: Oct 27, 2025 · Die meisten Nutzer öffnen das Tool mit dem Shortcut Windows-Taste + X → Datenträgerverwaltung, oder durch die …\nURL: https://www.win-tipps.de/datentraegerverwaltung-windows/\nRelevance Score: 0.200\n\nTitle: Уход за пожилыми людьми в Новосибирске: 109 сиделок со средним ...\nDescription: Наша компания занимается подбором сиделок и младшего медицинского персонала для работы - как на дому, так и в условиях стационаров.\nURL: https://uslugi.yandex.ru/65-novosibirsk/category?text=%D1%83%D1%85%D0%BE%D0%B4+%D0%B7%D0%B0+%D0%BF%D0%BE%D0%B6%D0%B8%D0%BB%D1%8B%D0%BC%D0%B8+%D0%BB%D1%8E%D0%B4%D1%8C%D0%BC%D0%B8\nRelevance Score: 0.200\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_4c672feaacd046f6a709045f",
+        "status": "completed",
+        "input": {
+          "query": "сиделка Новосибирск прайс стоимость услуг почасовая посуточная",
+          "num_results": 10
+        },
+        "output": "Title: 0xk1h0/ChatGPT_DAN: ChatGPT DAN, Jailbreaks prompt - GitHub\nDescription: ChatGPT DAN, Jailbreaks prompt. Contribute to 0xk1h0/ChatGPT_DAN development by creating an account on GitHub.\nURL: https://github.com/0xk1h0/ChatGPT_DAN\nRelevance Score: 1.000\n\nTitle: Сиделка почасовая в Новосибирске: 121 сиделка со средним рейтингом 4.9 ...\nDescription: Сиделка почасовая в Новосибирске, онлайн запись — выбирайте лучших специалистов и организации по ценам, рейтингам и отзывам на Яндекс Услугах.\nURL: https://uslugi.yandex.ru/65-novosibirsk/category?text=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0+%D0%BF%D0%BE%D1%87%D0%B0%D1%81%D0%BE%D0%B2%D0%B0%D1%8F\nRelevance Score: 1.000\n\nTitle: Download GitHub Desktop\nDescription: Simple collaboration from your desktop Download GitHub Desktop Focus on what matters instead of fighting with Git. Whether you're new to Git or a seasoned user, GitHub Desktop simplifies your …\nURL: https://desktop.github.com/download/\nRelevance Score: 0.500\n\nTitle: Прайс: Сиделка почасово Новосибирск - Цены, стоимость работ - Vusluge.ru\nDescription: Сиделка почасово в г.Новосибирск. Частные объявления сиделок (без посредников) в Новосибирске. Актуальные прайсы от проверенных специалистов.\nURL: https://novosibirsk.vusluge.ru/prices/sidelka-pochasovo\nRelevance Score: 0.500\n\nTitle: Orangetheory Fitness - Reddit\nDescription: The unofficial community for anyone interested in Orangetheory Fitness. Come here to discuss the workouts, the results, and get help from your fellow OTFers. We are operated and moderated by …\nURL: https://www.reddit.com/r/orangetheory/\nRelevance Score: 0.333\n\nTitle: сиделка в Новосибирске - цены и отзывы | Услуги на Авито | Поиск ...\nDescription: На Авито вы можете заказать услуги сиделка и других специалистов по низким ценам. А также посмотреть отзывы и фотографии работ, договориться о цене и объеме услуг.\nURL: https://www.avito.ru/novosibirsk/predlozheniya_uslug/nyani_sidelki-ASgBAgICAUSYC6ifAQ?q=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0\nRelevance Score: 0.333\n\nTitle: 登录Chatgpt时出现了Unable to load site这样的提示。友友们我该怎么 …\nDescription: ChatGPT使用指南 我从ChatGPT开始面世就一直在用，带给我最大的感受就是能降低我大概30%的工作量，我还记得前几天宕机的时候，大批网友直呼塌了，可见影响之深远。\nURL: https://www.zhihu.com/question/614217718\nRelevance Score: 0.250\n\nTitle: сиделка почасовая - Няни, сиделки в Новосибирске | Услуги на Авито\nDescription: Предлагаю услуги няни в Новосибирске. Стоимость от 320 рублей за час. От одного часа до круглосуточного режима. На вашей территории с моим фотоотчетом (наблюдать можете он-лайн через Viber).\nURL: https://www.avito.ru/novosibirsk/predlozheniya_uslug/nyani_sidelki-ASgBAgICAUSYC6ifAQ?q=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0+%D0%BF%D0%BE%D1%87%D0%B0%D1%81%D0%BE%D0%B2%D0%B0%D1%8F\nRelevance Score: 0.250\n\nTitle: ChatGPT getting very slow with long conversations. - Reddit\nDescription: Jun 2, 2023 · I have a few conversations with ChatGPT that have lasted several months. I can get pretty engrossed, and there is a lot of history built up in these conversations. The problem is, the page …\nURL: https://www.reddit.com/r/ChatGPT/comments/13yrmuu/chatgpt_getting_very_slow_with_long_conversations/\nRelevance Score: 0.200\n\nTitle: Главная - Агентство сиделок Новосибирск «Добрые люди»\nDescription: Как производить оплату за услугу по подбору сиделки: кому, куда и сколько? Сиделке выплачиваются деньги на руки по факту выполненных работ, а в компанию вносится предоплата в течение двух часов после того, как сиделка приступит к работе.\nURL: https://sidelkansk.ru/\nRelevance Score: 0.200\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784801920276,
+    "tokens": {
+      "input": 3333,
+      "output": 131,
+      "reasoning": 21,
+      "cache": {
+        "write": 0,
+        "read": 57984
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Good, I found several relevant sources. Let me fetch the most relevant ones to get actual pricing data."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_web_url_read",
+        "callID": "call_31297bc965a54fc29b995e29",
+        "status": "completed",
+        "input": {
+          "url": "https://sidelkansk.ru/service/uxod-za-pozhilyimi"
+        },
+        "output": " \n\nМеню\n\n[ ![Логотип](/images/common/dobrye-ludi-logo-new1.png) ](/) \n\n[+7 (383) 375-31-81](tel:+7 %28383%29 375-31-81) \n\n[![](/assets/tpl_2018/img/teleg-svg1.svg)](https://telegram.im/@Dobrieludi%5Fbot) [![](/assets/tpl_2018/img/vk-icon-1.png)](https://vk.com/sidelkansk) [![](/assets/tpl_2018/img/max-icon-1.svg)](https://max.ru/id667000443232%5Fbot) \n\nг. Новосибирск, Вокзальная магистраль, 16, офис 403\n\n[Заказать сиделку](https://form.typeform.com/to/rMjXzN) [Стать сиделкой](https://max.ru/id667000443232%5Fbot) [Заказать звонок](#callback) \n\n* [Главная](/)\n* [Прайс-лист](/prais-list)\n* [База сиделок](/nashi-sidelki)\n* [О компании](/o-kompanii)\n* [Услуги](/service/uslgsd1)![](/images/common/nav-arrow.svg)  \n  * [Услуги сиделки](/service/uslgsd1)![](/images/common/nav-arrow.svg)  \n    * [Сиделка на дом](/service/uslugi-sidelki)\n    * [Сиделка для пожилого человека](/service/uxod-za-pozhilyimi)\n    * [Сиделка для больного](/service/uxod-za-bolnyimi)\n    * [Сиделка в больницу](/service/sidelka-v-bolniczu)\n    * [Сиделки для лежачего больного](/service/sidelki-dlya-lezhachego-bolnogo)\n    * [Сиделки для инвалида](/service/sidelka-dlya-invalida)\n    * [Сиделка с проживанием](/service/sidelka-s-prozhivaniem)\n  * [Школа ухода](/service/shkola-uxoda-1)\n  * [Занятия Школы ухода](/service/shkola-uxoda)\n  * [Семейный юрист](/service/semejnyij-yurist)\n* [Вакансии](/vacancy)![](/images/common/nav-arrow.svg)\n* [Оплата](/oplata)\n* [Вопросы и ответы](/voprosyi-i-otvetyi)\n* [Франшиза](/franshiza)\n* [Контакты](/contacts)\n\n[ ![Логотип](/images/common/dobrye-ludi-logo-new1.png) ](/) \n\nг. Новосибирск, Вокзальная магистраль, 16, офис 403\n\n[+7 (383) 375-31-81](tel:+7 %28383%29 375-31-81) [+7 (383) 375-31-81](tel:+7 %28383%29 375-31-81) \n\n[![](/assets/tpl_2018/img/teleg-svg1.svg)](https://telegram.im/@Dobrieludi%5Fbot) [![](/assets/tpl_2018/img/vk-icon-1.png)](https://vk.com/sidelkansk) [![](/assets/tpl_2018/img/max-icon-1.svg)](https://max.ru/id667000443232%5Fbot) \n\n[![](/assets/tpl_2018/img/teleg-svg1.svg)](https://telegram.im/@Dobrieludi%5Fbot) [![](/assets/tpl_2018/img/vk-icon-1.png)](https://vk.com/sidelkansk) [![](/assets/tpl_2018/img/max-icon-1.svg)](https://max.ru/id667000443232%5Fbot) \n\n[Заказать звонок](#callback) [Заказать сиделку](https://form.typeform.com/to/rMjXzN) [Стать сиделкой](https://max.ru/id667000443232%5Fbot) \n\n* [Главная](/)\n* [Прайс-лист](/prais-list)\n* [База сиделок](/nashi-sidelki)\n* [О компании](/o-kompanii)\n* [Услуги](/service/uslgsd1)![](/images/common/nav-arrow.svg)  \n  * [Услуги сиделки](/service/uslgsd1)![](/images/common/nav-arrow.svg)  \n    * [Сиделка на дом](/service/uslugi-sidelki)\n    * [Сиделка для пожилого человека](/service/uxod-za-pozhilyimi)\n    * [Сиделка для больного](/service/uxod-za-bolnyimi)\n    * [Сиделка в больницу](/service/sidelka-v-bolniczu)\n    * [Сиделки для лежачего больного](/service/sidelki-dlya-lezhachego-bolnogo)\n    * [Сиделки для инвалида](/service/sidelka-dlya-invalida)\n    * [Сиделка с проживанием](/service/sidelka-s-prozhivaniem)\n  * [Школа ухода](/service/shkola-uxoda-1)\n  * [Занятия Школы ухода](/service/shkola-uxoda)\n  * [Семейный юрист](/service/semejnyij-yurist)\n* [Вакансии](/vacancy)![](/images/common/nav-arrow.svg)\n* [Оплата](/oplata)\n* [Вопросы и ответы](/voprosyi-i-otvetyi)\n* [Франшиза](/franshiza)\n* [Контакты](/contacts)\n\n# Сиделка для пожилого человека\n\n[Заказать сиделку](https://dobrieludi.typeform.com/to/rMjXzN)\n\nЦентр социального обслуживания «Добрые люди» рад предложить услуги поиска **сиделки для пожилого человека в** **Новосибирске**. У нас собрана обширная база с надежными кандидатами, за каждого из которых мы готовы поручиться. Перед внесением в каталог сиделки проходят тщательную проверку службой безопасности, что подтверждает безупречную репутацию соискателей и правдивость указанной в анкетах информации.\n\n## Особенности ухода за пожилыми людьми\n\nС приходом старости многие **пожилые** люди частично или полностью утрачивают работоспособность и самостоятельность. С определенного момента **пожилого человека** не стоит надолго оставлять одного, поскольку он может нечаянно или неосознанно нанести себе вред.\n\nЛишь в исключительных случаях находится родственник, готовый полностью посвятить себя присмотру за пожилым человеком. Чаще происходит наоборот – ближайшие родственники среднего возраста при всем желании не могут отказаться от работы и прочих обязанностей в пользу ухода за престарелым близким. Конечно, можно обратиться к государственному **патронажному** соцработнику, но в таком случае приходится рассчитывать лишь на небольшую редкую помощь. Разумнее нанять сиделку для пожилого человека по доступной цене, воспользовавшись нашим сервисом.\n\n## Сиделки для пожилых людей: цены\n\n| Тариф: «Эконом»на дом      |             |          |           |  |\n| -------------------------- | ----------- | -------- | --------- |  |\n|                            | Объем часов | руб./час | руб./день |  |\n|                            | 2 часа      | 250      | 500       |  |\n|                            | 3 часа      | 183      | 550       |  |\n|                            | 4 часа      | 150      | 600       |  |\n|                            | 5 часов     | 175      | 700       |  |\n|                            | 6 часов     | 267      | 800       |  |\n|                            | 7 часов     | 213      | 850       |  |\n|                            | 8 часов     | 238      | 950       |  |\n|                            | 9 часов     | 250      | 1000      |  |\n|                            | 1+1 час     | 350      | 700       |  |\n|                            | 1,5+1,5 ч   | 250      | 750       |  |\n|                            | 2+2 часа    | 200      | 800       |  |\n|                            | 2+3 часа    | 170      | 850       |  |\n|                            | 3+3 часа    | 158      | 950       |  |\n|                            | 3+4 часа    | 143      | 1000      |  |\n|                            | 4+4 часа    | 138      | 1100      |  |\n|                            | 5+5 часов   | 125      | 1250      |  |\n|                            | 2+5 часов   | 143      | 1000      |  |\n|                            | 2+6 часов   | 138      | 1100      |  |\n| Минимальный заказ: 10 дней |             |          |           |  |\n\n### Сиделка для престарелых:\n\n* Будет находиться рядом с пожилым подопечным столько времени, сколько вам нужно, вплоть до круглосуточного проживания на **дому**.\n* Бесплатный подбор кандидатов и быстрая замена сиделки – в случае непредвиденной ситуации ваш близкий не останется без присмотра.\n* Доступная цена услуг сиделки для пожилых людей, которая рассчитывается индивидуально, в зависимости от списка обязанностей и степени занятости.\n\n| Тариф: «Комфорт»на дом          |          |           |           |            |            |            |  |\n| ------------------------------- | -------- | --------- | --------- | ---------- | ---------- | ---------- |  |\n|                                 | Дни/часы | руб./5 дн | руб./7 дн | руб./14 дн | руб./21 дн | руб./30 дн |  |\n|                                 | 6 часов  | 931       | 881       | 831        | 781        | 740        |  |\n|                                 | 7 часов  | 981       | 931       | 881        | 831        | 790        |  |\n|                                 | 8 часов  | 1081      | 1031      | 981        | 931        | 890        |  |\n|                                 | 9 часов  | 1131      | 1081      | 1031       | 981        | 940        |  |\n|                                 | 10 час   | 1284      | 1214      | 1164       | 1114       | 1040       |  |\n|                                 | 11 час   | 1334      | 1264      | 1214       | 1164       | 1090       |  |\n|                                 | 12 час   | 1384      | 1314      | 1264       | 1214       | 1140       |  |\n|                                 | Сутки    | 1840      | 1400      | 1350       | 1300       | 1250       |  |\n| Уход за мужчиной: +30 руб./день |          |           |           |            |            |            |  |\n\n## Найти сиделку для пожилого человека в Новосибирске\n\nПри подборе кандидата, чтобы нанять для пожилого человека, мы учитываем состояние здоровья, индивидуальные пожелания клиента, предполагаемый бюджет. Мы найдем сиделку рядом с вашим домом – так сиделка для престарелого будет в шаговой доступности к вам и в случае необходимости оперативно окажет помощь. Узнать примерную цену услуг сиделки для пожилого человека в Новосибирске вы можете в разделе с прайс-листом или у нашего менеджера.\n\n[Заказать сиделку](https://dobrieludi.typeform.com/to/rMjXzN)\n\nСиделки Новосибирск \n\nг. Новосибирск, г. Новосибирск, Вокзальная магистраль, 16, офис 403 \n\nТелефон: [+7 (383) 375-31-81](tel:+7 %28383%29 375-31-81)\n\n* [О компании](/o-kompanii)\n* [Прайс-лист](/prais-list)\n* [База сиделок](/nashi-sidelki)\n* [Вакансии](/vacancy)\n* [Оплата](/oplata)\n* [Политика персональных данных](/privacy)\n\n* [Услуги сиделки](/service/uslgsd1)\n* [Сиделка для пожилого человека](/service/uxod-za-pozhilyimi)\n* [Сиделка на дом](/service/sidelki-na-domu)\n* [Сиделка в больницу](/service/sidelka-v-bolniczu)\n* [Уход за больными](/service/uxod-za-bolnyimi)\n\n* [Сиделка для инвалида](/service/sidelka-dlya-invalida)\n* [Сиделка для лежачего больного](/service/sidelki-dlya-lezhachego-bolnogo)\n* [Сиделка с проживанием](/service/sidelki-s-prozhivaniem)\n* [Школа ухода](/service/shkola-uxoda-1)\n* [Книги по уходу](/service/shkola-uxoda)\n\nг. Новосибирск, Вокзальная магистраль, 16, офис 403\n\n[+7 (383) 375-31-81](tel:+7 %28383%29 375-31-81) [+7 (383) 375-31-81](tel:+7 %28383%29 375-31-81) \n\n[![](/assets/tpl_2018/img/max-icon-2.svg)](https://max.ru/id667000443232%5Fbot)\n\n[![](/assets/tpl_2018/img/vk-n.png)](https://vk.com/sidelkansk)\n\n[![](/assets/tpl_2018/img/ok-f.png)](https://ok.ru/dobrieludiru)\n\n[![](/assets/tpl_2018/img/you-n.png)](https://clck.ru/G7sDf)\n\nНа нашем сайте мы используем cookie файлы и рекомендательные алгоритмы. [Узнать подробнее.](/cookie-policy) \n\nПринять \n\nЗаказать обратный звонок\n\nВаше имя:\n\nТелефон:\n\nЭто поле должно содержать телефон в формате +7(123) 456-78-90 \n\nНажимая кнопку «Отправить», вы [соглашаетесь на обработку ваших персональных данных](/privacy). \n  \n  \nНажимая кнопку «Отправить», вы [соглашаетесь на обработку ваших персональных данных](/privacy). \n\n![Закрыть](/assets/tpl_2018/img/modal_window/error.png)\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_web_url_read",
+        "callID": "call_c7409110560a454aab23268f",
+        "status": "error",
+        "input": {
+          "url": "https://youhelp.ru/novosibirsk/nurse-for-the-elderly/"
+        },
+        "error": "MCP error -32603: 📄 Content Error: Website returned empty content. (https://youhelp.ru/novosibirsk/nurse-for-the-elderly/)"
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_web_url_read",
+        "callID": "call_421db8a52cfc459d94eed1d0",
+        "status": "completed",
+        "input": {
+          "url": "https://novosibirsk.vusluge.ru/prices/sidelka-pochasovo"
+        },
+        "output": " \n\n[![](/images/logo.svg)](https://novosibirsk.vusluge.ru/)\n\n* [Главная](https://novosibirsk.vusluge.ru/)\n* [Все категории](https://novosibirsk.vusluge.ru/all-category)\n* [Все прайсы](https://novosibirsk.vusluge.ru/all-price)\n* [Популярные услуги](https://novosibirsk.vusluge.ru/all-service)\n* [Другие города](https://novosibirsk.vusluge.ru/all-town)\n\n[Войти](/login-popup.html) [Стать специалистом](/register-popup.html) \n\n[![](/images/logo.svg)](https://novosibirsk.vusluge.ru/)\n\n# Прайс: Сиделка почасово Новосибирск - 680 руб / час\n\nСредння стоимость услуги \"Сиделка почасово\" от частных специалистов.\n\n## Частные объявления сиделок (без посредников) в Новосибирске\n\nДенис М.\n\n* Отзывов: 7\n* Рейтинг: 99%\n\n[Предложить работу](/login-popup.html) \n\nВасиль С.\n\n* Отзывов: 3\n* Рейтинг: 99%\n\n[Предложить работу](/login-popup.html) \n\nВалентина П.\n\n* Отзывов: 4\n* Рейтинг: 97%\n\n[Предложить работу](/login-popup.html) \n\nРуслан Д.\n\n* Отзывов: 246\n* Рейтинг: 96%\n\n[Предложить работу](/login-popup.html) \n\nБорис Б.\n\n* Отзывов: 11\n* Рейтинг: 96%\n\n[Предложить работу](/login-popup.html) \n\nАлексей З.\n\n* Отзывов: 161\n* Рейтинг: 95%\n\n[Предложить работу](/login-popup.html) \n\nВолодимир В.\n\n* Отзывов: 9\n* Рейтинг: 94%\n\n[Предложить работу](/login-popup.html) \n\nОльга М.\n\n* Отзывов: 16\n* Рейтинг: 93%\n\n[Предложить работу](/login-popup.html) \n\nАлександр Р.\n\n* Отзывов: 5\n* Рейтинг: 82%\n\n[Предложить работу](/login-popup.html) \n\nОлександр С.\n\n* Отзывов: 6\n* Рейтинг: 5%\n\n[Предложить работу](/login-popup.html) \n\n* ##### Специалистов в данной категории:  \n597\n\nКатегории \n\n* [Услуги сиделки](https://novosibirsk.vusluge.ru/prices/category/uslugi-sidelki)\n  * [Сад и огород](https://novosibirsk.vusluge.ru/prices/category/sad-i-ogorod)\n  * [Няни](https://novosibirsk.vusluge.ru/prices/category/nyanya-dlya-rebenka)\n  * [Услуги сиделки](https://novosibirsk.vusluge.ru/prices/category/uslugi-sidelki)\n  * [Услуги домработницы](https://novosibirsk.vusluge.ru/prices/category/uslugi-domrabotnicy)\n  * [Услуги швеи](https://novosibirsk.vusluge.ru/prices/category/uslugi-shvei)\n  * [Ремонт обуви](https://novosibirsk.vusluge.ru/prices/category/remont-obuvi)\n  * [Услуги повара](https://novosibirsk.vusluge.ru/prices/category/uslugi-povara)\n  * [Стирка и глажка вещей](https://novosibirsk.vusluge.ru/prices/category/stirka-glazhka)\n  * [Ремонт сумок](https://novosibirsk.vusluge.ru/prices/category/remont-sumok)\n  * [Покраска одежды](https://novosibirsk.vusluge.ru/prices/category/pokraska-odezhdy)\n  * [Ремонт велосипедов](https://novosibirsk.vusluge.ru/prices/category/remont-velosipedov)\n  * [Заточка инструментов](https://novosibirsk.vusluge.ru/prices/category/zatochka-instrumentov)\n  * [Ремонт ювелирных изделий](https://novosibirsk.vusluge.ru/prices/category/remont-yuvelirnyh-izdelij)\n  * [Ремонт часов](https://novosibirsk.vusluge.ru/prices/category/remont-chasov)\n  * [Другие бытовые услуги](https://novosibirsk.vusluge.ru/prices/category/drugie-bitovie-uslugi)\n\nЕще искали \n\n* [Сиделка без посредников](https://novosibirsk.vusluge.ru/tag/sidelka-bez-posrednikov)\n* [Наложить гипс на ногу](https://novosibirsk.vusluge.ru/tag/nalozhit-gips-na-nogu)\n* [Сиделка компаньонка от частного лица](https://novosibirsk.vusluge.ru/tag/sidelka-kompanonka-ot-chastnogo-litsa)\n* [Уход за больными](https://novosibirsk.vusluge.ru/tag/ukhod-za-bolnymi)\n* [Жена на час](https://novosibirsk.vusluge.ru/tag/zhena-na-chas)\n* [Уход за бабушкой](https://novosibirsk.vusluge.ru/tag/uhod-za-babushkoy)\n* [Сиделка на выходные дни](https://novosibirsk.vusluge.ru/tag/sidelka-na-vihodnie-dni)\n* [Рубка дров](https://novosibirsk.vusluge.ru/tag/rubka-drov)\n* [Обрезка деревьев](https://novosibirsk.vusluge.ru/tag/obrezka-derevev)\n* [Сиделки к психически больным](https://novosibirsk.vusluge.ru/tag/sidelki-k-psikhicheski-bolnym)\n* [Вскопать сотку](https://novosibirsk.vusluge.ru/tag/vskopat-sotku)\n* [Объявления сиделки от частных лиц](https://novosibirsk.vusluge.ru/tag/obyavleniya-sidelki-ot-chastnih-lits)\n* [Друг на час](https://novosibirsk.vusluge.ru/tag/drug-na-chas)\n* [Наложить гипс на руку](https://novosibirsk.vusluge.ru/tag/nalozhit-gips-na-ruku)\n* [Сколько стоит внутримышечный укол на дому ](https://novosibirsk.vusluge.ru/tag/delat-ukoli-na-domu)\n\nДругие города \n\n[Первоуральск](https://pervouralsk.vusluge.ru/prices/sidelka-pochasovo), [Соликамск](https://solikamsk.vusluge.ru/prices/sidelka-pochasovo), [Сочи](https://sochi.vusluge.ru/prices/sidelka-pochasovo), [Зеленоград](https://zelenograd.vusluge.ru/prices/sidelka-pochasovo), [Находка](https://nahodka.vusluge.ru/prices/sidelka-pochasovo), [Салават](https://salavat.vusluge.ru/prices/sidelka-pochasovo), [Нижний Тагил](https://nijniy-tagil.vusluge.ru/prices/sidelka-pochasovo), [Балахна](https://balahna.vusluge.ru/prices/sidelka-pochasovo), [Новочеркасск](https://novocherkassk.vusluge.ru/prices/sidelka-pochasovo), [Лыткарино](https://lytkarino.vusluge.ru/prices/sidelka-pochasovo), [Иркутск](https://irkutsk.vusluge.ru/prices/sidelka-pochasovo), [Курск](https://kursk.vusluge.ru/prices/sidelka-pochasovo), [Липецк](https://lipeck.vusluge.ru/prices/sidelka-pochasovo), [Стерлитамак](https://sterlitamak.vusluge.ru/prices/sidelka-pochasovo), [Рубцовск](https://rubcovsk.vusluge.ru/prices/sidelka-pochasovo) \n\nХотите выполнять заказы? \n\nПройдите регистрацию и присоединитесь к другим специалистам.\n\n[Стать специалистом](https://novosibirsk.vusluge.ru/register-popup.html) \n\n![](/images/logo.svg)\n\n© 2021-2026 Vusluge.ru\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784801931898,
+    "tokens": {
+      "input": 6476,
+      "output": 148,
+      "reasoning": 32,
+      "cache": {
+        "write": 0,
+        "read": 61312
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "I have good data from the \"Добрые люди\" agency. Let me also search for more pricing data from other sources to give a comprehensive picture."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_77f4aed8d75542a092c9937c",
+        "status": "completed",
+        "input": {
+          "num_results": 10,
+          "query": "сиделка Новосибирск стоимость круглосуточно с проживанием цена за сутки месяц 2025"
+        },
+        "output": "Title: 5 Star Campsite in Dordogne I Le Paradis in the Périgord Noir\nDescription: There is space and privacy for everyone at Le Paradis campsite. Your holiday will be spent in harmony with the surrounding …\nURL: https://le-paradis-campsite.com/\nRelevance Score: 1.000\n\nTitle: Стоимость услуг сиделок с проживанием - цена в Новосибирске в 2025 году\nDescription: Указаны актуальные цены для Новосибирска на основании 3 анкет. При заказе сиделки с проживанием можно указать комфортную для себя цену.\nURL: https://profi.ru/geo-nsk/domashnii_personal/sidelka-s-prozhivaniem/price/\nRelevance Score: 1.000\n\nTitle: Camping 5 étoiles en Dordogne | Le Paradis en Périgord noir\nDescription: Le Paradis, camping 5 étoiles en Dordogne Bienvenue dans la vallée de la Vézère, avec sa rivière aux airs d’Amazone et ses …\nURL: https://le-paradis.fr/\nRelevance Score: 0.500\n\nTitle: сиделка в Новосибирске - цены и отзывы | Услуги на Авито | Поиск ...\nDescription: 71 объявление об услугах по сиделка в Новосибирске. На Авито вы можете заказать услуги сиделка и других специалистов по низким ценам.\nURL: https://www.avito.ru/novosibirsk/predlozheniya_uslug/nyani_sidelki-ASgBAgICAUSYC6ifAQ?q=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0\nRelevance Score: 0.500\n\nTitle: Dordogne campsite by the river I Le Paradis 5-stars\nDescription: Swimming and luxury next to a river is possible in Dordogne! Le Paradis offers a wide choice of rentals and pitches at Saint Léon sur …\nURL: https://le-paradis-campsite.com/accommodation-by-the-river-saint-leon-sur-vezere/\nRelevance Score: 0.333\n\nTitle: Сиделки с проживанием в Новосибирске с отзывами и рекомендациями — цены ...\nDescription: Стоимость услуг сиделки с проживанием в Новосибирске зависит от нескольких факторов: состояния подопечного, объема задач, опыта специалиста и условий проживания.\nURL: https://opeca-doma.ru/nsk/sidelki/s-prozhivaniem\nRelevance Score: 0.333\n\nTitle: CAMPING LE PARADIS - Updated 2026 Reviews - Tripadvisor\nDescription: Camping Le Paradis is praised for offering excellent value with reasonably priced dining options and quality amenities, although some …\nURL: https://www.tripadvisor.co.uk/Hotel_Review-g2301679-d1444296-Reviews-Camping_Le_Paradis-Saint_Leon_sur_Vezere_Montignac_Lascaux_Dordogne_Nouvelle_Aquitain.html\nRelevance Score: 0.250\n\nTitle: сиделка проживанием - Няни, сиделки в Новосибирске | Услуги на Авито\nDescription: На Авито вы можете заказать услуги опытных нянь для детей разных возрастов, сиделок для пожилых людей с проживанием или без, а также посмотреть отзывы, договориться о цене и вызвать нужных ...\nURL: https://www.avito.ru/novosibirsk/predlozheniya_uslug/nyani_sidelki-ASgBAgICAUSYC6ifAQ?q=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0+%D0%BF%D1%80%D0%BE%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%D0%BC\nRelevance Score: 0.250\n\nTitle: 5-sterren camping in de Dordogne | Le Paradis in Périgord noir\nDescription: Op Camping Le Paradis geven we iedereen ruimte en privacy. U verblijft in harmonie met de omringende natuur, in de ambiance van …\nURL: https://camping-le-paradis.nl/\nRelevance Score: 0.200\n\nTitle: Сиделка с проживанием в Новосибирске: 95 сиделок со средним рейтингом 5 ...\nDescription: Услуга «Сиделки с проживанием» может стоить от 100 рублей. Всё зависит от задачи: расскажите, что случилось, и мастера сами расскажут о расценках, а вы выберете подходящий вариант.\nURL: https://uslugi.yandex.ru/65-novosibirsk/category?text=%D1%81%D0%B8%D0%B4%D0%B5%D0%BB%D0%BA%D0%B0+%D1%81+%D0%BF%D1%80%D0%BE%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%D0%BC\nRelevance Score: 0.200\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_0bd79ab31b7e4561a91c9819",
+        "status": "completed",
+        "input": {
+          "num_results": 10,
+          "query": "\"сиделка\" \"Новосибирск\" \"рублей\" \"сутки\" OR \"месяц\" OR \"час\" уход пожилые цены"
+        },
+        "output": "Title: Reebok® Official Site | Life is Not a Spectator Sport\nDescription: Discover Reebok’s iconic athletic shoes, apparel, and gear designed for performance, style, and comfort. Sign up for 15% off your first order, early access to new products. Free shipping on orders …\nURL: https://www.reebok.com/\nRelevance Score: 1.000\n\nTitle: Men's Sneakers, Activewear & Accessories | Reebok\nDescription: Discover Reebok's extensive collection of men's athletic shoes, activewear, and accessories. Find high-performance gear for the gym, trails, and street style.\nURL: https://www.reebok.com/collections/men?current=1\nRelevance Score: 0.500\n\nTitle: Women's Sneakers, Sportswear & Accessories | Reebok\nDescription: Shop Reebok's selection of women's sneakers, sportswear and accessories, made to move with you at the gym and on the go. Free shipping for members.\nURL: https://www.reebok.com/collections/women?current=1\nRelevance Score: 0.333\n\nTitle: Shoes, Clothing & Accessories on Sale | Reebok\nDescription: The Reebok Sale isn’t just about athletic gear—it’s about redefining your wardrobe with premium quality at affordable prices. Browse a wide selection of clothes & shoes on sale, including sports bras, …\nURL: https://www.reebok.com/collections/sale?current=1\nRelevance Score: 0.250\n\nTitle: Men's Shoes: Running, Training, Basketball & Walking – Reebok\nDescription: Shop men's shoes and sneakers at Reebok, designed to meet your fitness goals. From running to training to pickup basketball and more, find your pair today.\nURL: https://www.reebok.com/collections/mens-shoes?current=1\nRelevance Score: 0.200\n\nTitle: Products – Reebok\nDescription: Discover Reebok’s iconic athletic shoes, apparel, and gear designed for performance, style, and comfort. Sign up for 15% off your first order, early access to new products. Free shipping on orders …\nURL: https://www.reebok.com/collections/all?current=1\nRelevance Score: 0.167\n\nTitle: Nano X5 Shoes for Training – Reebok\nDescription: Shop Gym & Training Nano X5 from the Official Reebok Store. Designed for every occasion and offered in a variety of styles and colors.\nURL: https://www.reebok.com/collections/nano-x5?current=1\nRelevance Score: 0.143\n\nTitle: Men's Basketball Shoes – Reebok\nDescription: Dominate the court with Reebok's men's basketball footwear. Explore new arrivals and classic styles designed for superior performance, comfort, and durability.\nURL: https://www.reebok.com/collections/mens-basketball-shoes?current=1\nRelevance Score: 0.125\n\nTitle: Men's Shoes Sale: Sneakers, Slides & Athletic Footwear - Reebok\nDescription: Shop Men's Sale sneakers, basketball shoes, slides, & more. Shop Reebok markdowns on men's shoes. Check back often for the latest additions.\nURL: https://www.reebok.com/collections/mens-shoes-sale?current=1\nRelevance Score: 0.111\n\nTitle: Reebok Golf\nDescription: Reebok is teaming up with Bryson DeChambeau to be the official sponsor for clothing and shoes for DeChambeau and the team. This partnership is part of Reebok's return to sports and shows the …\nURL: https://www.reebok.com/pages/golf\nRelevance Score: 0.100\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,217 @@
+[
+  {
+    "role": "user",
+    "time": 1784794709785,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Research techniques for granular control in LLM prompts without switching modes. Approaches: (1) Instruction hierarchy — how to mark some instructions as absolute/overriding vs optional. (2) Probabilistic soft constraints. (3) Chain-of-thought with validation checkpoints. (4) Reflection/self-verification loops where the model checks strict parts and ignores soft parts. (5) Any existing frameworks for 'partial control' where the model knows which parts of the prompt are hard constraints vs guidelines. Search the web.\n\n<dcp-message-id>m0126</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0126</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794709798,
+    "tokens": {
+      "input": 353,
+      "output": 55,
+      "reasoning": 110,
+      "cache": {
+        "write": 0,
+        "read": 52096
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user is asking me to research techniques for granular control in LLM prompts without switching modes. They want me to search the web for several specific approaches. Let me use the web search tools to find current information about these topics.\n\nLet me run multiple searches in parallel covering the different aspects:\n1. Instruction hierarchy for LLM prompts\n2. Probabilistic soft constraints in LLM prompts\n3. Chain-of-thought with validation checkpoints\n4. Reflection/self-verification loops\n5. Partial control frameworks for hard vs soft constraints"
+      },
+      {
+        "type": "tool",
+        "tool": "skill_search",
+        "callID": "call_00_TAaYm7VclZuYSsIAp7lJ0392",
+        "status": "completed",
+        "input": {
+          "query": "web research granular control LLM prompts instruction hierarchy soft constraints frameworks"
+        },
+        "output": "{\n  \"status\": \"matched\",\n  \"results\": [\n    {\n      \"skill_id\": \"modern-web-guidance\",\n      \"name\": \"modern-web-guidance\",\n      \"score\": 0.6136,\n      \"reason\": \"The skill description matches these query terms: web, framework.\"\n    },\n    {\n      \"skill_id\": \"pc-control\",\n      \"name\": \"pc-control\",\n      \"score\": 0.5248,\n      \"reason\": \"The skill description matches these query terms: control.\"\n    },\n    {\n      \"skill_id\": \"loop\",\n      \"name\": \"loop\",\n      \"score\": 0.4552,\n      \"reason\": \"The skill description matches these query terms: prompt.\"\n    }\n  ],\n  \"loaded_skill_id\": null\n}\n<dcp-message-id>m0128</dcp-message-id>",
+        "metadata": {
+          "status": "matched",
+          "loadedSkillID": null,
+          "truncated": false
+        },
+        "title": "Found 3 skills"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794713386,
+    "tokens": {
+      "input": 203,
+      "output": 222,
+      "reasoning": 27,
+      "cache": {
+        "write": 0,
+        "read": 52608
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "No specific skill for this research task. I'll proceed with web searches directly to gather information about all the techniques mentioned by the user."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_CwCxz7EUuFwxOKqsOc7k0041",
+        "status": "completed",
+        "input": {
+          "query": "LLM prompt instruction hierarchy hard constraints absolute vs soft guidelines techniques 2024 2025"
+        },
+        "output": "Title: LLM — что это в IT и как работают языковые модели\nDescription: Jun 18, 2025 · Что такое LLM в программировании, какие задачи решают большие языковые модели и как они работают. Объясняем простыми словами, как устроены LLM-системы, в чём …\nURL: https://timeweb.cloud/blog/llm-chto-eto-v-programmirovanii\nRelevance Score: 1.000\n\nTitle: Большая языковая модель — Википедия\nDescription: Безопасность больших языковых моделей (LLM) представляет собой комплексную область исследований, посвященную анализу потенциальных рисков и разработке стратегий их …\nURL: https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%B0%D1%8F_%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2%D0%B0%D1%8F_%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C\nRelevance Score: 0.500\n\nTitle: Large language model - Wikipedia\nDescription: An LLM is given some examples where the \"assistant\" verbally breaks down the thought process before arriving at an answer. The LLM mimics these examples and also tries to spend some time generating …\nURL: https://en.wikipedia.org/wiki/Large_language_model\nRelevance Score: 0.333\n\nTitle: Large Language Model (LLM) - GeeksforGeeks\nDescription: May 2, 2026 · LLM Working of LLM LLMs are primarily based on the Transformer architecture which enables them to learn long range dependencies and contextual meaning in text. At a high level, they …\nURL: https://www.geeksforgeeks.org/artificial-intelligence/large-language-model-llm/\nRelevance Score: 0.250\n\nTitle: Раскрывая секреты LLM: руководство по основным понятиям …\nDescription: Dec 14, 2023 · С помощью LLM вы можете создавать тексты, которые автоматически обобщают длинные документы, исследовательские работы, заметки и статьи со встреч, делая …\nURL: https://habr.com/ru/articles/768844/\nRelevance Score: 0.200\n\nTitle: Все, что нужно знать для разработки с использованием LLM\nDescription: Nov 23, 2023 · Create a Clone of Yourself With a Fine-tuned LLM — моя статья, в которой я написал о сборе данных, использовании параметров и дал полезные советы по fine-tuning.\nURL: https://habr.com/ru/articles/775842/\nRelevance Score: 0.167\n\nTitle: LLM Arena: Бенчмарк LLM моделей на русском языке\nDescription: LLM Arena — это открытая краудсорсинговая платформа для оценки больших языковых моделей (LLM) на русском языке.\nURL: https://llmarena.ru/\nRelevance Score: 0.143\n\nTitle: 9 главных LLM 2026 года: какую модель брать под какую задачу\nDescription: May 3, 2026 · 9 главных LLM 2026 года: какую модель брать под какую задачу Полный разбор флагманов от OpenAI, Anthropic, Google и китайских вендоров — с ценами, бенчмарками и …\nURL: https://vc.ru/ai/2905428-luchshie-llm-dlya-zadach\nRelevance Score: 0.125\n\nTitle: LLM: что это такое, как работает большая языковая модель и зачем …\nDescription: May 19, 2025 · LLM — это аббревиатура от Large Language Model, что переводится как большая языковая модель. Это разновидность искусственного интеллекта, которая обучена понимать и …\nURL: https://kvan.tech/blog/articles/llm-chto-eto-takoe-kak-rabotaet-bolshaya-yazykovaya-model-i-zachem-ona-biznesu/\nRelevance Score: 0.111\n\nTitle: Что такое большие языковые модели (LLM)? | Microsoft Azure\nDescription: Узнайте, как большие языковые модели (LLM) понимают и генерируют естественный язык для разработки решений ИИ в различных вариантах использования.\nURL: https://azure.microsoft.com/ru-ru/resources/cloud-computing-dictionary/what-are-large-language-models-llms?msockid=098e4e6233bd690b38f759fd32826847\nRelevance Score: 0.100\n<dcp-message-id>m0131</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_3iyPj848PCeBgQ13t4Xk2719",
+        "status": "completed",
+        "input": {
+          "query": "probabilistic soft constraints LLM prompts partial control framework"
+        },
+        "output": "Title: Google Earth\nDescription: Google Earth lets you fly anywhere on Earth to view satellite imagery, maps, terrain and 3D buildings, from galaxies in outer space to …\nURL: https://maps.google.co.uk/intl/en_uk/earth/download/gep/agree.html\nRelevance Score: 1.000\n\nTitle: Google Earth\nDescription: Feature images and videos on your map to add rich contextual information. Make use of Google Earth's detailed globe by tilting the …\nURL: https://maps.google.co.uk/intl/en_uk/earth/\nRelevance Score: 0.500\n\nTitle: Earth Versions – Google Earth\nDescription: With Google Earth for Chrome, fly anywhere in seconds and explore hundreds of 3D cities directly in your browser. Roll the dice to …\nURL: https://maps.google.co.uk/intl/en_uk/earth/versions/\nRelevance Score: 0.333\n\nTitle: My Maps – About – Google Maps\nDescription: Discover the world with Google Maps. Experience Street View, 3D Mapping, turn-by-turn directions, indoor maps and more across …\nURL: https://maps.google.co.uk/intl/ALL_uk/maps/about/mymaps/\nRelevance Score: 0.250\n\nTitle: Street View photos come from two sources, Google and our contributors.\nDescription: Learn about what Street View is, where we've been and where we're going. To share Street View imagery, our engineering team is …\nURL: https://maps.google.co.uk/intl/en/streetview/explore/\nRelevance Score: 0.200\n\nTitle: Google Maps\nDescription: Explore and navigate the world with Google Maps, offering directions, real-time traffic updates, and Street View for a seamless travel …\nURL: https://maps.google.co.uk/mapfiles/home3.html\nRelevance Score: 0.167\n\nTitle: How Street View works and where we will collect images next - Google …\nDescription: Discover when, where and how we collect 360 imagery Meet Google's colourful Street View fleet and learn how we collect 360 …\nURL: https://maps.google.co.uk/intl/en/streetview/how-it-works/\nRelevance Score: 0.143\n\nTitle: Google Maps\nDescription: Discover places, get directions, and explore geographic information with Google Maps.\nURL: https://maps.google.co.uk/mapfiles/home2.html\nRelevance Score: 0.125\n\nTitle: Google Maps\nDescription: Explore maps, directions, and geographic information with Google Maps.\nURL: https://maps.google.co.uk/mapfiles//home3.html\nRelevance Score: 0.111\n\nTitle: Street View Treks: Grand Canyon – About – Google Maps\nDescription: Discover the world with Google Maps. Experience Street View, 3D Mapping, turn-by-turn directions, indoor maps and more across …\nURL: https://maps.google.co.uk/intl/en/maps/about/behind-the-scenes/streetview/treks/grand-canyon/\nRelevance Score: 0.100\n<dcp-message-id>m0131</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_XxF9JBFJvyJlBFKmcMwr4885",
+        "status": "completed",
+        "input": {
+          "query": "chain of thought validation checkpoints self-verification loop LLM prompt engineering"
+        },
+        "output": "Title: Chain — Stablecoin Infrastructure for Payments, Cards & Wallets\nDescription: Chain provides enterprises with direct connectivity to major banking networks, enabling seamless movement between stablecoins …\nURL: https://chain.com/\nRelevance Score: 1.000\n\nTitle: Latest Chainlink (LINK) News Update - CoinMarketCap\nDescription: 2 days ago · Each new blockchain integration increases the utility and indispensability of the Chainlink platform, creating deeper …\nURL: https://coinmarketcap.com/cmc-ai/chainlink/latest-updates/\nRelevance Score: 0.500\n\nTitle: Chainlink (@chainlink) / Posts / X\nDescription: Jun 19, 2013 · CCIP powers cross-chain token transfers using the Cross Chain Token (CCT) standard, enabling zero-slippage …\nURL: https://x.com/chainlink\nRelevance Score: 0.333\n\nTitle: Chainlink (Чейнлинк) (LINK) Цена, Графики, Рыночная …\nDescription: Цена Chainlink (Чейнлинк) в реальном времени сегодня составляет ₽679.73 RUB с суточным объемом торгов …\nURL: https://coinmarketcap.com/ru/currencies/chainlink/\nRelevance Score: 0.250\n\nTitle: Chains | Amazon.com\nDescription: 50ft Hanging Chain,304 Stainless Steel Chain, 1/16\" Jack Chain, Metal Chains are Customizable for Hanging Bird Feeders/Dog …\nURL: https://www.amazon.com/chains/b?node=16412351\nRelevance Score: 0.200\n\nTitle: Chainlink Documentation | Chainlink Documentation\nDescription: CRE Connect Verifiable on-chain events and gas-less, account-abstracted operations.\nURL: https://docs.chain.link/\nRelevance Score: 0.167\n\nTitle: Chains and Ropes, Bungees, Straps & Chains at B&Q\nDescription: Replace blind chains of plug chains with our bead chain or create extra security like fencing or security chain ready to use with a …\nURL: https://www.diy.com/departments/hardware/ropes-bungees-straps-chains/chains/DIY796654.cat?msockid=18f9568d085665cc0df2411209c66427\nRelevance Score: 0.143\n\nTitle: The Chain — Википедия\nDescription: «The Chain» был создан из комбинаций нескольких ранее отвергнутых материалов, включая сольные работы Линдси …\nURL: https://ru.wikipedia.org/wiki/The_Chain\nRelevance Score: 0.125\n\nTitle: Курс Chainlink — График LINK USD — TradingView\nDescription: Онлайн-график Chainlink — не упустите ни одного изменения цены. А ещё и торговые идеи, прогнозы, новости рынка.\nURL: https://ru.tradingview.com/symbols/LINKUSD/\nRelevance Score: 0.111\n\nTitle: Chain - Wikipedia\nDescription: They are known as roller chains, though there are also non-roller chains such as block chains. Two distinct chains can be connected …\nURL: https://en.m.wikipedia.org/wiki/Chain\nRelevance Score: 0.100\n<dcp-message-id>m0131</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_03_L5joXf0Hd3xSn2k4FxiX0641",
+        "status": "completed",
+        "input": {
+          "query": "LLM prompt hard constraints vs guidelines partial control frameworks granular control"
+        },
+        "output": "Title: LLM — что это в IT и как работают языковые модели\nDescription: Jun 18, 2025 · Что такое LLM в программировании, какие задачи решают большие языковые модели и как они работают. Объясняем простыми словами, как устроены LLM-системы, в чём …\nURL: https://timeweb.cloud/blog/llm-chto-eto-v-programmirovanii\nRelevance Score: 1.000\n\nTitle: Большая языковая модель — Википедия\nDescription: Безопасность больших языковых моделей (LLM) представляет собой комплексную область исследований, посвященную анализу потенциальных рисков и разработке стратегий их …\nURL: https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%B0%D1%8F_%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2%D0%B0%D1%8F_%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C\nRelevance Score: 0.500\n\nTitle: Large language model - Wikipedia\nDescription: An LLM is given some examples where the \"assistant\" verbally breaks down the thought process before arriving at an answer. The LLM mimics these examples and also tries to spend some time generating …\nURL: https://en.wikipedia.org/wiki/Large_language_model\nRelevance Score: 0.333\n\nTitle: Large Language Model (LLM) - GeeksforGeeks\nDescription: May 2, 2026 · LLM Working of LLM LLMs are primarily based on the Transformer architecture which enables them to learn long range dependencies and contextual meaning in text. At a high level, they …\nURL: https://www.geeksforgeeks.org/artificial-intelligence/large-language-model-llm/\nRelevance Score: 0.250\n\nTitle: Раскрывая секреты LLM: руководство по основным понятиям …\nDescription: Dec 14, 2023 · С помощью LLM вы можете создавать тексты, которые автоматически обобщают длинные документы, исследовательские работы, заметки и статьи со встреч, делая …\nURL: https://habr.com/ru/articles/768844/\nRelevance Score: 0.200\n\nTitle: Все, что нужно знать для разработки с использованием LLM\nDescription: Nov 23, 2023 · Create a Clone of Yourself With a Fine-tuned LLM — моя статья, в которой я написал о сборе данных, использовании параметров и дал полезные советы по fine-tuning.\nURL: https://habr.com/ru/articles/775842/\nRelevance Score: 0.167\n\nTitle: LLM Arena: Бенчмарк LLM моделей на русском языке\nDescription: LLM Arena — это открытая краудсорсинговая платформа для оценки больших языковых моделей (LLM) на русском языке.\nURL: https://llmarena.ru/\nRelevance Score: 0.143\n\nTitle: 9 главных LLM 2026 года: какую модель брать под какую задачу\nDescription: May 3, 2026 · 9 главных LLM 2026 года: какую модель брать под какую задачу Полный разбор флагманов от OpenAI, Anthropic, Google и китайских вендоров — с ценами, бенчмарками и …\nURL: https://vc.ru/ai/2905428-luchshie-llm-dlya-zadach\nRelevance Score: 0.125\n\nTitle: LLM: что это такое, как работает большая языковая модель и зачем …\nDescription: May 19, 2025 · LLM — это аббревиатура от Large Language Model, что переводится как большая языковая модель. Это разновидность искусственного интеллекта, которая обучена понимать и …\nURL: https://kvan.tech/blog/articles/llm-chto-eto-takoe-kak-rabotaet-bolshaya-yazykovaya-model-i-zachem-ona-biznesu/\nRelevance Score: 0.111\n\nTitle: Что такое большие языковые модели (LLM)? | Microsoft Azure\nDescription: Узнайте, как большие языковые модели (LLM) понимают и генерируют естественный язык для разработки решений ИИ в различных вариантах использования.\nURL: https://azure.microsoft.com/ru-ru/resources/cloud-computing-dictionary/what-are-large-language-models-llms?msockid=0eb2706b114a6a112fdf67f410da6b56\nRelevance Score: 0.100\n<dcp-message-id>m0131</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784794717916,
+    "tokens": {
+      "input": 3646,
+      "output": 239,
+      "reasoning": 25,
+      "cache": {
+        "write": 0,
+        "read": 52992
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The searches didn't return very relevant results. Let me try more specific searches in English, as the topic is quite technical."
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_00_XykxQHJ29YgJ6ztKXcPk0914",
+        "status": "completed",
+        "input": {
+          "query": "\"instruction hierarchy\" LLM prompt engineering hard constraints absolute rules vs soft guidelines 2024"
+        },
+        "output": "Title: İçeriğiniz ve YouTube Music - YouTube Yardım - Google Help\nDescription: Takipçileriniz, YouTube Music ile en sevdikleri parçaları, albümleri ve sanatçıları ücretsiz dinleyebilir. Ayrıca bu uygulamayı YouTube …\nURL: https://support.google.com/youtube/answer/6312991?hl=tr\nRelevance Score: 1.000\n\nTitle: Encuentra música y podcasts en YouTube Music\nDescription: Con YouTube Music, puedes escuchar la música y los podcasts que más te gustan. Descubre cómo explorar y encontrar música y …\nURL: https://support.google.com/youtube/answer/13401025?hl=es-us\nRelevance Score: 0.500\n\nTitle: 透過其他應用程式和裝置使用 YouTube Music\nDescription: YouTube Music 整合多種應用程式和服務，方便你隨時隨地享受優質聆聽體驗。歡迎閱讀以下說明，瞭解如何搭配其他服務使用 …\nURL: https://support.google.com/youtubemusic/answer/9231765?hl=zh-Hant&co=GENIE.Platform%3DDesktop\nRelevance Score: 0.333\n\nTitle: YouTube Music 是什麼？ - YouTube Music說明 - Google Help\nDescription: YouTube Music Premium 訂閱 YouTube Music Premium 後，就能使用上述所有功能。 此外，還可享有專屬會員福利，包括： 背景播 …\nURL: https://support.google.com/youtubemusic/answer/6313529?hl=zh-Hant\nRelevance Score: 0.250\n\nTitle: Customize your music & podcasts - YouTube Music Help - Google Help\nDescription: Customize your music & podcasts You can explore new music and podcasts and customize your listening experience with the …\nURL: https://support.google.com/youtubemusic/answer/6313542?hl=en\nRelevance Score: 0.200\n\nTitle: Transfer your playlists from another service - YouTube Music Help\nDescription: Transfer playlists from other music services You can import playlists, albums, artists and tracks from other music streaming services …\nURL: https://support.google.com/youtubemusic/answer/14729358?hl=en-GB\nRelevance Score: 0.167\n\nTitle: Importer de la musique dans votre bibliothèque YouTube Music\nDescription: Enregistrez votre collection musicale personnelle dans votre bibliothèque YouTube Music en important vos titres et vos albums. Une …\nURL: https://support.google.com/youtubemusic/answer/9716522?hl=fr\nRelevance Score: 0.143\n\nTitle: Listen to personal or custom mix - YouTube Music Help\nDescription: YouTube Music uses your recent top artists and songs to create a custom mix experience that’s featured on your channel page. Your …\nURL: https://support.google.com/youtubemusic/answer/15165061?hl=en\nRelevance Score: 0.125\n\nTitle: Encontrar músicas e podcasts no YouTube Music\nDescription: Os assinantes do YouTube Music Premium também podem acessar músicas, playlists e conteúdos baixados e reproduzidos …\nURL: https://support.google.com/youtubemusic/answer/13401025?hl=pt-BR\nRelevance Score: 0.111\n\nTitle: What is YouTube Music? - Google Help\nDescription: What is YouTube Music? With the YouTube Music app, you can watch music videos, stay connected to artists you love, and discover …\nURL: https://support.google.com/youtubemusic/answer/6313529?hl=en\nRelevance Score: 0.100\n<dcp-message-id>m0133</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_01_PWoLsWcMGpjgUl77kjiq5213",
+        "status": "completed",
+        "input": {
+          "query": "\"self-verification\" \"reflection\" LLM prompt chain of thought constraint enforcement techniques"
+        },
+        "output": "Title: Mobilioji programėlė – Atsiskaitykite už kurą telefonu - CRT Partner\nDescription: Atsiskaitykite už degalus be kortelės, raskite artimiausias degalines žemėlapyje ir stebėkite kuro kainas realiuoju laiku su CRT …\nURL: https://crtpartner.com/lt/mobile\nRelevance Score: 1.000\n\nTitle: Verslo kuro kortelės ir kuro valdymas - CRT Partner\nDescription: Visapusiški sprendimai transportui: kuro kortelės, kainų žemėlapis ir kelių mokesčiai. Efektyvus autoparko valdymas su CRT Partner.\nURL: https://crtpartner.com/lt/\nRelevance Score: 0.500\n\nTitle: CRT Partner - Apps on Google Play\nDescription: Jul 8, 2026 · Available in English, Polish, Russian and Lithuanian. Contact us at info@crtpartner.com and start using it today! Auto & …\nURL: https://play.google.com/store/apps/details?id=com.drivitty.truck.crtPartner&hl=en-US\nRelevance Score: 0.333\n\nTitle: SecureCRT - The rock-solid Telnet and SSH client for Windows, macOS ...\nDescription: SecureCRT provides secure remote access, file transfer, and data tunneling for everyone in your organization. Whether you are …\nURL: https://www.vandyke.com/products/securecrt/\nRelevance Score: 0.250\n\nTitle: Cyturus CRT - <Dev> Site\nDescription: Refreshed on: 07/16/26 8:02:40 PM\nURL: https://dev2.crtportal.com/Home/\nRelevance Score: 0.200\n\nTitle: ShaderGlass by mausimus - Itch.io\nDescription: Overlay applying retro shaders on top of Windows desktop and Wine. Check out README and Online Manual for detailed …\nURL: https://mausimus.itch.io/shaderglass\nRelevance Score: 0.167\n\nTitle: Retro CRT Television Simulator\nDescription: 📺 RetroVision CRT Simulator • Click POWER to turn on/off • Rotate CHANNEL knob to surf channels • Hit the TV if static gets bad! 👊 • …\nURL: https://crt-tv.berrry.app/\nRelevance Score: 0.143\n\nTitle: Download SecureCRT for Windows, Mac, and Linux - VanDyke\nDescription: Jul 1, 2026 · SecureCRT client for Windows, macOS, and Linux provides rock-solid terminal emulation for computing professionals. …\nURL: https://www.vandyke.com/cgi-bin/releases.php?product=securecrt\nRelevance Score: 0.125\n\nTitle: CRT Display Simulator - Berrry Computer\nDescription: Experience the nostalgic charm of old computer displays! Adjust the controls to see authentic CRT effects like scan lines, phosphor …\nURL: https://crt-display.berrry.app/\nRelevance Score: 0.111\n\nTitle: GitHub - Communist02/DesktopCRTFilter: A real-time CRT (Cathode …\nDescription: Dec 18, 2025 · A real-time CRT (Cathode Ray Tube) filter overlay application for Windows desktop. Apply authentic CRT effects like …\nURL: https://github.com/Communist02/DesktopCRTFilter\nRelevance Score: 0.100\n<dcp-message-id>m0133</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_02_B5voYLUbATtEFNiQSysW5265",
+        "status": "completed",
+        "input": {
+          "query": "Anthropic \"instruction hierarchy\" Constitutional AI Claude prompt constraints research paper"
+        },
+        "output": "Title: Home \\\\ Anthropic\nDescription: Anthropic is an AI safety and research company that's working to build reliable, interpretable, and steerable AI systems.\nURL: https://www.anthropic.com/\nRelevance Score: 1.000\n\nTitle: Company \\ Anthropic\nDescription: Anthropic is a Public Benefit Corporation, whose purpose is the responsible development and maintenance of advanced AI for the long-term benefit of humanity. Our Board of Directors is elected …\nURL: https://www.anthropic.com/company\nRelevance Score: 0.500\n\nTitle: Claude\nDescription: Claude is a next generation AI assistant built by Anthropic and trained to be safe, accurate, and secure to help you do your best work.\nURL: https://claude.com/\nRelevance Score: 0.333\n\nTitle: Anthropic — Википедия\nDescription: Anthropic специализируется на разработке общих систем искусственного интеллекта и языковых моделей, придерживаясь ответственного подхода к созданию и использования ИИ.\nURL: https://ru.wikipedia.org/wiki/Anthropic\nRelevance Score: 0.250\n\nTitle: Anthropic - Wikipedia\nDescription: In November, Nvidia and Microsoft were expected to invest up to $15 billion in Anthropic, and Anthropic said it would buy $30 billion of computing capacity from Microsoft Azure running on Nvidia AI systems.\nURL: https://en.wikipedia.org/wiki/Anthropic\nRelevance Score: 0.200\n\nTitle: The AI for Problem Solvers | Claude by Anthropic\nDescription: Claude is Anthropic's AI, built for problem solvers. Tackle complex challenges, analyze data, write code, and think through your hardest work.\nURL: https://claude.com/product/overview\nRelevance Score: 0.167\n\nTitle: Sign in - Claude\nDescription: By continuing, you acknowledge Anthropic’s Privacy Policy and agree to get occasional promotional emails and notifications.\nURL: https://claude.ai/\nRelevance Score: 0.143\n\nTitle: Официальные ресурсы Anthropic для старта с Claude: что стоит …\nDescription: 2 days ago · Официальные ресурсы Anthropic для старта с Claude: что стоит знать до курсов с YouTube Типичный путь новичка в Claude — YouTube, Instagram, разрозненные статьи.\nURL: https://vc.ru/ai/3038708-resursy-anthropic-dlya-izucheniya-claude\nRelevance Score: 0.125\n\nTitle: Claude AI: что умеет нейросеть Anthropic и ... - Habr\nDescription: Apr 24, 2026 · Claude — это семейство больших языковых моделей, разработанных компанией Anthropic. Компанию основали в 2021 году бывшие сотрудники OpenAI — в том числе Дарио …\nURL: https://habr.com/ru/companies/studyai/articles/1027572/\nRelevance Score: 0.111\n\nTitle: Anthropic - YouTube\nDescription: It can stay with complex tasks and hard problems for days, handling ambitious work across coding, research, analysis, finance, law, and beyond. Learn more: https://www.anthropic.com/news/claude...\nURL: https://www.youtube.com/@anthropic-ai\nRelevance Score: 0.100\n<dcp-message-id>m0133</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "searxng_searxng_web_search",
+        "callID": "call_03_mjiBz78nrnwpPQSjMvvt0058",
+        "status": "completed",
+        "input": {
+          "query": "\"partial control\" OR \"selective constraint\" LLM prompt framework \"hard constraints\" \"soft constraints\""
+        },
+        "output": "Title: All BLU Devices\nDescription: BLU Unlocked Android Device Collection\nURL: https://www.bluproducts.com/android-phones/\nRelevance Score: 1.000\n\nTitle: BLU Products | Bold Like Us\nDescription: BLU Products, founded in 2009, designs and manufacturers affordable, unlocked Android devices to suit a wide variety of consumer …\nURL: https://www.bluproducts.com/home/\nRelevance Score: 0.500\n\nTitle: All BLU phones - GSMArena.com\nDescription: BLU phones Popularity Time of release Compare Bold N3 G93 G73 G63 G53 G33 F92e G72 Max G52L Studio X5 Max Studio X5 …\nURL: https://www.gsmarena.com/blu-phones-67.php\nRelevance Score: 0.333\n\nTitle: Blu Mobile Phones: Latest & New Smartphones List (21st July 2026 ...\nDescription: 2 days ago · List of all Blu phones including latest, upcoming mobile phones from Blu smartphone brands. Also find Blu 5g …\nURL: https://www.gadgets360.com/mobiles/blu-phones\nRelevance Score: 0.250\n\nTitle: Blu Smartphones : Latest & New Smartphones List - Gadgets 360\nDescription: 8 hours ago · List of all the latest and new Blu smartphones. BLU Products is an American mobile phone manufacturer founded in …\nURL: https://www.gadgets360.com/mobiles/blu-smart-phones-supported\nRelevance Score: 0.200\n\nTitle: BLU Cell Phones & Smartphones for Sale - eBay\nDescription: Save Big on BLU Cell Phones & Smartphones and our wide variety of models like blu g 9, BLU Vivo XL, BLU Life One & more. Find …\nURL: https://www.ebay.com/b/BLU-Cell-Phones-Smartphones/9355/bn_119975740?msockid=13e7a897bab563a317f4bf08bb2562ae\nRelevance Score: 0.167\n\nTitle: BLU Phones - Detailed Specs of all smartphones\nDescription: All BLU phones: Discover the full specifications of all models - camera, display, battery, colors, price, dimensions, comparisons, …\nURL: https://phonesdata.com/en/smartphones/blu/\nRelevance Score: 0.143\n\nTitle: Amazon.com: BLU - Cell Phones: Cell Phones & Accessories\nDescription: Online shopping from a great selection at Cell Phones & Accessories Store.\nURL: https://www.amazon.com/Cell-Phones-BLU-Accessories/s?rh=n%3A7072561011%2Cp_89%3ABLU\nRelevance Score: 0.125\n\nTitle: The 10 Best BLU Phones As Of July 2026 - Phonerated.com\nDescription: 10 phones are featured in our latest best BLU phones as of July 2026 lineup, which starts with the BLU G90 Pro and the G90. Other …\nURL: https://www.phonerated.com/top-rated-best-blu-cell-phones-models\nRelevance Score: 0.111\n\nTitle: BLU Products - Wikipedia\nDescription: BLU Products (stylized as BLÜ) is an American company, headquartered in Miami. The name BLU stands for Bold Like Us. BLU has …\nURL: https://en.wikipedia.org/wiki/BLU_Products\nRelevance Score: 0.100\n<dcp-message-id>m0133</dcp-message-id>",
+        "metadata": {
+          "mcp": {
+            "isError": false
+          },
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

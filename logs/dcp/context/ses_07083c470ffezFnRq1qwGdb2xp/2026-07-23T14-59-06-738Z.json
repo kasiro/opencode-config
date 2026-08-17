@@ -1,0 +1,118 @@
+[
+  {
+    "role": "user",
+    "time": 1784818712010,
+    "parts": [
+      {
+        "type": "text",
+        "text": "найди для меня проекты на github: OpenCrabs и Garudust Agent\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784818712407,
+    "tokens": {
+      "input": 28841,
+      "output": 57,
+      "reasoning": 102,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Пользователь просит найти проекты на GitHub: \"OpenCrabs\" и \"Garudust Agent\". Это поиск на GitHub. Согласно моей архитектуре, я не ищу в интернете сам — я делегирую это general'у. Нужно загрузить skill github-api-search и делегировать поиск.\n\nДавайте сначала загружу github-api-search skill, а затем делегирую general'у поиск по обоим проектам."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, сейчас найду информацию по обоим проектам."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_TLqNbeXVBGzj7gc0qW289899",
+        "status": "completed",
+        "input": {
+          "name": "github-api-search"
+        },
+        "output": "<skill_content name=\"github-api-search\">\n# Skill: github-api-search\n\n# github-api-search — GitHub REST API через curl\n\n## Аутентификация\n- Без токена: 60 запросов/час\n- С токеном: 5000/час\n\n```bash\n# Как прочитать токен (из auth.json или переменной окружения)\nTOKEN=$(jq -r '.github.key // \"\"' ~/.local/share/opencode/auth.json 2>/dev/null || echo \"${GITHUB_TOKEN:-}\")\n[ -n \"$TOKEN\" ] && AUTH=\"-H 'Authorization: Bearer $TOKEN'\" || AUTH=\"\"\n```\n\n## Эндпоинты\n\n| Действие | URL | Описание |\n|----------|-----|----------|\n| Поиск репозиториев | `GET /search/repositories?q=...` | Поиск по имени, описанию, readme |\n| Инфо о репозитории | `GET /repos/{owner}/{repo}` | Звёзды, лицензия, темы, язык |\n| README | `GET /repos/{owner}/{repo}/readme` | README в base64 → декодировать |\n| Содержимое файла | `GET /repos/{owner}/{repo}/contents/{path}` | Любой файл из репозитория |\n| Поиск кода | `GET /search/code?q=...` | Поиск в коде репозиториев |\n| Релизы | `GET /repos/{owner}/{repo}/releases` | Список релизов с тегами |\n| Issues | `GET /repos/{owner}/{repo}/issues` | Открытые/закрытые issues |\n\n## Примеры\n\n### Поиск репозиториев\n```bash\ncurl -s \"https://api.github.com/search/repositories?q=telegram+mcp+server&sort=stars&order=desc&per_page=10\" | jq '[.items[] | {name: .full_name, stars: .stargazers_count, desc: .description}]'\n```\n\n### Информация о репозитории\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram\" | jq '{name: .full_name, stars: .stargazers_count, license: .license.spdx_id, topics: .topics}'\n```\n\n### README (декодировать base64)\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram/readme\" | jq -r '.content' | base64 -d\n```\n\n### Содержимое файла\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram/contents/package.json\" | jq -r '.content' | base64 -d\n```\n\n### Поиск кода\n```bash\ncurl -s \"https://api.github.com/search/code?q=mcp+telegram+in:name&per_page=10\" -H \"Accept: application/vnd.github+json\" | jq '[.items[] | {name: .name, repo: .repository.full_name, path: .path}]'\n```\n\n### Релизы\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram/releases?per_page=10\" | jq '[.[] | {tag: .tag_name, name: .name, prerelease: .prerelease, created: .created_at}]'\n```\n\n## Параметры запросов\n- `?q=` — поисковый запрос\n- `&sort=stars|updated|forks`\n- `&order=desc|asc`\n- `&per_page=N` (max 100)\n- `&page=N`\n- Квалификаторы: `in:name`, `in:description`, `in:readme`, `language:python`, `stars:>100`, `topic:mcp`\n\n## Обработка ошибок\n- **403** — rate limit (без токена 60/ч; с токеном 5000/ч)\n- **404** — репозиторий/файл не найден\n- **422** — неверный запрос\n- **401** — плохой токен\n\nПроверка HTTP кода:\n```bash\ncurl -s -o /dev/null -w \"%{http_code}\\n\" \"https://api.github.com/repos/mcp-telegram/mcp-telegram\"\n```\n\nПроверка rate limit:\n```bash\ncurl -s \"https://api.github.com/rate_limit\" | jq '.rate'\n```\n\nBase directory for this skill: /home/kasiro/.agents/skills/github-api-search\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n\n</skill_files>\n</skill_content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "name": "github-api-search",
+          "dir": "/home/kasiro/.agents/skills/github-api-search",
+          "truncated": false
+        },
+        "title": "Loaded skill: github-api-search"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784818718413,
+    "tokens": {
+      "input": 1196,
+      "output": 771,
+      "reasoning": 36,
+      "cache": {
+        "write": 0,
+        "read": 28928
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Теперь нужно делегировать general'у поиск обоих проектов на GitHub. Использую GitHub API через curl. Можно сделать оба поиска параллельно."
+      },
+      {
+        "type": "text",
+        "text": "Поищу оба проекта через GitHub API."
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_00_Q8LEN1aopiNzQDWtWBCa4351",
+        "status": "completed",
+        "input": {
+          "description": "Поиск OpenCrabs на GitHub",
+          "subagent_type": "general",
+          "prompt": "Найди репозиторий \"OpenCrabs\" на GitHub через API. Выполни:\n\n1. `curl -s \"https://api.github.com/search/repositories?q=OpenCrabs&sort=stars&order=desc&per_page=10\"` — поиск по всем репозиториям\n2. Если точного совпадения нет, попробуй `curl -s \"https://api.github.com/search/repositories?q=opencrabs&sort=stars&order=desc&per_page=5\"`\n3. Если найден — получи информацию: `curl -s \"https://api.github.com/repos/{owner}/{repo}\"` и README: `curl -s \"https://api.github.com/repos/{owner}/{repo}/readme\" | jq -r '.content // empty' | base64 -d 2>/dev/null`\n\nВерни структурированный ответ:\n- Название: полное имя репозитория\n- Автор/owner\n- Звёзды\n- Описание\n- Язык программирования\n- Лицензия\n- Основные темы/topics\n- Ссылка на репозиторий\n- Если не найден — так и напиши\n- README (кратко, первые 20 строк)"
+        },
+        "output": "<task id=\"ses_0708394cfffeBrfZlGShKr5r45\" state=\"completed\">\n<task_result>\nГотово. Вот полная информация.\n\n---\n\n## Результаты поиска «OpenCrabs»\n\n### Основной репозиторий (точное совпадение)\n\n| Поле | Значение |\n|------|----------|\n| **Название** | `adolfousier/opencrabs` |\n| **Автор** | [adolfousier](https://github.com/adolfousier) |\n| **Звёзды** | ⭐ **844** |\n| **Описание** | The all-in-one AI agent living in your terminal. Build landing, mobile apps, backends, manages files, deep research, schedule tasks and events. Self-improving, self-healing, fully autonomous. TUI, CLI and Daemon. Connect to your favorite channels. |\n| **Язык** | Rust |\n| **Лицензия** | MIT |\n| **Темы/topics** | `agent-orchestration`, `agentic-ai`, `agentic-framework`, `autonomous-agents`, `harness`, `harness-framework`, `open-source`, `opencrabs`, `orchestration-framework`, `recursive-self-improvement`, `rsi`, `self-healing`, `self-learning` |\n| **Ссылка** | https://github.com/adolfousier/opencrabs |\n| **Сайт** | https://opencrabs.com |\n| **Форки** | 89 |\n| **Open Issues** | 0 |\n| **Создан** | 2026-02-14 |\n| **Последний коммит** | 23 июля 2026 (сегодня) |\n\n### README (первые 20 строк)\n\n```\nOpenCrabs — The autonomous, self-improving AI agent.\nSingle Rust binary. Every channel.\n\nASCII-лого:\n    ___                    ___           _\n   / _ \\ _ __  ___ _ _    / __|_ _ __ _| |__  ___\n  | (_) | '_ \\/ -_) ' \\  | (__| '_/ _` | '_ \\(_-<\n   \\___/| .__/\\___|_||_|  \\___|_| \\__,_|_.__//__/\n        |_|\n\nИнспирирован Open Claw. Написан на Rust 2024 edition.\nИспользует Ratatui (TUI), Docker, CI.\n```\n\n---\n\n### Дополнительно: найденные репозитории в экосистеме OpenCrabs\n\nВ результатах поиска также обнаружились связанные проекты того же автора и экосистемы:\n\n| Репозиторий | Автор | Звёзды | Язык |\n|-------------|-------|--------|------|\n| `socialcrabs` | adolfousier | 68 | TypeScript |\n| `agentverse` | adolfousier | 50 | Rust |\n| `opencrabs.com` (landing) | adolfousier | 1 | Rust (Leptos) |\n| `crab-skill` | AlexAI-MCP | 16 | — |\n| `opencrab` (китайская локализация) | opencrab-cn | 2 | TypeScript |\n| `opencrab` (китайский AI-воркспейс) | opencrab-ai-com | 2 | TypeScript |\n| `opencrab` (форк-шутка) | yhz5613813 | 4 | — |\n\nОсновной репозиторий **opencrabs** от adolfousier — наиболее звёздный (844 ★), активно развивается, сегодня был pushed.\n</task_result>\n</task>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_07083c470ffezFnRq1qwGdb2xp",
+          "sessionId": "ses_0708394cfffeBrfZlGShKr5r45",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Поиск OpenCrabs на GitHub"
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_01_KYabeOzYGYrCJDA2DNuM4627",
+        "status": "completed",
+        "input": {
+          "description": "Поиск Garudust Agent на GitHub",
+          "subagent_type": "general",
+          "prompt": "Найди репозиторий \"Garudust Agent\" на GitHub через API. Выполни:\n\n1. `curl -s \"https://api.github.com/search/repositories?q=Garudust+Agent&sort=stars&order=desc&per_page=10\"` — поиск по полному имени\n2. Если не найден, попробуй `curl -s \"https://api.github.com/search/repositories?q=garudust+agent&sort=stars&order=desc&per_page=5\"`\n3. Также попробуй просто `curl -s \"https://api.github.com/search/repositories?q=garudust&sort=stars&order=desc&per_page=5\"`\n4. Если найден — получи информацию: `curl -s \"https://api.github.com/repos/{owner}/{repo}\"` и README: `curl -s \"https://api.github.com/repos/{owner}/{repo}/readme\" | jq -r '.content // empty' | base64 -d 2>/dev/null`\n\nВерни структурированный ответ:\n- Название: полное имя репозитория\n- Автор/owner\n- Звёзды\n- Описание\n- Язык программирования\n- Лицензия\n- Основные темы/topics\n- Ссылка на репозиторий\n- Если не найден — так и напиши\n- README (кратко, первые 20 строк)"
+        },
+        "output": "<task id=\"ses_070838d2effeOLn2db7JmIIyuR\" state=\"completed\">\n<task_result>\nВсё готово. Вот полная информация.\n\n---\n\n## Результаты поиска «Garudust Agent»\n\nРепозиторий **найден** — это основной проект организации `garudust-org`. Также нашёлся сопутствующий репозиторий `garudust-hub` (реестр инструментов и скиллов), но ниже данные по основному.\n\n---\n\n### Основной репозиторий: `garudust-org/garudust-agent`\n\n| Параметр | Значение |\n|----------|----------|\n| **Название** | `garudust-org/garudust-agent` |\n| **Автор/Owner** | `garudust-org` (Organization) |\n| **Звёзды** | ⭐ **25** |\n| **Форки** | 7 |\n| **Описание** | 🦅 Open-source AI agent runtime in Rust — Self-hostable with persistent memory, self-improving skills, MCP support, built-in cron, multi-platform messaging & production gateway. |\n| **Язык** | Rust |\n| **Лицензия** | MIT |\n| **Topics (15)** | `ai-agent`, `anthropic`, `cli`, `discord-bot`, `llm`, `mcp`, `ollama`, `openrouter`, `rag`, `rust`, `self-hosted`, `self-improvement`, `self-learning`, `telegram-bot`, `tui` |\n| **Домашняя страница** | https://garudust-org.github.io/garudust-agent/ |\n| **Создан** | 26 апреля 2026 |\n| **Последний коммит** | 13 июля 2026 |\n| **Open issues** | 10 |\n| **Ссылка** | https://github.com/garudust-org/garudust-agent |\n\n---\n\n### README (первые 20 строк)\n\n```\n<div align=\"center\">\n  <img src=\"assets/logo-agent.jpg\" alt=\"Garudust\"/>\n  <a href=\"README.md\">🇺🇸 English</a>\n  <a href=\"docs/i18n/th/README.md\">🇹🇭 ภาษาไทย</a>\n  <a href=\"docs/i18n/zh/README.md\">🇨🇳 简体中文</a>\n</div>\n\n# Garudust Agent\n\n[CI Status] [crates.io] [Downloads] [Release] [License: MIT] [Rust 1.87+] [Discord]\n\n**Your AI agent. Your server. Your rules.**\n```\n\nREADME доступен на трёх языках (английский, тайский, китайский). Судя по бейджам, пакет опубликован на crates.io, используется Rust 1.87+, есть CI и Discord-сообщество.\n\n---\n\n### Дополнительно: сопутствующий репозиторий\n\n| Параметр | Значение |\n|----------|----------|\n| **Название** | `garudust-org/garudust-hub` (1 звезда) |\n| **Описание** | Open registry of tools and skills for Garudust Agent — инструменты на Bash, Python, Node.js, Rust; скиллы в Markdown |\n| **Язык** | Python |\n| **Лицензия** | MIT |\n| **Ссылка** | https://github.com/garudust-org/garudust-hub |\n</task_result>\n</task>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_07083c470ffezFnRq1qwGdb2xp",
+          "sessionId": "ses_070838d2effeOLn2db7JmIIyuR",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Поиск Garudust Agent на GitHub"
+      }
+    ]
+  }
+]

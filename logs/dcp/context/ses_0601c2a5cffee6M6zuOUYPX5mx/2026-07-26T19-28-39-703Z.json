@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1785093936555,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Добавить доход за 25.07.2026:\n\n```bash\ncd /home/kasiro/.agents/skills/receipt-parser-fns/scripts\npython3 -c \"\nimport sqlite3, os\ndb = os.path.expanduser('~/.local/share/receipt-cache/receipts.db')\nconn = sqlite3.connect(db)\nconn.execute('INSERT INTO earnings (date, source, hours, rate, total, comment) VALUES (?, ?, ?, ?, ?, ?)',\n             ('2026-07-25', 'Добрянка', 10, 280, 2800, 'смена 12-22'))\nconn.commit()\n\nconn.row_factory = sqlite3.Row\nrows = conn.execute('SELECT * FROM earnings ORDER BY date').fetchall()\ntotal = 0\nfor r in rows:\n    print(f'{r[\\\"date\\\"]} | {r[\\\"source\\\"]:10s} | {r[\\\"total\\\"]:>7.0f}₽ | {r[\\\"comment\\\"]}')\n    total += r['total']\nprint(f'---')\nprint(f'ИТОГО: {total:.0f}₽')\nconn.close()\n\"\n```\n\nВерни весь вывод.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

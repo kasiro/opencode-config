@@ -1,0 +1,151 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4-flash-free",
+  "default_agent": "jarvis",
+  "share": "disabled",
+  "instructions": [
+    "~/.config/opencode/global-rules.md"
+  ],
+  "permission": {
+    "bash": {
+      "*find*": "deny",
+      "*grep*": "deny",
+      "*npm*": "deny",
+      "*sqlite*": "ask",
+      "*opencode*": "ask"
+    },
+    "glob": "deny",
+    "grep": "deny",
+    "websearch": "deny"
+  },
+  "mcp": {
+    "deepwiki": {
+      "type": "remote",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "enabled": true,
+      "timeout": 120000
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "/home/kasiro/.bun/bin/mcp-server-sequential-thinking"
+      ],
+      "timeout": 120000,
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "timeout": 120000,
+      "headers": {
+        "Authorization": "Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500"
+      }
+    },
+    "searxng": {
+      "type": "local",
+      "command": [
+        "mcp-searxng"
+      ],
+      "enabled": true,
+      "timeout": 60000,
+      "environment": {
+        "SEARXNG_URL": "http://localhost:8099",
+        "SEARXNG_MAX_RESULTS": "15"
+      },
+      "description": "Поиск через свой SearXNG (Docker) + web_url_read"
+    },
+    "youtube-transcript": {
+      "type": "local",
+      "command": [
+        "/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp"
+      ],
+      "environment": {
+        "EXA_API_KEY": "57c7932c-0ffa-4f75-8173-da5b8a343752"
+      },
+      "timeout": 60000,
+      "enabled": true
+    }
+  },
+  "agent": {
+    "jarvis": {
+      "tools": {
+        "edit": false,
+        "bash": false
+      },
+      "permission": {
+        "edit": {
+          "*": "deny"
+        },
+        "bash": {
+          "*": "deny"
+        },
+        "websearch": "deny",
+        "webfetch": "deny",
+        "searxng_*": "deny",
+        "crawl4ai_*": "deny",
+        "deepwiki_*": "deny",
+        "context7_*": "deny",
+        "youtube-transcript_*": "deny",
+        "lightpanda_*": "deny"
+      }
+    },
+    "title": {
+      "model": "opencode/big-pickle"
+    },
+    "general": {
+      "permission": {
+        "edit": {
+          "**/memory/**": "allow",
+          "*": "allow"
+        },
+        "bash": {
+          "*grep*": "deny",
+          "*find*": "deny",
+          "*npx*": "deny",
+          "*npm*": "deny",
+          "*sqlite*": "ask",
+          "*": "allow"
+        },
+        "websearch": "allow",
+        "webfetch": "allow",
+        "skill": {
+          "agent-delegation": "deny",
+          "jarvis-cycles": "deny",
+          "context-mgmt": "deny"
+        }
+      },
+      "tools": {
+        "glob": false,
+        "grep": false,
+        "sequential-thinking_*": true,
+        "searxng_*": true,
+        "deepwiki_*": true,
+        "context7_*": true,
+        "crawl4ai_*": true,
+        "youtube-transcript_*": true,
+        "lightpanda_*": true
+      }
+    },
+    "explore": {
+      "disable": true
+    }
+  },
+  "lsp": {},
+  "plugin": [
+    "opencode-intellisearch",
+    "@tarquinen/opencode-dcp@3.1.13",
+    "opencode-agent-memory"
+  ],
+  "compaction": {
+    "auto": false,
+    "prune": false
+  },
+  "tool_output": {
+    "max_lines": 5000,
+    "max_bytes": 204800
+  },
+  "experimental": {
+    "mcp_timeout": 120000
+  }
+}

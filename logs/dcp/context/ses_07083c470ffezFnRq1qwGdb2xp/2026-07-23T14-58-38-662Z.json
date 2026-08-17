@@ -1,0 +1,51 @@
+[
+  {
+    "role": "user",
+    "time": 1784818712010,
+    "parts": [
+      {
+        "type": "text",
+        "text": "найди для меня проекты на github: OpenCrabs и Garudust Agent\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784818712407,
+    "tokens": {
+      "input": 28841,
+      "output": 57,
+      "reasoning": 102,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Пользователь просит найти проекты на GitHub: \"OpenCrabs\" и \"Garudust Agent\". Это поиск на GitHub. Согласно моей архитектуре, я не ищу в интернете сам — я делегирую это general'у. Нужно загрузить skill github-api-search и делегировать поиск.\n\nДавайте сначала загружу github-api-search skill, а затем делегирую general'у поиск по обоим проектам."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, сейчас найду информацию по обоим проектам."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_TLqNbeXVBGzj7gc0qW289899",
+        "status": "completed",
+        "input": {
+          "name": "github-api-search"
+        },
+        "output": "<skill_content name=\"github-api-search\">\n# Skill: github-api-search\n\n# github-api-search — GitHub REST API через curl\n\n## Аутентификация\n- Без токена: 60 запросов/час\n- С токеном: 5000/час\n\n```bash\n# Как прочитать токен (из auth.json или переменной окружения)\nTOKEN=$(jq -r '.github.key // \"\"' ~/.local/share/opencode/auth.json 2>/dev/null || echo \"${GITHUB_TOKEN:-}\")\n[ -n \"$TOKEN\" ] && AUTH=\"-H 'Authorization: Bearer $TOKEN'\" || AUTH=\"\"\n```\n\n## Эндпоинты\n\n| Действие | URL | Описание |\n|----------|-----|----------|\n| Поиск репозиториев | `GET /search/repositories?q=...` | Поиск по имени, описанию, readme |\n| Инфо о репозитории | `GET /repos/{owner}/{repo}` | Звёзды, лицензия, темы, язык |\n| README | `GET /repos/{owner}/{repo}/readme` | README в base64 → декодировать |\n| Содержимое файла | `GET /repos/{owner}/{repo}/contents/{path}` | Любой файл из репозитория |\n| Поиск кода | `GET /search/code?q=...` | Поиск в коде репозиториев |\n| Релизы | `GET /repos/{owner}/{repo}/releases` | Список релизов с тегами |\n| Issues | `GET /repos/{owner}/{repo}/issues` | Открытые/закрытые issues |\n\n## Примеры\n\n### Поиск репозиториев\n```bash\ncurl -s \"https://api.github.com/search/repositories?q=telegram+mcp+server&sort=stars&order=desc&per_page=10\" | jq '[.items[] | {name: .full_name, stars: .stargazers_count, desc: .description}]'\n```\n\n### Информация о репозитории\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram\" | jq '{name: .full_name, stars: .stargazers_count, license: .license.spdx_id, topics: .topics}'\n```\n\n### README (декодировать base64)\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram/readme\" | jq -r '.content' | base64 -d\n```\n\n### Содержимое файла\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram/contents/package.json\" | jq -r '.content' | base64 -d\n```\n\n### Поиск кода\n```bash\ncurl -s \"https://api.github.com/search/code?q=mcp+telegram+in:name&per_page=10\" -H \"Accept: application/vnd.github+json\" | jq '[.items[] | {name: .name, repo: .repository.full_name, path: .path}]'\n```\n\n### Релизы\n```bash\ncurl -s \"https://api.github.com/repos/mcp-telegram/mcp-telegram/releases?per_page=10\" | jq '[.[] | {tag: .tag_name, name: .name, prerelease: .prerelease, created: .created_at}]'\n```\n\n## Параметры запросов\n- `?q=` — поисковый запрос\n- `&sort=stars|updated|forks`\n- `&order=desc|asc`\n- `&per_page=N` (max 100)\n- `&page=N`\n- Квалификаторы: `in:name`, `in:description`, `in:readme`, `language:python`, `stars:>100`, `topic:mcp`\n\n## Обработка ошибок\n- **403** — rate limit (без токена 60/ч; с токеном 5000/ч)\n- **404** — репозиторий/файл не найден\n- **422** — неверный запрос\n- **401** — плохой токен\n\nПроверка HTTP кода:\n```bash\ncurl -s -o /dev/null -w \"%{http_code}\\n\" \"https://api.github.com/repos/mcp-telegram/mcp-telegram\"\n```\n\nПроверка rate limit:\n```bash\ncurl -s \"https://api.github.com/rate_limit\" | jq '.rate'\n```\n\nBase directory for this skill: /home/kasiro/.agents/skills/github-api-search\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n\n</skill_files>\n</skill_content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "name": "github-api-search",
+          "dir": "/home/kasiro/.agents/skills/github-api-search",
+          "truncated": false
+        },
+        "title": "Loaded skill: github-api-search"
+      }
+    ]
+  }
+]

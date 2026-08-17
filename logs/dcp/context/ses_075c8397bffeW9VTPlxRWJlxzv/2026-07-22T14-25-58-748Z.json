@@ -1,0 +1,313 @@
+[
+  {
+    "role": "user",
+    "time": 1784730339808,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Мне нужно проверить есть ли в V2 Effect flavour хуки session.hook и tool.hook. Выполни:\n\n1. `ls ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/`\n2. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.d.ts | head -50`\n3. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.js | head -30`\n4. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/session.d.ts 2>/dev/null | head -30`\n5. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/session.js 2>/dev/null | head -30`\n6. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/tool.d.ts 2>/dev/null | head -30`\n7. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/tool.js 2>/dev/null | head -30`\n\nТакже проверь что есть в V1 index.ts на предмет session-related:\n8. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts | head -50`\n9. `cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/index.d.ts | head -50`\n\nВерни полный вывод. Мне нужно понять — можно ли в V2 получить доступ к session.hook(\"request\").\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784730339829,
+    "tokens": {
+      "input": 36471,
+      "output": 526,
+      "reasoning": 38,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to check the V2 Effect flavour of the OpenCode plugin for session.hook and tool.hook. Let me execute all the commands in parallel since they're independent."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_5wqOQZVYGiIf513bm5Di6143",
+        "status": "completed",
+        "input": {
+          "command": "ls ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/"
+        },
+        "output": "agent.d.ts\nagent.js\naisdk.d.ts\naisdk.js\ncatalog.d.ts\ncatalog.js\ncommand.d.ts\ncommand.js\ncontext.d.ts\ncontext.js\nevent.d.ts\nevent.js\nfilesystem.d.ts\nfilesystem.js\nindex.d.ts\nindex.js\nintegration.d.ts\nintegration.js\nlocation.d.ts\nlocation.js\nnpm.d.ts\nnpm.js\npath.d.ts\npath.js\nplugin.d.ts\nplugin.js\nreference.d.ts\nreference.js\nregistration.d.ts\nregistration.js\nskill.d.ts\nskill.js\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "agent.d.ts\nagent.js\naisdk.d.ts\naisdk.js\ncatalog.d.ts\ncatalog.js\ncommand.d.ts\ncommand.js\ncontext.d.ts\ncontext.js\nevent.d.ts\nevent.js\nfilesystem.d.ts\nfilesystem.js\nindex.d.ts\nindex.js\nintegration.d.ts\nintegration.js\nlocation.d.ts\nlocation.js\nnpm.d.ts\nnpm.js\npath.d.ts\npath.js\nplugin.d.ts\nplugin.js\nreference.d.ts\nreference.js\nregistration.d.ts\nregistration.js\nskill.d.ts\nskill.js\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "ls ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_01_eoRUW5iiIXPLKsoRUzJm3028",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.d.ts | head -50"
+        },
+        "output": "export type { PluginContext } from \"./context.js\";\nexport { define } from \"./plugin.js\";\nexport type { Plugin } from \"./plugin.js\";\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "export type { PluginContext } from \"./context.js\";\nexport { define } from \"./plugin.js\";\nexport type { Plugin } from \"./plugin.js\";\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.d.ts | head -50"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_02_uxqz4g7Z8lqnVjuboCWe8072",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.js | head -30"
+        },
+        "output": "export { define } from \"./plugin.js\";\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "export { define } from \"./plugin.js\";\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.js | head -30"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_03_7HQgtbZiyEwnF98wkilh3702",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/session.d.ts 2>/dev/null | head -30"
+        },
+        "output": "(no output)\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/session.d.ts 2>/dev/null | head -30"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_04_MLpDN22Jgzv3PwPNW3gc7857",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/session.js 2>/dev/null | head -30"
+        },
+        "output": "(no output)\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/session.js 2>/dev/null | head -30"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_05_n3xQaNVkel2QnoIauPRu4913",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/tool.d.ts 2>/dev/null | head -30"
+        },
+        "output": "(no output)\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/tool.d.ts 2>/dev/null | head -30"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_06_Dbz4e2EclisIRcRW1WyK8762",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/tool.js 2>/dev/null | head -30"
+        },
+        "output": "(no output)\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/tool.js 2>/dev/null | head -30"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_07_LKkvaB55pUEpcZxa29kM3412",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts | head -50"
+        },
+        "output": "import { z } from \"zod\";\nexport type ToolContext = {\n    sessionID: string;\n    messageID: string;\n    agent: string;\n    /**\n     * Current project directory for this session.\n     * Prefer this over process.cwd() when resolving relative paths.\n     */\n    directory: string;\n    /**\n     * Project worktree root for this session.\n     * Useful for generating stable relative paths (e.g. path.relative(worktree, absPath)).\n     */\n    worktree: string;\n    abort: AbortSignal;\n    metadata(input: {\n        title?: string;\n        metadata?: {\n            [key: string]: any;\n        };\n    }): void;\n    ask(input: AskInput): Promise<void>;\n};\ntype AskInput = {\n    permission: string;\n    patterns: string[];\n    always: string[];\n    metadata: {\n        [key: string]: any;\n    };\n};\nexport type ToolAttachment = {\n    type: \"file\";\n    mime: string;\n    url: string;\n    filename?: string;\n};\nexport type ToolResult = string | {\n    title?: string;\n    output: string;\n    metadata?: {\n        [key: string]: any;\n    };\n    attachments?: ToolAttachment[];\n};\nexport declare function tool<Args extends z.ZodRawShape>(input: {\n    description: string;\n    args: Args;\n    execute(args: z.infer<z.ZodObject<Args>>, context: ToolContext): Promise<ToolResult>;\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "import { z } from \"zod\";\nexport type ToolContext = {\n    sessionID: string;\n    messageID: string;\n    agent: string;\n    /**\n     * Current project directory for this session.\n     * Prefer this over process.cwd() when resolving relative paths.\n     */\n    directory: string;\n    /**\n     * Project worktree root for this session.\n     * Useful for generating stable relative paths (e.g. path.relative(worktree, absPath)).\n     */\n    worktree: string;\n    abort: AbortSignal;\n    metadata(input: {\n        title?: string;\n        metadata?: {\n            [key: string]: any;\n        };\n    }): void;\n    ask(input: AskInput): Promise<void>;\n};\ntype AskInput = {\n    permission: string;\n    patterns: string[];\n    always: string[];\n    metadata: {\n        [key: string]: any;\n    };\n};\nexport type ToolAttachment = {\n    type: \"file\";\n    mime: string;\n    url: string;\n    filename?: string;\n};\nexport type ToolResult = string | {\n    title?: string;\n    output: string;\n    metadata?: {\n        [key: string]: any;\n    };\n    attachments?: ToolAttachment[];\n};\nexport declare function tool<Args extends z.ZodRawShape>(input: {\n    description: string;\n    args: Args;\n    execute(args: z.infer<z.ZodObject<Args>>, context: ToolContext): Promise<ToolResult>;\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts | head -50"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_08_nleccjopDMIfcCsvJtlz5308",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/index.d.ts | head -50"
+        },
+        "output": "import type { Event, createOpencodeClient, Project, Model, Provider, Permission, UserMessage, Message, Part, Config as SDKConfig } from \"@opencode-ai/sdk\";\nimport type { Provider as ProviderV2, Model as ModelV2, Auth } from \"@opencode-ai/sdk/v2\";\nimport type { BunShell } from \"./shell.js\";\nimport { type ToolDefinition } from \"./tool.js\";\nexport * from \"./tool.js\";\nexport type ProviderContext = {\n    source: \"env\" | \"config\" | \"custom\" | \"api\";\n    info: Provider;\n    options: Record<string, any>;\n};\nexport type WorkspaceInfo = {\n    id: string;\n    type: string;\n    name: string;\n    branch: string | null;\n    directory: string | null;\n    extra: unknown | null;\n    projectID: string;\n};\nexport type WorkspaceTarget = {\n    type: \"local\";\n    directory: string;\n} | {\n    type: \"remote\";\n    url: string | URL;\n    headers?: HeadersInit;\n};\nexport type WorkspaceAdapter = {\n    name: string;\n    description: string;\n    configure(config: WorkspaceInfo): WorkspaceInfo | Promise<WorkspaceInfo>;\n    create(config: WorkspaceInfo, env: Record<string, string | undefined>, from?: WorkspaceInfo): Promise<void>;\n    remove(config: WorkspaceInfo): Promise<void>;\n    target(config: WorkspaceInfo): WorkspaceTarget | Promise<WorkspaceTarget>;\n};\nexport type PluginInput = {\n    client: ReturnType<typeof createOpencodeClient>;\n    project: Project;\n    directory: string;\n    worktree: string;\n    experimental_workspace: {\n        register(type: string, adapter: WorkspaceAdapter): void;\n    };\n    serverUrl: URL;\n    $: BunShell;\n};\nexport type PluginOptions = Record<string, unknown>;\nexport type Config = Omit<SDKConfig, \"plugin\"> & {\n    plugin?: Array<string | [string, PluginOptions]>;\n};\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "import type { Event, createOpencodeClient, Project, Model, Provider, Permission, UserMessage, Message, Part, Config as SDKConfig } from \"@opencode-ai/sdk\";\nimport type { Provider as ProviderV2, Model as ModelV2, Auth } from \"@opencode-ai/sdk/v2\";\nimport type { BunShell } from \"./shell.js\";\nimport { type ToolDefinition } from \"./tool.js\";\nexport * from \"./tool.js\";\nexport type ProviderContext = {\n    source: \"env\" | \"config\" | \"custom\" | \"api\";\n    info: Provider;\n    options: Record<string, any>;\n};\nexport type WorkspaceInfo = {\n    id: string;\n    type: string;\n    name: string;\n    branch: string | null;\n    directory: string | null;\n    extra: unknown | null;\n    projectID: string;\n};\nexport type WorkspaceTarget = {\n    type: \"local\";\n    directory: string;\n} | {\n    type: \"remote\";\n    url: string | URL;\n    headers?: HeadersInit;\n};\nexport type WorkspaceAdapter = {\n    name: string;\n    description: string;\n    configure(config: WorkspaceInfo): WorkspaceInfo | Promise<WorkspaceInfo>;\n    create(config: WorkspaceInfo, env: Record<string, string | undefined>, from?: WorkspaceInfo): Promise<void>;\n    remove(config: WorkspaceInfo): Promise<void>;\n    target(config: WorkspaceInfo): WorkspaceTarget | Promise<WorkspaceTarget>;\n};\nexport type PluginInput = {\n    client: ReturnType<typeof createOpencodeClient>;\n    project: Project;\n    directory: string;\n    worktree: string;\n    experimental_workspace: {\n        register(type: string, adapter: WorkspaceAdapter): void;\n    };\n    serverUrl: URL;\n    $: BunShell;\n};\nexport type PluginOptions = Record<string, unknown>;\nexport type Config = Omit<SDKConfig, \"plugin\"> & {\n    plugin?: Array<string | [string, PluginOptions]>;\n};\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/index.d.ts | head -50"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784730345859,
+    "tokens": {
+      "input": 1168,
+      "output": 327,
+      "reasoning": 333,
+      "cache": {
+        "write": 0,
+        "read": 36992
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Let me analyze the results:\n\n1. **V2 effect/ directory** - There's no `session.d.ts`, `session.js`, `tool.d.ts`, or `tool.js` in the V2 effect directory. The files present are:\n   - agent, aisdk, catalog, command, context, event, filesystem, index, integration, location, npm, path, plugin, reference, registration, skill\n\n2. **V2 effect/index.d.ts** - Only exports `PluginContext` type, `define` function, and `Plugin` type. No session or tool hooks.\n\n3. **V2 effect/index.js** - Just re-exports `define` from plugin.js.\n\n4. **session.d.ts / session.js** - Do not exist in V2 effect.\n\n5. **tool.d.ts / tool.js** - Do not exist in V2 effect.\n\n6. **V1 tool.d.ts** - Has `ToolContext` with sessionID, messageID, agent, etc. and `tool()` function.\n\n7. **V1 index.d.ts** - Has PluginInput with client, project, directory, etc. No session.hook.\n\nSo in V2 Effect flavour, there are NO session.hook or tool.hook. The session and tool modules simply don't exist in the V2 effect directory. This means session.hook(\"request\") is NOT available in V2 Effect flavour.\n\nLet me also check if there's a `hook` or `hooks` concept in any of the V2 files. Let me look at the event module and plugin module which might have hook-related exports."
+      },
+      {
+        "type": "text",
+        "text": "Файлов `session.d.ts`, `session.js`, `tool.d.ts`, `tool.js` в V2 effect **не существует**. Давайте проверю, есть ли hook-концепция в других модулях V2."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_QrqF50xCiv6gChBKptrI7734",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/event.d.ts | head -50"
+        },
+        "output": "import type { Event as SDKEvent } from \"@opencode-ai/sdk/v2/types\";\nimport type { Stream } from \"effect\";\nexport type EventMap = {\n    [Item in SDKEvent as Item[\"type\"]]: Item;\n};\nexport interface Event {\n    subscribe<Type extends keyof EventMap>(type: Type): Stream.Stream<EventMap[Type]>;\n}\n\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "output": "import type { Event as SDKEvent } from \"@opencode-ai/sdk/v2/types\";\nimport type { Stream } from \"effect\";\nexport type EventMap = {\n    [Item in SDKEvent as Item[\"type\"]]: Item;\n};\nexport interface Event {\n    subscribe<Type extends keyof EventMap>(type: Type): Stream.Stream<EventMap[Type]>;\n}\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/event.d.ts | head -50"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_01_mrwwm2aiQEFzSVBjprgm1527",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/plugin.d.ts"
+        },
+        "output": "import type { Effect, Scope } from \"effect\";\nimport type { PluginContext } from \"./context.js\";\nexport interface Plugin<R = Scope.Scope> {\n    readonly id: string;\n    readonly effect: (context: PluginContext) => Effect.Effect<void, never, R>;\n}\nexport declare function define<R = Scope.Scope>(plugin: Plugin<R>): Plugin<R>;\nexport interface PluginDomain {\n    readonly add: (plugin: Plugin) => Effect.Effect<void>;\n    readonly remove: (id: string) => Effect.Effect<void>;\n}\n\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "output": "import type { Effect, Scope } from \"effect\";\nimport type { PluginContext } from \"./context.js\";\nexport interface Plugin<R = Scope.Scope> {\n    readonly id: string;\n    readonly effect: (context: PluginContext) => Effect.Effect<void, never, R>;\n}\nexport declare function define<R = Scope.Scope>(plugin: Plugin<R>): Plugin<R>;\nexport interface PluginDomain {\n    readonly add: (plugin: Plugin) => Effect.Effect<void>;\n    readonly remove: (id: string) => Effect.Effect<void>;\n}\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/plugin.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_02_EDxLOVIwayGCo2OF05fr4225",
+        "status": "completed",
+        "input": {
+          "command": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts"
+        },
+        "output": "import type { Effect, Scope } from \"effect\";\nexport interface Registration {\n    readonly dispose: Effect.Effect<void>;\n}\nexport interface Reload {\n    readonly reload: () => Effect.Effect<void>;\n}\nexport type Hooks<Spec> = {\n    readonly [Name in keyof Spec]: (callback: (input: Spec[Name]) => Effect.Effect<void> | void) => Effect.Effect<Registration, never, Scope.Scope>;\n};\n\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "output": "import type { Effect, Scope } from \"effect\";\nexport interface Registration {\n    readonly dispose: Effect.Effect<void>;\n}\nexport interface Reload {\n    readonly reload: () => Effect.Effect<void>;\n}\nexport type Hooks<Spec> = {\n    readonly [Name in keyof Spec]: (callback: (input: Spec[Name]) => Effect.Effect<void> | void) => Effect.Effect<Registration, never, Scope.Scope>;\n};\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "cat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_03_KZtIYE2JKL0YanLrlKTc5405",
+        "status": "completed",
+        "input": {
+          "command": "rg \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/ --include '*.d.ts' 2>/dev/null || rg \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/ -g '*.d.ts' 2>/dev/null"
+        },
+        "output": "(no output)\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 1,
+          "truncated": false
+        },
+        "title": "rg \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/ --include '*.d.ts' 2>/dev/null || rg \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/ -g '*.d.ts' 2>/dev/null"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784730353783,
+    "tokens": {
+      "input": 426,
+      "output": 194,
+      "reasoning": 116,
+      "cache": {
+        "write": 0,
+        "read": 38784
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Interesting! The `registration.d.ts` file has a `Hooks<Spec>` type that's a generic hooks system. But let me check if there's a `session.hook` or `tool.hook` anywhere. The rg search for \"hook\" in d.ts files returned nothing (or maybe it was in wrong format). Let me search more broadly.\n\nAlso, the `event.d.ts` has an `Event` interface with `subscribe` method - this uses Effect's Stream pattern.\n\nLet me search more broadly for \"hook\" across the entire plugin package."
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_00_7sj50xKpxSfZP53Rjmac0673",
+        "status": "completed",
+        "input": {
+          "command": "rg -r '' \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/ --include '*.d.ts' -l 2>/dev/null || rg -l \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/ -g '*.d.ts' 2>/dev/null"
+        },
+        "output": "(no output)\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "output": "(no output)",
+          "exit": 1,
+          "truncated": false
+        },
+        "title": "rg -r '' \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/ --include '*.d.ts' -l 2>/dev/null || rg -l \"hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/ -g '*.d.ts' 2>/dev/null"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_01_XPZ3ASnqLCdJO0RrfSde4999",
+        "status": "completed",
+        "input": {
+          "command": "rg \"session\\.hook|tool\\.hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/ -g '*.{ts,d.ts,js}' 2>/dev/null || echo \"NOT FOUND\""
+        },
+        "output": "NOT FOUND\n\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "output": "NOT FOUND\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "rg \"session\\.hook|tool\\.hook\" ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/ -g '*.{ts,d.ts,js}' 2>/dev/null || echo \"NOT FOUND\""
+      }
+    ]
+  }
+]

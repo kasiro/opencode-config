@@ -1,0 +1,16 @@
+[
+  {
+    "role": "user",
+    "time": 1784796521523,
+    "parts": [
+      {
+        "type": "text",
+        "text": "You are a research sub-agent. Today is 2026-07-23.\n\nResearch context: We are investigating alternative techniques for controlling LLM behavior without embedding markup/tags in the prompt. Audience is technical AI engineers. Date: 2026-07-23.\n\nYour ONLY task — research this single angle, nothing else:\nTool/function calling with strict schemas as a behavior control mechanism — how specifying required function signatures constrains LLM outputs and prevents undesired free-form text generation.\n\nRules:\n1. Run up to 6 web searches. Start with 2-3 differently-phrased queries in parallel; refine based on what comes back. Prefer primary sources (official docs, papers, original announcements) over aggregators and SEO farms.\n2. WebFetch the 3-6 most promising results to read actual content. Do not cite a page you did not fetch.\n3. Judge each source: official/primary > reputable media/peer-reviewed > forums/blogs > content farms. Discard low-quality sources rather than citing them.\n4. Extract findings as information-dense claims: include exact entities, numbers, dates, versions. One claim per finding.\n5. Write your findings to /home/kasiro/research/llm-control-alt/findings/F2.md in EXACTLY this format:\n\n# F2: Tool/function calling with strict schemas\n\n## Findings\n\n### [1] <one-sentence claim>\n- quote: \"<short verbatim supporting quote>\"\n- url: <source URL>\n- source_type: primary | secondary | community\n- published: <date if known, else unknown>\n- confidence: high | medium | low\n\n### [2] ...\n\n## Dead ends\n- <queries or sources that yielded nothing useful, one line each>\n\n## Suggested follow-ups\n- <at most 3 narrower questions worth a deeper look, or \"none\">\n\n6. Aim for 5-12 findings. Depth beats breadth: 6 solid sourced claims beat 15 vague ones.\n7. If the angle turns out unanswerable or results are thin, still write the file with whatever you found and say so under Dead ends.\n\nReturn to the orchestrator ONLY:\n- 3-5 line summary of your strongest findings\n- the file path you wrote\n- number of findings and your overall confidence\nDo NOT return raw page content or the full findings list.\n\n<dcp-message-id>m0075</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<system-reminder>\nThis session has memory at /home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/. Recall content\nnot in your context with:\n- memory({ operation: \"search\", query: \"<keyword>\" })\n- Read(file_path=\"/home/kasiro/.local/share/mimocode/memory/sessions/ses_08b0695a8ffeIscvW6jExyRaKY/...\")\n- task({ operation: \"list\" })\n- actor({ operation: \"status\", actor_id: \"<id>\" })\n\nDon't ask the user about something memory may already record.\n</system-reminder>\n\n<dcp-message-id>m0075</dcp-message-id>"
+      }
+    ]
+  }
+]

@@ -1,0 +1,181 @@
+[
+  {
+    "role": "user",
+    "time": 1784730536118,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Прочитай полностью содержимое следующих файлов. Нужны ВСЕ экспорты, типы, сигнатуры:\n\n```bash\ncat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts\necho \"=== COMMAND ===\"\ncat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts\necho \"=== AISDK ===\"\ncat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts\necho \"=== FILESYSTEM ===\"\ncat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts\necho \"=== REGISTRATION ===\"\ncat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts\n```\n\nТакже проверь V1 API (tool.d.ts) — вдруг V1 ещё актуален:\n```bash\ncat ~/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts\n```\n\nВерни всё полностью.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1784730536135,
+    "tokens": {
+      "input": 36359,
+      "output": 353,
+      "reasoning": 29,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user wants me to read the contents of several TypeScript declaration files from the OpenCode plugin package. Let me read them all in parallel."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_00_VCB8kBhULPjyqbrk2Kh54397",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts</path>\n<type>file</type>\n<content>\n1: import type { AgentV2Info } from \"@opencode-ai/sdk/v2/types\";\n2: import type { Hooks } from \"./registration.js\";\n3: export interface AgentDraft {\n4:     list(): readonly AgentV2Info[];\n5:     get(id: string): AgentV2Info | undefined;\n6:     default(id: string | undefined): void;\n7:     update(id: string, update: (agent: AgentV2Info) => void): void;\n8:     remove(id: string): void;\n9: }\n10: export type AgentHooks = Hooks<{\n11:     transform: AgentDraft;\n12: }>;\n\n(End of file - total 12 lines)\n</content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": "import type { AgentV2Info } from \"@opencode-ai/sdk/v2/types\";\nimport type { Hooks } from \"./registration.js\";\nexport interface AgentDraft {\n    list(): readonly AgentV2Info[];\n    get(id: string): AgentV2Info | undefined;\n    default(id: string | undefined): void;\n    update(id: string, update: (agent: AgentV2Info) => void): void;\n    remove(id: string): void;\n}\nexport type AgentHooks = Hooks<{\n    transform: AgentDraft;\n}>;",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts",
+            "text": "import type { AgentV2Info } from \"@opencode-ai/sdk/v2/types\";\nimport type { Hooks } from \"./registration.js\";\nexport interface AgentDraft {\n    list(): readonly AgentV2Info[];\n    get(id: string): AgentV2Info | undefined;\n    default(id: string | undefined): void;\n    update(id: string, update: (agent: AgentV2Info) => void): void;\n    remove(id: string): void;\n}\nexport type AgentHooks = Hooks<{\n    transform: AgentDraft;\n}>;",
+            "lineStart": 1,
+            "lineEnd": 12,
+            "totalLines": 12,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_01_gjLYmbqZrWSZFvq5tb4C2184",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts</path>\n<type>file</type>\n<content>\n1: import type { CommandV2Info } from \"@opencode-ai/sdk/v2/types\";\n2: import type { Hooks } from \"./registration.js\";\n3: export interface CommandDraft {\n4:     list(): readonly CommandV2Info[];\n5:     get(name: string): CommandV2Info | undefined;\n6:     update(name: string, update: (command: CommandV2Info) => void): void;\n7:     remove(name: string): void;\n8: }\n9: export type CommandHooks = Hooks<{\n10:     transform: CommandDraft;\n11: }>;\n\n(End of file - total 11 lines)\n</content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": "import type { CommandV2Info } from \"@opencode-ai/sdk/v2/types\";\nimport type { Hooks } from \"./registration.js\";\nexport interface CommandDraft {\n    list(): readonly CommandV2Info[];\n    get(name: string): CommandV2Info | undefined;\n    update(name: string, update: (command: CommandV2Info) => void): void;\n    remove(name: string): void;\n}\nexport type CommandHooks = Hooks<{\n    transform: CommandDraft;\n}>;",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts",
+            "text": "import type { CommandV2Info } from \"@opencode-ai/sdk/v2/types\";\nimport type { Hooks } from \"./registration.js\";\nexport interface CommandDraft {\n    list(): readonly CommandV2Info[];\n    get(name: string): CommandV2Info | undefined;\n    update(name: string, update: (command: CommandV2Info) => void): void;\n    remove(name: string): void;\n}\nexport type CommandHooks = Hooks<{\n    transform: CommandDraft;\n}>;",
+            "lineStart": 1,
+            "lineEnd": 11,
+            "totalLines": 11,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_02_JaHkY6zTFFydq2l3Xfic9159",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts</path>\n<type>file</type>\n<content>\n1: import type { LanguageModelV3 } from \"@ai-sdk/provider\";\n2: import type { ModelV2Info } from \"@opencode-ai/sdk/v2/types\";\n3: import type { Hooks } from \"./registration.js\";\n4: export type AISDKHooks = Hooks<{\n5:     sdk: {\n6:         readonly model: ModelV2Info;\n7:         readonly package: string;\n8:         readonly options: Record<string, any>;\n9:         sdk?: any;\n10:     };\n11:     language: {\n12:         readonly model: ModelV2Info;\n13:         readonly sdk: any;\n14:         readonly options: Record<string, any>;\n15:         language?: LanguageModelV3;\n16:     };\n17: }>;\n\n(End of file - total 17 lines)\n</content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": "import type { LanguageModelV3 } from \"@ai-sdk/provider\";\nimport type { ModelV2Info } from \"@opencode-ai/sdk/v2/types\";\nimport type { Hooks } from \"./registration.js\";\nexport type AISDKHooks = Hooks<{\n    sdk: {\n        readonly model: ModelV2Info;\n        readonly package: string;\n        readonly options: Record<string, any>;\n        sdk?: any;\n    };\n    language: {\n        readonly model: ModelV2Info;\n        readonly sdk: any;\n        readonly options: Record<string, any>;\n        language?: LanguageModelV3;\n    };\n}>;",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts",
+            "text": "import type { LanguageModelV3 } from \"@ai-sdk/provider\";\nimport type { ModelV2Info } from \"@opencode-ai/sdk/v2/types\";\nimport type { Hooks } from \"./registration.js\";\nexport type AISDKHooks = Hooks<{\n    sdk: {\n        readonly model: ModelV2Info;\n        readonly package: string;\n        readonly options: Record<string, any>;\n        sdk?: any;\n    };\n    language: {\n        readonly model: ModelV2Info;\n        readonly sdk: any;\n        readonly options: Record<string, any>;\n        language?: LanguageModelV3;\n    };\n}>;",
+            "lineStart": 1,
+            "lineEnd": 17,
+            "totalLines": 17,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_03_nijEqJdzNuxfqbEvXlep7274",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts</path>\n<type>file</type>\n<content>\n1: import type { FileSystemEntry } from \"@opencode-ai/sdk/v2/types\";\n2: import type { Effect } from \"effect\";\n3: export interface FileSystem {\n4:     read(input: {\n5:         readonly path: string;\n6:     }): Effect.Effect<{\n7:         readonly content: Uint8Array;\n8:         readonly mime: string;\n9:     }>;\n10:     list(input?: {\n11:         readonly path?: string;\n12:     }): Effect.Effect<FileSystemEntry[]>;\n13:     find(input: {\n14:         readonly query: string;\n15:         readonly type?: \"file\" | \"directory\";\n16:         readonly limit?: number;\n17:     }): Effect.Effect<FileSystemEntry[]>;\n18:     glob(input: {\n19:         readonly pattern: string;\n20:         readonly path?: string;\n21:         readonly limit?: number;\n22:     }): Effect.Effect<readonly FileSystemEntry[]>;\n23: }\n\n(End of file - total 23 lines)\n</content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": "import type { FileSystemEntry } from \"@opencode-ai/sdk/v2/types\";\nimport type { Effect } from \"effect\";\nexport interface FileSystem {\n    read(input: {\n        readonly path: string;\n    }): Effect.Effect<{\n        readonly content: Uint8Array;\n        readonly mime: string;\n    }>;\n    list(input?: {\n        readonly path?: string;\n    }): Effect.Effect<FileSystemEntry[]>;\n    find(input: {\n        readonly query: string;\n        readonly type?: \"file\" | \"directory\";\n        readonly limit?: number;\n    }): Effect.Effect<FileSystemEntry[]>;\n    glob(input: {\n        readonly pattern: string;\n        readonly path?: string;",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts",
+            "text": "import type { FileSystemEntry } from \"@opencode-ai/sdk/v2/types\";\nimport type { Effect } from \"effect\";\nexport interface FileSystem {\n    read(input: {\n        readonly path: string;\n    }): Effect.Effect<{\n        readonly content: Uint8Array;\n        readonly mime: string;\n    }>;\n    list(input?: {\n        readonly path?: string;\n    }): Effect.Effect<FileSystemEntry[]>;\n    find(input: {\n        readonly query: string;\n        readonly type?: \"file\" | \"directory\";\n        readonly limit?: number;\n    }): Effect.Effect<FileSystemEntry[]>;\n    glob(input: {\n        readonly pattern: string;\n        readonly path?: string;\n        readonly limit?: number;\n    }): Effect.Effect<readonly FileSystemEntry[]>;\n}",
+            "lineStart": 1,
+            "lineEnd": 23,
+            "totalLines": 23,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_04_2GBv3anLU6HaTCRgT6Hy4131",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts</path>\n<type>file</type>\n<content>\n1: import type { Effect, Scope } from \"effect\";\n2: export interface Registration {\n3:     readonly dispose: Effect.Effect<void>;\n4: }\n5: export interface Reload {\n6:     readonly reload: () => Effect.Effect<void>;\n7: }\n8: export type Hooks<Spec> = {\n9:     readonly [Name in keyof Spec]: (callback: (input: Spec[Name]) => Effect.Effect<void> | void) => Effect.Effect<Registration, never, Scope.Scope>;\n10: };\n\n(End of file - total 10 lines)\n</content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": "import type { Effect, Scope } from \"effect\";\nexport interface Registration {\n    readonly dispose: Effect.Effect<void>;\n}\nexport interface Reload {\n    readonly reload: () => Effect.Effect<void>;\n}\nexport type Hooks<Spec> = {\n    readonly [Name in keyof Spec]: (callback: (input: Spec[Name]) => Effect.Effect<void> | void) => Effect.Effect<Registration, never, Scope.Scope>;\n};",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts",
+            "text": "import type { Effect, Scope } from \"effect\";\nexport interface Registration {\n    readonly dispose: Effect.Effect<void>;\n}\nexport interface Reload {\n    readonly reload: () => Effect.Effect<void>;\n}\nexport type Hooks<Spec> = {\n    readonly [Name in keyof Spec]: (callback: (input: Spec[Name]) => Effect.Effect<void> | void) => Effect.Effect<Registration, never, Scope.Scope>;\n};",
+            "lineStart": 1,
+            "lineEnd": 10,
+            "totalLines": 10,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_05_JFIE34oanLiYjHdAiaGY7178",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts"
+        },
+        "output": "<path>/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts</path>\n<type>file</type>\n<content>\n1: import { z } from \"zod\";\n2: export type ToolContext = {\n3:     sessionID: string;\n4:     messageID: string;\n5:     agent: string;\n6:     /**\n7:      * Current project directory for this session.\n8:      * Prefer this over process.cwd() when resolving relative paths.\n9:      */\n10:     directory: string;\n11:     /**\n12:      * Project worktree root for this session.\n13:      * Useful for generating stable relative paths (e.g. path.relative(worktree, absPath)).\n14:      */\n15:     worktree: string;\n16:     abort: AbortSignal;\n17:     metadata(input: {\n18:         title?: string;\n19:         metadata?: {\n20:             [key: string]: any;\n21:         };\n22:     }): void;\n23:     ask(input: AskInput): Promise<void>;\n24: };\n25: type AskInput = {\n26:     permission: string;\n27:     patterns: string[];\n28:     always: string[];\n29:     metadata: {\n30:         [key: string]: any;\n31:     };\n32: };\n33: export type ToolAttachment = {\n34:     type: \"file\";\n35:     mime: string;\n36:     url: string;\n37:     filename?: string;\n38: };\n39: export type ToolResult = string | {\n40:     title?: string;\n41:     output: string;\n42:     metadata?: {\n43:         [key: string]: any;\n44:     };\n45:     attachments?: ToolAttachment[];\n46: };\n47: export declare function tool<Args extends z.ZodRawShape>(input: {\n48:     description: string;\n49:     args: Args;\n50:     execute(args: z.infer<z.ZodObject<Args>>, context: ToolContext): Promise<ToolResult>;\n51: }): {\n52:     description: string;\n53:     args: Args;\n54:     execute(args: z.infer<z.ZodObject<Args>>, context: ToolContext): Promise<ToolResult>;\n55: };\n56: export declare namespace tool {\n57:     var schema: typeof z;\n58: }\n59: export type ToolDefinition = ReturnType<typeof tool>;\n60: export {};\n\n(End of file - total 60 lines)\n</content>\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "preview": "import { z } from \"zod\";\nexport type ToolContext = {\n    sessionID: string;\n    messageID: string;\n    agent: string;\n    /**\n     * Current project directory for this session.\n     * Prefer this over process.cwd() when resolving relative paths.\n     */\n    directory: string;\n    /**\n     * Project worktree root for this session.\n     * Useful for generating stable relative paths (e.g. path.relative(worktree, absPath)).\n     */\n    worktree: string;\n    abort: AbortSignal;\n    metadata(input: {\n        title?: string;\n        metadata?: {\n            [key: string]: any;",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts",
+            "text": "import { z } from \"zod\";\nexport type ToolContext = {\n    sessionID: string;\n    messageID: string;\n    agent: string;\n    /**\n     * Current project directory for this session.\n     * Prefer this over process.cwd() when resolving relative paths.\n     */\n    directory: string;\n    /**\n     * Project worktree root for this session.\n     * Useful for generating stable relative paths (e.g. path.relative(worktree, absPath)).\n     */\n    worktree: string;\n    abort: AbortSignal;\n    metadata(input: {\n        title?: string;\n        metadata?: {\n            [key: string]: any;\n        };\n    }): void;\n    ask(input: AskInput): Promise<void>;\n};\ntype AskInput = {\n    permission: string;\n    patterns: string[];\n    always: string[];\n    metadata: {\n        [key: string]: any;\n    };\n};\nexport type ToolAttachment = {\n    type: \"file\";\n    mime: string;\n    url: string;\n    filename?: string;\n};\nexport type ToolResult = string | {\n    title?: string;\n    output: string;\n    metadata?: {\n        [key: string]: any;\n    };\n    attachments?: ToolAttachment[];\n};\nexport declare function tool<Args extends z.ZodRawShape>(input: {\n    description: string;\n    args: Args;\n    execute(args: z.infer<z.ZodObject<Args>>, context: ToolContext): Promise<ToolResult>;\n}): {\n    description: string;\n    args: Args;\n    execute(args: z.infer<z.ZodObject<Args>>, context: ToolContext): Promise<ToolResult>;\n};\nexport declare namespace tool {\n    var schema: typeof z;\n}\nexport type ToolDefinition = ReturnType<typeof tool>;\nexport {};",
+            "lineStart": 1,
+            "lineEnd": 60,
+            "totalLines": 60,
+            "truncated": false
+          }
+        },
+        "title": "home/kasiro/.config/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts"
+      }
+    ]
+  }
+]

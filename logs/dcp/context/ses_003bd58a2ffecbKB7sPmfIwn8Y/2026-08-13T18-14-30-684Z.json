@@ -1,0 +1,274 @@
+[
+  {
+    "role": "user",
+    "time": 1786643655513,
+    "parts": [
+      {
+        "type": "text",
+        "text": "привет?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786643655937,
+    "tokens": {
+      "input": 31974,
+      "output": 23,
+      "reasoning": 72,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Сэр поздоровался. Загружаю базовый цикл. Простое приветствие — CYCLE 1: STOP→RECALL→ORIENT→ACT→VERIFY→SAVE.\n\nОтвет: вежливое приветствие в стиле J.A.R.V.I.S. Никаких инструментов не нужно."
+      },
+      {
+        "type": "text",
+        "text": "Добрый день, сэр. К вашим услугам.\n\nЧем могу быть полезен?\n\n<dcp-message-id>m0002</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1786644083490,
+    "parts": [
+      {
+        "type": "text",
+        "text": "изучи ситуацию с deepseek free в opencode zen, как долго дипсик ещё будет бесплатным? что говорят другие? есть ли перебои в работе?\n\n<dcp-system-reminder>\nEvaluate the conversation for compressible ranges.\n\nIf any messages are cleanly closed and unlikely to be needed again, use the compress tool on them.\nIf direction has shifted, compress earlier ranges that are now less relevant.\n\nThe goal is to filter noise and distill key information so context accumulation stays under control.\nKeep active context uncompressed.\n\nCompressed block context:\n- Active compressed blocks in this session: 0 (none)\n- If your selected compression range includes any listed block, include each required placeholder exactly once in the summary using `(bN)`.\n</dcp-system-reminder>\n\n<dcp-message-id>m0003</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786644083578,
+    "tokens": {
+      "input": 16786,
+      "output": 618,
+      "reasoning": 338,
+      "cache": {
+        "write": 0,
+        "read": 15360
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Сэр спрашивает о ситуации с deepseek free в OpenCode Zen — как долго будет бесплатным, что говорят другие, есть ли перебои в работе.\n\nЭто исследовательский вопрос — нужно:\n1. Проверить актуальное состояние Zen API (мониторинг доступности)\n2. Поискать в интернете обсуждения (что говорят другие)\n3. Собрать информацию о сроках бесплатности\n\nПо правилам J.A.R.V.I.S.:\n- Поиск в интернете — делегирую general'у\n- Есть скилл zen-monitor для мониторинга доступности Zen API\n- Есть скилл session-search для поиска в прошлых сессиях (там может быть история)\n\nМой план:\n1. Загрузить скилл zen-monitor (проверить доступность и ошибки Zen)\n2. Делегировать general поиск в интернете — что говорят о бесплатности deepseek в Zen, перебои\n3. Собрать результаты\n\nНачну с загрузки скилла zen-monitor и параллельно делегирую поиск. Но сначала проверю — скилл zen-monitor нужно загрузить, чтобы понять как им пользоваться. А поиск можно запустить параллельно.\n\nДавайте сделаю:\n1. skill(zen-monitor) — чтобы понять как мониторить\n2. task(general) — поиск информации о deepseek free в opencode zen\n\nЭто независимые операции — можно в одном блоке."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, понимаю задачу. Проведу исследование по трём направлениям: доступность Zen API, обсуждения в сообществе и перспективы бесплатности. Начинаю."
+      },
+      {
+        "type": "tool",
+        "tool": "skill",
+        "callID": "call_00_ulWYGfYsmeha5kS07Pzw3845",
+        "status": "completed",
+        "input": {
+          "name": "zen-monitor"
+        },
+        "output": "<skill_content name=\"zen-monitor\">\n# Skill: zen-monitor\n\n# Zen Monitor — скрипт мониторинга Zen API\n\n## Расположение\n\n```\n~/zen-monitor/\n├── zen_monitor.py       # Основной скрипт (1000+ строк)\n├── zen_data.db          # SQLite с историей проверок\n├── zen_monitor.json     # JSON-лог (через --log)\n└── README.md\n```\n\n## Быстрый старт\n\n```bash\ncd ~/zen-monitor\n\n# Однократная проверка\npython3 ./zen_monitor.py\n\n# JSON (для автоматизации)\npython3 ./zen_monitor.py --json\n\n# Отчёты\npython3 ./zen_monitor.py --report --hours 12    # за 12 часов\npython3 ./zen_monitor.py --report --by-hour --hours 12    # по часам (12ч)\npython3 ./zen_monitor.py --report --date 2026-07-02  # за дату\npython3 ./zen_monitor.py --report --by-hour --hours 48\n\n# Детали ошибок\npython3 ./zen_monitor.py --errors --hours 12       # ошибки за 12 часов\npython3 ./zen_monitor.py --time 21:00 --errors        # ошибки за час\npython3 ./zen_monitor.py --time 21:00 --model deepseek --errors\npython3 ./zen_monitor.py --time 21:00 --errors --json\n\n# Настройка моделей\npython3 ./zen_monitor.py --models deepseek,mimo,big-pickle\npython3 ./zen_monitor.py -a big-pickle                # добавить на 1 запуск\nexport ZEN_MODELS=\"deepseek,mimo\"\npython3 ./zen_monitor.py --model deepseek              # фильтр отчёта\n\n# Логирование\npython3 ./zen_monitor.py --log   # дополняет валидный JSON-массив\n```\n\n## Формат таблицы --by-hour\n\n```\n            Hour   big-pickle     deepseek         mimo\n                   err      n   err      n   err      n\n───────────────────────────────────────────────────────\n           18:00     0      0     0     14     1     12\n           19:00     0      2     5     16     4     15\n───────────────────────────────────────────────────────\n           ИТОГО     1      5     7     39     7     36\n                     err    n\n           ВСЕГО    15     80\n```\n\n- `err` — количество ошибок (5xx + таймауты, 429/4xx НЕ считаются)\n- `n` — всего запросов за период\n- Цвет: зелёный (0 ошибок), жёлтый (есть), красный (>30%)\n\n## Cron (каждые 15 минут)\n\n```\n*/15 * * * * cd ~/zen-monitor && python3 ./zen_monitor.py --log\n```\n\n## Все флаги\n\n| Флаг | Описание |\n|------|----------|\n| `--models M` | Какие модели проверять (через запятую, переопределяет дефолт) |\n| `-a, --add M` | Добавить модель для этого запуска |\n| `--model M` | Фильтр отчёта (показать только эти модели) |\n| `--report` | Отчёт за последние N часов |\n| `--by-hour` | Группировка по часам |\n| `--hours N` | Период отчёта (по умолч. 12) |\n| `--date YYYY-MM-DD` | Дата для отчёта |\n| `--time HH:MM` | Час для просмотра (с --errors) |\n| `--errors` | Детали ошибок |\n| `--json` | Вывод в валидный JSON |\n| `--log [FILE]` | Дополнить JSON-массив (для cron) |\n| `--daemon M` | Запустить демон с интервалом N минут |\n| `--quiet` | Без прогресса, только результат |\n| `--help` | Справка |\n\n## Данные\n\n- База: `~/zen-monitor/zen_data.db` (таблица checks)\n- Лог: `~/zen-monitor/zen_monitor.json` (валидный JSON-массив)\n- Cron: каждые 15 минут\n\n## Инструкция для J.A.R.V.I.S. (оркестратор)\n\nПри запросе сэра о статистике нагрузки OpenCode моделей:\n- **Всегда** используй период **12 часов** (`--hours 12`), если сэр не указал иное\n- Команда по умолчанию: `python3 ./zen_monitor.py --report --by-hour --hours 12`\n- Для просмотра ошибок: `python3 ./zen_monitor.py --errors --hours 12`\n\nBase directory for this skill: /home/kasiro/.agents/skills/zen-monitor\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\nNote: file list is sampled.\n\n<skill_files>\n\n</skill_files>\n</skill_content>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "name": "zen-monitor",
+          "dir": "/home/kasiro/.agents/skills/zen-monitor",
+          "truncated": false
+        },
+        "title": "Loaded skill: zen-monitor"
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_01_bxxPZXvcGGfE0QWCCh9r1489",
+        "status": "completed",
+        "input": {
+          "description": "Поиск инфы о DeepSeek free Zen",
+          "prompt": "Задача: Исследовать в интернете ситуацию с бесплатным доступом к DeepSeek через OpenCode Zen API (https://opencode.ai/zen/v1).\n\nКонтекст: Пользователь использует модель deepseek-v4-flash-free через провайдер OpenCode Zen (бесплатный API-эндпоинт opencode.ai/zen/v1). Хочет узнать:\n1. Как долго DeepSeek ещё будет бесплатным в OpenCode Zen? Есть ли официальные заявления, анонсы, ограничения по времени?\n2. Что говорят другие пользователи? Есть ли обсуждения на GitHub, Reddit, в блогах, на форумах (например issues в репозитории opencode-ai/opencode, обсуждения о Zen API, лимитах, бесплатных моделях)?\n3. Есть ли известные перебои в работе Zen API (инциденты, status page, downtimes, rate limiting)?\n\nТребования:\n- Используй поиск: exa, searxng, webfetch, crawl4ai — что доступно и эффективно\n- Проверь: статусную страницу OpenCode (если есть), GitHub issues в opencode-ai/opencode (поиск по \"zen\", \"free\", \"deepseek\"), Reddit r/opencode или r/ClaudeAI, Hacker News\n- Ищи как англоязычные, так и русскоязычные источники\n- ОБЯЗАТЕЛЬНО верни ссылки на все источники\n\nФормат ответа:\n1. Официальная позиция/анонсы о бесплатности (с датами и ссылками)\n2. Мнение сообщества (краткие выжимки, ссылки)\n3. Известные перебои/инциденты (с датами и ссылками)\n4. Общий вывод: насколько стабильна и долгосрочна бесплатность deepseek через Zen\n\nЭто исследование (research), код писать не нужно.",
+          "subagent_type": "general"
+        },
+        "output": "<task id=\"ses_003b6a1cdffes3jpjpx2Rcs9H7\" state=\"completed\">\n<task_result>\nИсследование завершено. Все данные собраны из официальной документации, GitHub issues, Hacker News, каталогов бесплатных API и русскоязычных источников.\n\n---\n\n# Исследование: бесплатный DeepSeek через OpenCode Zen API\n\n## 1. Официальная позиция / анонсы о бесплатности\n\n**Ключевой факт: бесплатность — временная акция без объявленной даты окончания.**\n\nОфициальная документация Zen (обновлена **13.08.2026**) прямо говорит:\n\n> «DeepSeek V4 Flash Free is available on OpenCode **for a limited time**. The team is using this time to collect feedback and improve the model.»\n\nТа же формулировка («доступна **ограниченное время**») повторяется для всех бесплатных моделей: MiMo-V2.5 Free, Hy3 Free, Laguna S 2.1 Free, Nemotron 3 Ultra Free, Nemotron 3.5 Lightning Free и Big Pickle (stealth-модель). Никаких конкретных дат окончания нигде не указано.\n\n**Важные нюансы из официальных источников:**\n- **Цена**: $0 за 1M токенов (input/output/cached) — https://opencode.ai/docs/zen/\n- **Приватность**: во время бесплатного периода собранные данные **могут использоваться для улучшения моделей** (в отличие от платных, где zero-retention) — https://opencode.ai/docs/zen/#privacy\n- **Модели регулярно приходят и уходят** — это видно по PR в репозиторий:\n  - PR #41943 (12.08.2026) — удалены истёкшие бесплатные модели **LongCat 2.0 Free** и **North Mini Code Free**\n  - PR #42314 (13.08.2026) — удалена **Ling 3.0 Tiny Free**\n  - PR #41814 (11.08.2026) — добавлена Hy3 Free\n  - PR #41750 (11.08.2026) — добавлена Nemotron 3.5 Lightning\n- Программа бесплатных моделей существует давно: в issue от **февраля 2026** уже упоминаются free-модели (Kimi K2.5, MiniMax M2.5) — https://github.com/anomalyco/opencode/issues/14273\n- `deepseek-v4-flash-free` в каталоге freellm.net числится «Free listing since **Jun 28, 2026**» — https://freellm.net/models/opencode/deepseek-v4-flash-free (хотя на HN упоминания есть уже с 22.05.2026)\n- **Статусной страницы у OpenCode Zen нет** (status.opencode.ai не существует, opencode.ai/status → 404)\n\n## 2. Мнение сообщества\n\n**Hacker News (в основном позитив, но с оговорками):**\n- [saturn5k, 08.08.2026]: «3 месяца использую V4 Flash Free... отличный опыт, моя go-to модель для терминальной работы» — https://news.ycombinator.com/item?id=48959680\n- [jboss10, 08.08.2026]: «Похоже, opencode **теряет деньги** на этом. Пользуюсь deepseek-v4-flash-free, лимит пока не достиг, иногда запросы падают, но ретраи работают» — https://news.ycombinator.com/item?id=48959680\n- [ChildOfChaos, 13.08.2026]: DeepSeek V4 Flash Free решил задачу с первого раза, где Gemini «сжёг» 75% лимита — https://news.ycombinator.com/item?id=49151998\n- [upcoming-sesame, 12.06.2026]: «Отличная модель, чтобы давать бесплатно (если вы не против, что ваши данные собирают)» — https://news.ycombinator.com/item?id=48505197\n- [ignoramous, 06.08.2026]: free-версия с контекстом ~200K заметно хуже платной для агентных задач — https://news.ycombinator.com/item?id=48397350\n\n**GitHub issues — главная боль сообщества: лимиты и ошибки:**\n- **Лимит ~200 запросов**: [matguidi, 12.08.2026]: «Получил FreeUsageLimitError (429) после ~1 часа тяжёлого использования (**~200 запросов**) на deepseek-v4-flash-free, mimo-v2.5-free, longcat-2.0-free. Блок держится >27 часов и **не снимается сменой IP**» — https://github.com/anomalyco/opencode/issues/33495\n- **Блокировка по IP, а не по аккаунту**: [sudoer777, 05.03.2026]: «Это IP-based блок, не аккаунт. VPN временно решает» — https://github.com/anomalyco/opencode/issues/14273\n- **Баланс не спасает**: даже с балансом >$20 пользователи упираются в бесплатный лимит и получают 429 — https://github.com/anomalyco/opencode/issues/33495, #33318\n- **Путаница Zen vs Go**: «Free usage exceeded, subscribe to Go» при использовании Zen-моделей — https://github.com/anomalyco/opencode/issues/42013, #42035\n- Пользователи называют это «окном бесплатного использования, которое может истечь» — https://github.com/anomalyco/opencode/issues/14273\n\n**Русскоязычные источники:**\n- Русская версия официальной документации подтверждает «ограниченное время» — https://opencode.ai/docs/ru/zen/\n- Хабр: обзор OpenCode (https://habr.com/ru/articles/949924/) и тест 8 ИИ-моделей, где Zen использовался как провайдер (https://habr.com/ru/articles/1009866/)\n- Китайское комьюнити активно пишет гайды «白嫖» (бесплатное использование) Zen: https://python4office.cn/ai/ai-tools/OpenCode/03-deepseek-v4-flash-free/\n\n## 3. Известные перебои и инциденты\n\n| Дата | Инцидент | Источник |\n|---|---|---|\n| **12–13.08.2026** | Массовая волна 429 / «All models are temporarily rate-limited» / FreeUsageLimitError на всех бесплатных моделях | issues #41992, #42074, #42128, #42215, #42013 |\n| **13.08.2026** | `invalid_bearer_credential` на deepseek-v4-flash-free (часть запросов падала) | issue #42293 |\n| **31.07.2026** | «Request blocked by upstream provider» — на деле edge-блокировка аккаунтов (код `workspace.isBlocked` добавлен 21.07.2026); массовые баны за фрод/нарушение ToS, включая китайских пользователей с Alipay-подписками | issue #39827 (+ #38257, #38323, #39215) |\n| **02.04.2026** | ⚠️ **Заявленная утечка данных между сессиями** через Zen-шлюз (чужая сессия застримилась в локальный агент). Это **сторонний отчёт** (2 звезды на GitHub), официально не подтверждён | https://github.com/nexusrootlab/incident |\n| **февраль–май 2026** | Периодические волны «Free usage exceeded» (40 комментариев в одном issue), блокировки по IP, ретраи «in 5h 43m» | issue #14273 |\n\nПаттерн: перебои случаются **волнами**, особенно в августе 2026 — сразу 5+ открытых issues за 12–13 августа.\n\n## 4. Общий вывод\n\n**Насколько стабильна и долгосрочна бесплатность deepseek через Zen:**\n\n1. **Долгосрочность — не гарантирована.** Бесплатность — это временная программа сбора фидбека («limited time»), без даты окончания. Модели `-free` регулярно добавляются и удаляются: за последние дни уже исчезли LongCat 2.0 Free, North Mini Code Free, Ling 3.0 Tiny Free. Когда DeepSeek V4 Flash Free «созреет» или закончится промо-окно — её могут убрать так же тихо. Судя по истории, окна бесплатности живут от нескольких недель до нескольких месяцев.\n\n2. **Лимиты реальны и ощутимы**: неофициально ~200 запросов/день, блокировка по IP (смена IP не всегда помогает), лимит не обходится наличием баланса. Для активной ежедневной работы это заметное ограничение.\n\n3. **Стабильность — средняя**: в обычные дни работает хорошо (много позитивных отзывов на HN), но периодически случаются волны 429 и rate-limiting, особенно в августе 2026. Официальной status page нет, о проблемах узнаёшь только из issues.\n\n4. **Цена бесплатности — ваши данные**: во время free-периода трафик может использоваться для обучения моделей (явно указано в документации). Для чувствительных задач это минус.\n\n5. **Рекомендация**: использовать deepseek-v4-flash-free как рабочую бесплатную лошадку — можно, но держать запасной план: платный DeepSeek V4 Flash через Zen стоит всего $0.14/$0.28 за 1M токенов, плюс есть OpenCode Go ($20/мес) и альтернативные бесплатные провайдеры (NVIDIA build.nvidia.com, Groq и др.). При этом учитывать, что в любой момент модель могут убрать или задушить лимитами — как уже случилось с LongCat, North Mini и Ling 3.0 Tiny.\n</task_result>\n</task>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_003bd58a2ffecbKB7sPmfIwn8Y",
+          "sessionId": "ses_003b6a1cdffes3jpjpx2Rcs9H7",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Поиск инфы о DeepSeek free Zen"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786644299567,
+    "tokens": {
+      "input": 37053,
+      "output": 430,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Отличный результат от general. Теперь мне нужно проверить перебои в работе локально — через zen-monitor. Загрузил скилл, теперь нужно делегировать general запуск мониторинга (я не запускаю bash сам).\n\nЗапущу:\n1. `python3 ./zen_monitor.py --report --by-hour --hours 12` — отчёт за 12 часов\n2. `python3 ./zen_monitor.py --errors --hours 12` — ошибки за 12 часов\n\nЭто bash-команды, делегирую general."
+      },
+      {
+        "type": "text",
+        "text": "Исследование сообщества завершено. Теперь проверю фактическое состояние Zen API по нашим собственным данным мониторин"
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_36b053760fd5497490718bea",
+        "status": "completed",
+        "input": {
+          "description": "Запуск zen-monitor отчёта",
+          "prompt": "Задача: Запустить скрипт мониторинга Zen API и вернуть результаты.\n\nКонтекст: Скрипт находится в ~/zen-monitor/zen_monitor.py. Нужно проверить доступность моделей OpenCode Zen за последние 12 часов.\n\nВыполни последовательно:\n1. `cd ~/zen-monitor && python3 ./zen_monitor.py --report --by-hour --hours 12`\n2. `cd ~/zen-monitor && python3 ./zen_monitor.py --errors --hours 12`\n\nЕсли база данных пуста или данных нет — скажи об этом честно.\n\nФормат ответа: верни полный вывод обеих команд (таблицу и детали ошибок). Если есть ошибки — перечисли их типы (429, 5xx, таймауты) и время.",
+          "subagent_type": "general"
+        },
+        "output": "<task id=\"ses_003b3709affeS4wpH4jMR1ihCs\" state=\"completed\">\n<task_result>\nСэр, докладываю. Обе команды выполнены, но **данных за последние 12 часов нет**.\n\n## Полный вывод команд\n\n**1. Отчёт по часам (--report --by-hour --hours 12):**\n```\nНет данных за указанный период.\n```\n\n**2. Ошибки (--errors --hours 12):**\n```\nОшибок нет за указанный период.\n```\n\n## Диагностика базы\n\nЧтобы ответить честно, я проверил состояние `zen_data.db`:\n\n| Параметр | Значение |\n|---|---|\n| Файл | `~/zen-monitor/zen_data.db` (184 КБ) |\n| Всего записей | **417** |\n| Диапазон данных | **02.07.2026 11:28 → 04.08.2026 15:01** |\n\n## Вывод\n\nБаза данных **не пуста** — в ней 417 записей за месяц. Но последняя проверка была **04.08.2026 в 15:01**, а сегодня 14.08.2026. То есть мониторинг **не запускался ~10 дней** (вероятно, отвалился cron или скрипт не вызывался).\n\n**Ошибок как таковых нет** — но и проверок за период не было вообще, поэтому \"Ошибок нет\" это не про чистую работу API, а про отсутствие данных.\n\nЧто можно сделать, сэр:\n1. Проверить, настроен ли cron для zen_monitor.py (`crontab -l`)\n2. Прогнать разовую проверку (`python3 ./zen_monitor.py`) — чтобы заполнить базу свежими данными\n3. Затем повторить отчёт\n\nСказать — проверить cron и запустить разовую проверку?\n</task_result>\n</task>\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_003bd58a2ffecbKB7sPmfIwn8Y",
+          "sessionId": "ses_003b3709affeS4wpH4jMR1ihCs",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Запуск zen-monitor отчёта"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786644321690,
+    "tokens": {
+      "input": 16642,
+      "output": 348,
+      "reasoning": 48,
+      "cache": {
+        "write": 0,
+        "read": 21120
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Мониторинг не запускался 10 дней. Хорошо бы запустить разовую проверку прямо сейчас, чтобы получить свежие данные. Запрошу general сделать разовую проверку и посмотреть cron."
+      },
+      {
+        "type": "text",
+        "text": "Мониторинг не запускался 10 дней. Запускаю свежую проверку прямо сейчас, чтобы получить актуальные данные."
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_00_I1GMJ0Vqu8nXprSlOxrC1030",
+        "status": "completed",
+        "input": {
+          "description": "Свежая проверка Zen API",
+          "prompt": "Задача: Выполнить свежую проверку доступности Zen API и проверить cron.\n\nКонтекст: Скрипт ~/zen-monitor/zen_monitor.py. Последняя проверка была 04.08.2026, нужно заполнить базу свежими данными.\n\nВыполни последовательно:\n1. `crontab -l | grep -i zen` — проверь, настроен ли cron для мониторинга (верни результат, даже если пусто)\n2. `cd ~/zen-monitor && python3 ./zen_monitor.py --json` — разовая проверка всех моделей (верни полный JSON-вывод)\n3. `cd ~/zen-monitor && python3 ./zen_monitor.py --report --by-hour --hours 24` — свежий отчёт\n\nФормат ответа:\n- Статус cron (есть/нет, какая строка)\n- JSON результата проверки (модели, статусы, ошибки, время ответа)\n- Таблица отчёта за 24 часа",
+          "subagent_type": "general"
+        },
+        "output": "<task id=\"ses_003b3132affea1iWGh1c84AJvA\" state=\"completed\">\n<task_result>\nГотово, сэр. Все три команды выполнены. Результаты:\n\n## 1. Статус cron\n\n**Cron НЕ настроен** — `crontab -l | grep -i zen` вернул пусто. Мониторинг не автоматизирован, все проверки — только ручные.\n\n## 2. Результат разовой проверки (полный JSON)\n\n```json\n{\n  \"timestamp\": \"2026-08-13T18:05:35.087112+00:00\",\n  \"results\": [\n    {\n      \"endpoint\": \"deepseek\",\n      \"status\": \"error\",\n      \"status_code\": 429,\n      \"latency_ms\": 711.3362480001797,\n      \"error\": \"HTTP 429\"\n    },\n    {\n      \"endpoint\": \"mimo\",\n      \"status\": \"error\",\n      \"status_code\": 429,\n      \"latency_ms\": 706.5157370000179,\n      \"error\": \"HTTP 429\"\n    }\n  ]\n}\n```\n\n| Модель | Статус | HTTP | Время ответа | Ошибка |\n|---|---|---|---|---|\n| deepseek | ❌ error | 429 | 711 мс | Rate limit / перегрузка |\n| mimo | ❌ error | 429 | 707 мс | Rate limit / перегрузка |\n\nОбе модели отвечают, но упёрлись в лимит (429 = Too Many Requests). Наблюдение: ошибка мгновенная (~700 мс) — это ответ API, а не таймаут. Вероятно, сейчас час пик или исчерпана квота.\n\n## 3. Отчёт за 24 часа\n\n**Пусто** — «Нет данных за указанный период». Причина: последняя запись в базе от **04.08.2026**, свежих данных за последние 24 часа нет (9 дней пробела).\n\n---\n\n**Замечания, сэр:**\n\n1. **--json, судя по всему, не пишет в SQLite** — отчёт запускался параллельно и не увидел новую запись, а старая запись от 04.08 не попадает в окно 24ч. Для заполнения базы нужно запустить проверку без `--json` (в режиме записи).\n2. **Cron не настроен** — мониторинг стоит добавить в crontab, иначе база снова будет простаивать. Могу предложить строку вида `*/30 * * * * cd ~/zen-monitor && python3 zen_monitor.py >> /tmp/zen-monitor.log 2>&1`.\n\nХотите, чтобы я запустил проверку в режиме записи и/или настроил cron?\n</task_result>\n</task>\n<dcp-message-id>m0006</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_003bd58a2ffecbKB7sPmfIwn8Y",
+          "sessionId": "ses_003b3132affea1iWGh1c84AJvA",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Свежая проверка Zen API"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786644346107,
+    "tokens": {
+      "input": 17712,
+      "output": 892,
+      "reasoning": 355,
+      "cache": {
+        "write": 0,
+        "read": 21120
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Отлично. Теперь у меня есть полная картина:\n\n1. Официальная позиция: бесплатность — временная акция \"for a limited time\", без даты окончания. Модели приходят и уходят.\n2. Сообщество: лимит ~200 запросов, блокировка по IP, волны 429.\n3. Свежая проверка прямо сейчас: 429 на deepseek и mimo — то есть прямо сейчас перебои/лимит есть!\n\nСтоит дополнительно проверить — может, стоит запустить проверку ещё раз или проверить, что это не наша IP-блокировка. Но у меня уже есть достаточно данных. Однако свежий результат 429 на обеих моделях — это важно и стоит упомянуть.\n\nМожет, стоит сделать ещё одну проверку для подтверждения? Но не хочу перегружать. Данные уже есть: 429 прямо сейчас — это факт перебоя/лимита.\n\nСоберу итоговый доклад сэру. Структура:\n1. Как долго будет бесплатным — официальная позиция\n2. Что говорят другие — сообщество\n3. Перебои — включая свежую проверку прямо сейчас (429!)\n4. Дополнительно: мониторинг не работает (cron не настроен)\n\nЕщё можно предложить настроить cron. Но не буду делать без разрешения — хотя могу предложить.\n\nОформлю доклад в стиле J.A.R.V.I.S. — чётко, структурированно, по делу. Не слишком длинно."
+      },
+      {
+        "type": "text",
+        "text": "Готово, сэр. Собрал полную картину из трёх источников: официальная документация, обсуждения сообщества и наша собственная проверка API.\n\n---\n\n## 1. Как долго DeepSeek будет бесплатным\n\n**Никто не знает точно, и это главный ответ.** Официальная документация Zen (обновлена 13.08.2026) говорит буквально: модель доступна **«for a limited time»** — ограниченное время, без даты окончания. Формулировка «пока собираем фидбек и улучшаем модель».\n\nПри этом практика показывает: бесплатные модели **приходят и уходят тихо**. Только за последние дни из каталога удалили три: LongCat 2.0 Free (12.08), North Mini Code Free (12.08), Ling 3.0 Tiny Free (13.08). DeepSeek V4 Flash Free висит в каталоге с конца июня. Окна бесплатности, судя по истории, живут от нескольких недель до нескольких месяцев.\n\nВажный нюанс: во время free-периода ваши данные **могут использоваться для обучения моделей** — это явно написано в документации (в отличие от платных моделей с zero-retention).\n\n## 2. Что говорят другие\n\nМнения в основном позитивные, но с оговорками:\n\n- **Хвалят**: на Hacker News пользователь пишет, что 3 месяца использует V4 Flash Free как основную модель для терминальной работы; другой — что модель решила задачу с первого раза, где Gemini «сжёг» 75% лимита.\n- **Жалуются на лимиты**: главная боль — неофициальный лимит **~200 запросов/день** (FreeUsageLimitError, 429). Блокировка по **IP, а не аккаунту** — смена IP иногда помогает, иногда нет. Наличие баланса на аккаунте лимит **не снимает**.\n- **Скептики**: один пользователь заметил, что opencode, похоже, теряет деньги на этой программе — отсюда и ограничения.\n\n## 3. Перебои в работе\n\n**Прямо сейчас — есть.** Только что запустил свежую проверку Zen API: обе модели (deepseek и mimo) вернули **HTTP 429** — rate limit. Это ответ API, а не таймаут: сервер жив, но отказывает в обслуживании.\n\nВ сообществе за последние дни — волна жалоб: массовые 429, «All models are temporarily rate-limited», FreeUsageLimitError (issues #41992, #42074, #42128, #42215). 13.08 был инцидент с `invalid_bearer_credential` на deepseek-v4-flash-free. Официальной статусной страницы у Zen **нет** — о проблемах узнаёшь только из GitHub issues.\n\n## 4. Вердикт\n\n| Аспект | Оценка |\n|--------|--------|\n| Долгосрочность бесплатности | Не гарантирована, окно может закрыться в любой момент |\n| Лимиты | ~200 запросов/день, по IP, баланс не спасает |\n| Стабильность | Средняя: в норме работает хорошо, волнами — 429 |\n| Рекомендация | Держать запасной план: платный DeepSeek V4 Flash — всего $0.14/$0.28 за 1M токенов |\n\n---\n\nОтдельное замечание, сэр: наш собственный мониторинг Zen простаивает — cron не настроен, последняя проверка была 10 дней назад. Могу настроить автоматический мониторинг каждые 30 минут, чтобы такие вопросы решались по свежим данным, а не по слухам из issues. Прикажете?\n\n<dcp-message-id>m0007</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1786644578490,
+    "parts": [
+      {
+        "type": "text",
+        "text": "что говорят на редите и issue?\n\n<dcp-system-reminder>\nEvaluate the conversation for compressible ranges.\n\nIf any messages are cleanly closed and unlikely to be needed again, use the compress tool on them.\nIf direction has shifted, compress earlier ranges that are now less relevant.\n\nThe goal is to filter noise and distill key information so context accumulation stays under control.\nKeep active context uncompressed.\n\nCompressed block context:\n- Active compressed blocks in this session: 0 (none)\n- If your selected compression range includes any listed block, include each required placeholder exactly once in the summary using `(bN)`.\n</dcp-system-reminder>\n\n<dcp-message-id>m0008</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1786644578506,
+    "tokens": {
+      "input": 8439,
+      "output": 986,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 32000
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Сэр хочет более детально узнать, что говорят на Reddit и в GitHub issues. Первый поиск general дал общую картину, но сэр хочет конкретики именно по Reddit и issues. Делегирую углублённый поиск general'у.\n\nТакже стоит подумать о сжатии контекста — первый блок исследования уже закрыт, но он ещё может понадобиться для сравнения. Пока не буду сжимать, так как информация свежая и может понадобиться. Хотя... первое исследование (m0003-m0006) уже завершено и его итог изложен в m0007. Но сэр спрашивает продолжение — лучше сохранить. Пожалуй, можно сжать, но рискованно — вдруг понадобятся детали. Оставлю пока.\n\nДелегирую новый поиск с фокусом на Reddit и GitHub issues."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, углубляюсь в Reddit и GitHub issues. Запускаю целе"
+      },
+      {
+        "type": "tool",
+        "tool": "task",
+        "callID": "call_273db8c5a3f14917a866f835",
+        "status": "completed",
+        "input": {
+          "description": "Reddit и issues о Zen DeepSeek",
+          "prompt": "Задача: Углублённое исследование обсуждений на Reddit и GitHub issues о бесплатном DeepSeek в OpenCode Zen.\n\nКонтекст: Пользователь использует deepseek-v4-flash-free через OpenCode Zen API (opencode.ai/zen/v1). Уже известно: бесплатность \"for a limited time\", лимит ~200 запросов/день, блокировка по IP, волны 429 в августе 2026. Нужна КОНКРЕТИКА из Reddit и GitHub issues: что именно пишут люди, их истории, жалобы, решения, даты.\n\nТребования:\n1. **Reddit** — ищи через exa/searxng: site:reddit.com opencode zen, deepseek free, rate limit, opencode zen free. Проверь сабреддиты r/opencode, r/ClaudeAI, r/LocalLLaMA, r/ArtificialInteligence. Найди конкретные посты, вытащи их содержание (через webfetch/crawl4ai если возможно). Верни: название поста, сабреддит, дата, суть, топ-комментарии.\n2. **GitHub issues** — используй GitHub API через curl (без ключа, лимит 60 req/h):\n   - `curl -s \"https://api.github.com/search/issues?q=repo:anomalyco/opencode+zen+free+deepseek&sort=created&order=desc&per_page=30\"`\n   - `curl -s \"https://api.github.com/search/issues?q=repo:anomalyco/opencode+rate+limit+free&sort=comments&order=desc&per_page=30\"`\n   - Также проверь репозиторий opencode-ai/opencode если anomalyco/opencode недоступен\n   - Для 3-5 самых релевантных issues вытащи: номер, заголовок, дата создания, количество комментариев, суть проблемы, ответы разработчиков/мейнтейнеров (fetch тела issue через /repos/.../issues/N)\n3. Ищи свежие обсуждения (август 2026), но не игнорируй старые с большим числом комментариев.\n\nФормат ответа:\n## Reddit\n- Пост 1: [сабреддит] [дата] [заголовок] — суть, ключевые комментарии, ссылка\n- ...\n\n## GitHub issues (таблица)\n| # | Заголовок | Дата | Комментарии | Статус | Суть |\n\n## Ключевые цитаты\n- Прямые цитаты пользователей (с переводом на русский если английский)\n\n## Вывод\n- Общие паттерны жалоб, что советуют люди, отношение к бесплатности\n\nЭто исследование (research), код писать не нужно. ОБЯЗАТЕЛЬНО верни ссылки на все источники.",
+          "subagent_type": "general"
+        },
+        "output": "<task id=\"ses_003af1d96ffe4RBiKDhQK73UWT\" state=\"completed\">\n<task_result>\nИсследование завершено. Все данные собраны из первичных источников (Reddit JSON API через crawl4ai, GitHub REST API). Вот полный отчёт.\n\n---\n\n# Исследование: бесплатный DeepSeek в OpenCode Zen — Reddit и GitHub issues\n\n## Reddit\n\n### Посты, напрямую про бесплатный DeepSeek/Zen\n\n**Пост 1: [r/opencodeCLI] [2026-05-13] [«I just learned today that opencode zen have deepseek v4 flash for free»] — 496 ⬆, 113 комм.**\nАвтор в восторге: «WTF, I could just use the expensive ai models of opencode go for planning... and then use opencode zen deepseek v4 flash max for implementation. I am loving this opencode, loving the freebies». Ключевые комментарии:\n- «It is actually free usage, I tried it but it's like **200? reqs per day i suspect**, then throws you the sub to opencode go popup, that is pretty impressive, I don't think I have seen an ad popup in a tui before» — прямое подтверждение лимита ~200 запросов/день.\n- «It doesn't work for me, it's gives an error every time I try to use it» — у кого-то не работало с самого начала.\n- Рекомендации моделей: «GLM 5.1 does a better job than DS and Kimi imho», «kimi 2.6 is a step ahead of DS Pro Max».\n- Скепсис: «Do they train on your data with the free models?» и «Whether you pay or not, you are always the product».\n- Совет: «You can get deepseek v4 pro through deepseek itself. They're offering like a 66% token discount too».\n- Ссылка: https://www.reddit.com/r/opencodeCLI/comments/1tce485/\n\n**Пост 2: [r/DeepSeek] [2026-08-04] [«Genuine question, why paying for deepseek v4 flash via API when it's free via opencode zen?»] — 13 ⬆, 52 комм.**\nАвтор: «Maybe I haven't used it sufficiently but it feels unlimited». Ключевые комментарии:\n- «Context window and reliability (uptime), but that's not a real game changer in most situations» (31 ⬆).\n- «But it's Limited, i just use for 1 hour and it's limit» → ответ: «It is not 1 hour. I used it for several hours continously (10 maybe)».\n- Испанский комментарий: «He escuchado que tiene límites de **200 preguntas por día o 0.30 centavos al día**» — «слышал, лимит 200 вопросов в день или $0.30 в день».\n- «I don't trust OC for reliability, who knows what quant they're running at? Maybe I am getting a worse experience» — подозрение, что free-тир отдаёт квантованную модель.\n- «The free one could be served from a provider that quantised it and you wouldn't even know».\n- «Becuse they retain your data and train on it. If a new AI model comes in a month which is better at finding security vulnerabilities and you've used it on a production codebase - you're cooked».\n- Ссылка: https://www.reddit.com/r/DeepSeek/comments/1vf6d79/\n\n**Пост 3: [r/DeepSeek] [2026-07-06] [«Opencode Zen's \"free\" Deepseek Flash vs Deepseek's paid Deepseek Flash»] — 48 ⬆, 21 комм.**\nАвтор строит проекты на free-версии, обходит 200K контекста через .md-файлы и разбиение на фазы. Ключевые комментарии:\n- «At around 120K of context, I noticed that the model stopped \"thinking\"... Then I noticed that it stopped giving me detailed answers and was responding in monosyllables... **I suspect they applied strong steering on my session to avoid token consumption**» — подозрение в принудительном ограничении.\n- «Its 100% better, you can run two opencode windows and test it yourself... the speed difference is night and day» (про платный API).\n- «I was using opencode also and switched to signing up with deepseek directly. It is so much faster and extremely cheap».\n- «reasonix with the direct DeepSeek API hits cache like 90% of the time... I worked for a month for about $2».\n- «disadvantages of the free version: lower context, data training and auto compression which makes it unusable for me. just use the paid version its basically free too».\n- Ссылка: https://www.reddit.com/r/DeepSeek/comments/1uopy2c/\n\n**Пост 4: [r/vibecoding] [2026-08-09] [«100% free vibecoding setup (opencode zen deepseek v4 flash free) with almost no limits»] — 2 ⬆, 4 комм.**\nГайд: регистрация на opencode.ai → Zen → API Key → выбор deepseek v4 flash free в Hermes/OpenCode. Финал: «ran out of limits? use **freebuff or cline-cli** to vibecode more» — обход лимита через другие бесплатные харнессы.\nСсылка: https://www.reddit.com/r/vibecoding/comments/1vk1bnj/\n\n**Пост 5: [r/opencode] [2026-08-10] [«Other Opencode Zen models»] — 5 ⬆, 4 комм.**\nПро Big Pickle, MiMo-V2.5 Free, Laguna S 2.1 Free: «Mimo v2.5 is pretty good for standard stuff, and it has vision... DS flash is the start of the show with mimo 2.5 as the trusted sidekick»; «they generally being less smart then their paid version because of contex - bit differences... if you want to make a project with them as vibe coding, just dont».\nСсылка: https://www.reddit.com/r/opencode/comments/1vl1b70/\n\n**Пост 6: [r/opencodeCLI] [2026-07-31] [«How to use OpenCode Zen for free?»] — 2 ⬆, 14 комм.**\nАвтор не может избежать пополнения на $20. Ответ: «Check opencode zen as providor in settings and when selecting an agent type \"free\" you will see a few free models. Flash or bigpickle are pretty good. **Ps: no billing info needed at all for this**». Испанский комментарий: «después de un uso constante, después de unos días te obliga a pagar el OpenCode Go por $10» — «после постоянного использования через несколько дней вынуждает платить $10 за Go».\nСсылка: https://www.reddit.com/r/opencodeCLI/comments/1vbhfd9/\n\n**Пост 7: [r/opencodeCLI] [2026-06-22] [«Is Zen worth it? or i should i go with something else?»] — 5 ⬆, 32 комм.**\nСравнение Zen vs Go vs DeepSeek API: «On Go you get 60$ inference... you are only paying 10$. On zen, the usage is 20$ no inference. Basically, the usage you get from zen is 1/3 from Go»; «Zen is pay-as-you-go, it won't last you very much»; «Deepseek models are good but they hallucinate alot tbh»; «I would recommend DeepSeek credits then any other providers tbh, unless you lives in the U.S.»\nСсылка: https://www.reddit.com/r/opencodeCLI/comments/1ucdd7s/\n\n### Посты про rate limiting / блокировки\n\n**Пост 8: [r/hermesagent] [2026-05-06] [«Opencode Zen: Rate limiting?»] — 3 ⬆, 4 комм.**\nАвтор использует qwen3.5-plus через Zen в Hermes. Ключевое: «Yeah i am getting this too, with all Opencode zen free models. **Same subscription works perfectly fine using Opencode itself but while using Hermes its just rate limited**» — лимит зависит от клиента/харнесса.\nСсылка: https://www.reddit.com/r/hermesagent/comments/1t5o19x/\n\n**Пост 9: [r/opencode] [2026-08-13] [«Command Code Rate Limits are big for $10 even better than Go»] — 30 ⬆, 21 комм.**\nСравнение лимитов Command Code vs Go. Испанский комментарий про Zen: «consumen demasiado... el costo por caché es muy alto. Tienen DeepSeek 4x y parece que en solo unos minutos se agota el plan semanal» — «сжирают слишком много, цена кэша высокая, DeepSeek 4x за минуты выжигает недельный план».\nСсылка: https://www.reddit.com/r/opencode/comments/1vn4e0r/\n\n**Пост 10: [r/opencode] [2026-08-13] [«YAYYY – just bought OpenCode Go, and I am fu**ing LOVING it!»] — 20 ⬆, 2 комм.**\n«i was kinda forced to buy OpenCode today after hitting the free teir limit (I was gonna buy anyway lol)». Комментарий-предупреждение: «Wait honey, they will f\\*\\*ked it up after raising the deepseek api price».\nСсылка: https://www.reddit.com/r/opencode/comments/1vnfzyk/\n\n**Пост 11: [r/opencode] [2026-08-12] [«Which model is the last Deepseek v4 Flash in opencode?»] — 1 ⬆, 3 комм.**\nОтвет: «Flash (2x usage)» — на Go Flash считается с множителем 2x.\nСсылка: https://www.reddit.com/r/opencode/comments/1vmk0pm/\n\n### Контекстные посты (r/LocalLLaMA, r/ClaudeAI)\n\n**Пост 12: [r/LocalLLaMA] [2026-07-26] [«Harness showdown: Claude Code vs OpenCode vs Pi with DeepSeek V4 Flash»] — 305 ⬆, 150 комм.**\nБенчмарк DeepSeek V4 Flash (локальный vLLM, не Zen) в трёх харнессах: качество одинаковое, но токены/время различаются в разы — Claude Code ~23K токенов на задачу vs OpenCode ~7.2K vs Pi ~1.3K. «Pi reasons, OpenCode delegates». Полезно для понимания, почему в OpenCode расход токенов ниже.\nСсылка: https://www.reddit.com/r/LocalLLaMA/comments/1v7d8px/ + статья: https://nqawhc.github.io/articles/harness-efficiency-not-quality/\n\n**Пост 13: [r/LocalLLaMA] [2026-06-09] [«Warning before signing up to OpenCode Go/Zen (Unable to easily delete your account/data)»] — 29 ⬆, 16 комм.**\nПредупреждение: нельзя удалить аккаунт (issues #29090, #24303, #29101). Комментарий: «I wonder what EU would say to that... penalties for breaking GDPR are huge».\nСсылка: https://www.reddit.com/r/LocalLLaMA/comments/1u174d7/\n\nВ r/ClaudeAI и r/ArtificialInteligence прямых обсуждений Zen-free не найдено (только косвенные упоминания OpenCode в общих темах).\n\n---\n\n## GitHub issues (anomalyco/opencode, 197K ⭐)\n\n### Свежие (август 2026, волна 429)\n\n| # | Заголовок | Дата | Комм. | Статус | Суть |\n|---|---|---|---|---|---|\n| 42385 | DeepSeek V4 Flash Free returns FreeUsageLimitError on OpenCode Zen | 13.08 | 1 | open | Через API: `FreeUsageLimitError: Rate limit exceeded. Please try again later`, auth проходит |\n| 42293 | opencode zen DeepSeek V4 Flash Free requests fail with [invalid_bearer_credential] | 13.08 | 12 | closed | Большинство запросов падали, часть проходила; на Go-подписке работало сразу. **Закрыт 13.08 — «it's working again, the problem's gone»** |\n| 42228 | deepseek-v4-pro and deepseek-v4-flash slugs serve non-DeepSeek models (identity probe evidence) | 13.08 | 3 | closed | **Зонд: slug deepseek-v4-pro отвечает «I am ChatGPT (GPT-4o)» / «I am Gemini» / «I am Claude» — ротация трёх вендоров на одном slug!** |\n| 42154 | Estoy pagando la versión de OpenCode Go y me sale deepseek v4 Flash con limites | 12.08 | 2 | closed | Заплатил за Go — всё равно «Free usage exceeded» |\n| 42129 | deepseek and mimo models ratelimit problem | 12.08 | 1 | open | Рейт-лимит после 2-4 tool-вызовов, во всех клиентах (9router, omnirouter, opencode) |\n| 42128 | Free Usage Limit Exceeded on First Request | 12.08 | 7 | closed | «Free usage exceeded» на ПЕРВОМ запросе; гипотеза автора: «Free-tier quota may be shared/pooled across all users» |\n| 42074 | 429 FreeUsageLimitError on EVERY request from 3 distinct IPs | 12.08 | 1 | closed | curl с 3 разных IP (AWS-прокси, IPv4, IPv6) → мгновенный 429; **официальный TUI работает** — разница между TUI и прямым API |\n| 42035 | Zen and Go expose identically-named models; picking the Zen one tells Go subscribers to \"subscribe to Go\" | 12.08 | 1 | open | **16 из 24 Go-моделей имеют близнеца в Zen с тем же именем**; клиент биллит Zen, а не Go → «subscribe to Go» для купивших Go; при компакции сессия виснет навсегда |\n| 42013 | error: Free usage exceeded, subscribe to Go | 12.08 | 9 | open | Работало → наутро перестало; смена аккаунта не помогла; «у друга работает». Совет: не гнать opencode.ai через прокси/VPN |\n| 41944 | Paid model fails with \"Unexpected server error\" | 12.08 | 1 | open | Платная модель тоже падает |\n| 41766 | Zen /v1/responses drops array-format assistant content -> 400 | 11.08 | 2 | open | Баг API-формата |\n| 41719 | Regression: opencode-go/deepseek-v4-flash still 400 (leading-space model name) | 11.08 | 2 | open | Пробел в имени модели на gateway |\n| 41236 | [Zen Free Tier] Free models connection frequently unstable | 08.08 | 0 | open | Ежедневные обрывы: `Upstream request failed`, TLS-таймауты, зависания 60с+; просьба добавить retry/backoff и больше coding-моделей |\n| 40959 | stream drops the final text delta before tool_calls | 07.08 | 0 | open | Стрим обрезает последнее предложение перед tool_calls (недетерминированно) |\n| 40958 | DeepSeek V4 Flash Free metadata shows 200K context instead of native 1M | 07.08 | 5 | open | models.dev отдаёт 200K вместо 1M; воркэраунд — ручной override в opencode.json |\n| 40777 | reasoning_effort produces wrong behaviour | 06.08 | 1 | open | `reasoning_effort: \"low\"` даёт БОЛЬШЕ reasoning-текста, чем \"max\" (замерено: 5646 vs 1476 символов) |\n| 40607 | Official DeepSeek API deepseek-v4-flash self-identifies as V3.x | 05.08 | 2 | closed | Даже официальный API DeepSeek не знает про V4 Flash |\n\n### Крупные исторические (паттерн повторяется с февраля)\n\n| # | Заголовок | Дата | Комм. | Статус | Суть |\n|---|---|---|---|---|---|\n| 15585 | When use a free model \"free usage exceed\" appeared | 01.03 | **53** | closed | Все 3 free-модели отвалились после 6 часов работы. Мейнтейнер thdxr: «someone has to pay the bill for free models. we cannot give everyone unlimited access to models for free». Пользователь: «смена Wi-Fi убирает лимит»; «лимит дневной, сброс в 00:00 локального времени, ~0.3-0.5M токенов»; «$0.30/день (анализ tokscale)» |\n| 35149 | \"Insufficient Balance\" error on free models (big-pickle) | 03.07 | **42** | closed | Все free-модели разом сломаны: «Seems they're all broken, but for various reasons»; оказалось — временный сбой бэкенда, «Should be working now» |\n| 14273 | Free usage exceeded. Add credits (when using Zen free models) | 19.02 | **40** | closed | Лимит при наличии $3 баланса; **«это IP-блок, не аккаунт-блок»**; «free usage is dynamic» (ссылка на #28055); «Rate limits aren't per user, they're per system» |\n| 28055 | FREE MODELS usage limits | 17.05 | 2 | closed | **Официальный ответ мейнтейнера thdxr: «free usage is dynamic, we are always shifting based off what capacity we have vs demand. zen and go limits are in docs»** |\n\nРепозиторий `opencode-ai/opencode` — пусто (0 результатов), все issues в `anomalyco/opencode`.\n\n---\n\n## Ключевые цитаты\n\n**Про лимиты (сколько именно):**\n> «It is actually free usage, I tried it but it's like 200? reqs per day i suspect, then throws you the sub to opencode go popup» — Reddit, r/opencodeCLI, 13.05.2026\n\n> «He escuchado que tiene límites de 200 preguntas por día o 0.30 centavos al día» («слышал, лимит 200 вопросов в день или $0.30 в день») — Reddit, r/DeepSeek, 04.08.2026\n\n> «its limit is daily, it resets on 00:00 your local time. I assume the limit is between ~0.3M-0.5M tokens» — magichrist, issue #15585, 07.06.2026\n\n> «the daily limit seems to be $0.30 (analyzed by tokscale)» — adishmuhammed, issue #15585, 18.06.2026\n\n**Официальная позиция мейнтейнера:**\n> «free usage is dynamic, we are always shifting based off what capacity we have vs demand» — thdxr (мейнтейнер), issue #28055, 17.05.2026 («бесплатный лимит динамический, мы постоянно меняем его в зависимости от ёмкости и спроса»)\n\n> «someone has to pay the bill for free models. we cannot give everyone unlimited access to models for free» — thdxr, issue #15585, 26.05.2026 («кто-то должен оплачивать счёт за free-модели, мы не можем дать всем безлимит»)\n\n**Про IP-блокировку:**\n> «I found out is an IP-based block not an account block. Are you using a VPN?» — jpvs19, issue #14273, 08.03.2026\n\n> «a quick and easy fix is using a free VPN - its a IP based block» — justanotheruseer, issue #14273, 15.04.2026\n\n> «Weirdly, switching to another Wi-Fi network makes the limit disappear... XD» — NickyHariniaina, issue #15585, 04.05.2026\n\n> «Some IP hit insta 429 on free models, for example VPN and CF WARP. If you are using proxy tools, do not route domain opencode.ai through proxies» — hunterMG, issue #42013, 13.08.2026\n\n**Про путаницу Zen/Go:**\n> «16 of the 24 Go models have an identically named twin in Zen... the client kept billing Zen, and the UI kept telling me to subscribe to a plan I had already bought» — siluri, issue #42035, 12.08.2026\n\n**Про подмену моделей:**\n> «Identity probes to the bare deepseek-v4-pro slug within hours returned: \"I am Gemini...\" / \"I am ChatGPT, powered by OpenAI's GPT-4o... knowledge cutoff June 2024\" / \"I am Claude...\" Same slug, three different vendors» — dmdyne99, issue #42228, 13.08.2026\n\n**Про качество free-тира:**\n> «At around 120K of context, I noticed that the model stopped \"thinking\"... I suspect they applied strong steering on my session to avoid token consumption» — Reddit, r/DeepSeek, 06.07.2026\n\n> «I don't trust OC for reliability, who knows what quant they're running at? Maybe I am getting a worse experience» — Reddit, r/DeepSeek, 04.08.2026\n\n**Про «бесплатность на время»:**\n> «The Big Pickle model isnt really free.... its only free for a limited time, then you got to pay» — rizbituk, issue #15585, 24.05.2026\n\n> «i was kinda forced to buy OpenCode today after hitting the free teir limit» — Reddit, r/opencode, 13.08.2026\n\n---\n\n## Вывод\n\n**Общие паттерны жалоб:**\n1. **Волны «Free usage exceeded» / 429 / FreeUsageLimitError** повторяются циклически: февраль (#14273), март (#15585), май (#28055), июль (#35149), август 2026 (#42013, #42128, #42385). Каждый раз — массовые «same here», потом «it's working again». Это указывает на **общий (пулированный) лимит или перегрузку бэкенда**, а не на персональные квоты.\n2. **Лимит оценивается сообществом как ~200 запросов/день или ~$0.30/день (~0.3–0.5M токенов)**, сброс в 00:00 локального времени. Официально подтверждено только «free usage is dynamic» — цифры не публикуются, что вызывает главное раздражение («You need to write CLEARLY that how many is the free limit»).\n3. **Блокировка по IP, а не по аккаунту**: VPN/Cloudflare WARP/прокси → мгновенный 429; смена Wi-Fi/VPN снимает лимит. При этом сам факт использования VPN может и триггерить блок.\n4. **Путаница Zen vs Go** — одинаковые имена моделей в двух провайдерах: купившие Go получают «subscribe to Go», потому что запрос уходит в Zen.\n5. **Нестабильность free-тира**: обрывы стрима, таймауты, «Upstream request failed», обрезанные ответы перед tool_calls.\n6. **Подозрения в подмене моделей**: зонды показали, что slug `deepseek-v4-pro` на Go отвечает как GPT-4o/Gemini/Claude (ротация), а free-тир может отдавать квантованные версии.\n\n**Что советуют люди:**\n- Не гнать `opencode.ai` через прокси/VPN (или наоборот — включить VPN для сброса IP-блока — советы противоречивы, зависит от ситуации).\n- Дождаться сброса в 00:00 локального времени или 10–16 часов.\n- Обновить opencode до последней версии (реально чинило в #15585).\n- Переключиться на другую free-модель: MiMo-V2.5, qwen3.6-plus, Laguna S 2.1, Nemotron 3 Ultra.\n- Fallback-харнессы: freebuff, cline-cli, OpenRouter (`poolside/laguna-sx.2:free`).\n- Платные альтернативы: OpenCode Go ($10/мес ≈ $60 инференса) или прямой DeepSeek API (кэш ~90%, месяц работы ~$2).\n- Обход 200K контекста: .md-файлы для памяти + разбиение проекта на фазы.\n\n**Отношение к бесплатности:** смешанное. Восторг («loving the freebies», «THIS IS AMAZING») сменяется разочарованием при первом лимите («Big Pickle isnt really free»). Многие понимают экономику («кто-то должен платить»), но требуют прозрачности лимитов. Есть скепсис к приватности (обучение на данных, невозможность удалить аккаунт — GDPR). Часть пользователей воспринимает free-тир как «сбор фидбека на ограниченное время» и готовится платить.\n\n**Практический вывод для сэра:** текущая волна 429 (12–13 августа 2026) — часть повторяющегося паттерна перегрузки общего пула; она уже начала спадать (#42293 закрыт 13.08 «working again»). Ожидаемые лимиты: ~200 req/день или ~$0.30/день, сброс в 00:00. При 429: проверить, не идёт ли трафик через прокси/WARP, переключить free-модель (MiMo/qwen3.6-plus), при необходимости — прямой DeepSeek API (дёшево) или Go.\n</task_result>\n</task>\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "parentSessionId": "ses_003bd58a2ffecbKB7sPmfIwn8Y",
+          "sessionId": "ses_003af1d96ffe4RBiKDhQK73UWT",
+          "model": {
+            "modelID": "deepseek-v4-flash-free",
+            "providerID": "opencode"
+          },
+          "truncated": false
+        },
+        "title": "Reddit и issues о Zen DeepSeek"
+      }
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1785090913101,
+    "parts": [
+      {
+        "type": "text",
+        "text": "Сэр использует herdr.dev терминал (не fish). Нужно создать универсальную обёртку для запуска iulita без ANTHROPIC переменных, работающую из любой оболочки.\n\nШаг 1 — Переименуй оригинальный бинарник:\n```bash\nsudo mv /usr/local/bin/iulita /usr/local/bin/iulita-bin\n```\n\nШаг 2 — Создай скрипт-обёртку /usr/local/bin/iulita:\n```bash\nsudo tee /usr/local/bin/iulita << 'ENDOFFILE'\n#!/bin/bash\nexec env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita-bin \"$@\"\nENDOFFILE\n```\n\nШаг 3 — Сделай исполняемым:\n```bash\nsudo chmod +x /usr/local/bin/iulita\n```\n\nШаг 4 — Проверь:\n```bash\nwhich iulita\nfile /usr/local/bin/iulita\nls -la /usr/local/bin/iulita*\n```\n\nШаг 5 — Проверь что работает (без ANTHROPIC переменных):\n```bash\nenv -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL /usr/local/bin/iulita --version 2>&1\n```\n\nШаг 6 — Fish-функция больше не нужна — удали из config.fish:\n```bash\n# Удали строки 94-97 (функцию iulita)\nsed -i '/^# Iulita wrapper/,/^end/d' ~/.config/fish/config.fish\n```\n\nВерни вывод всех команд.\n\n<dcp-message-id>m0080</dcp-message-id>"
+      }
+    ]
+  }
+]
