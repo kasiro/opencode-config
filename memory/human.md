@@ -1,23 +1,8 @@
 ---
-description: About sir — preferences, habits, constraints. Agent MUST follow these rules.
+description: О сэре — расход токенов и требование к провайдеру
 label: human
 limit: 5000
 read_only: false
 ---
-
-## Language
-- Always Russian, except code and technical terms.
-- Address sir as "сэр", only "вы".
-
-## Protocol compliance
-- Never attempt to use tools you don't see in your tool list.
-- Never call tools that are denied — they are not available for a reason.
-- If a tool fails — stop, assess, write a lesson to `lessons` block.
-
-## Lessons (mandatory)
-**Every time** you make a mistake, sir corrects you, or you discover a new constraint:
-→ Use `memory_set` with `label: lessons` to append a new lesson entry.
-Format:
-`- [YYYY-MM-DD] <what happened> → <what to do instead>.`
-
-This is not optional. Lessons from past sessions are loaded into your system prompt every session. You learn by reading them before acting.
+- Дневной расход input: база ~6 000 000, пик 28 731 575 (15.09; output в тот день 104 875 — output ничтожен, оптимизировать только input).
+- Оплата с российских карт проблемна (западный хостинг недоступен).
