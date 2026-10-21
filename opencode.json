@@ -8,9 +8,6 @@
         "baseURL": "http://localhost:9625/v1"
       },
       "models": {
-        "free-minimax-m2.7": {
-            "name": "free-minimax-m2.7"
-        },
         "free-gemini-2.5-pro": {
             "name": "free-gemini-2.5-pro"
         },
@@ -39,10 +36,60 @@
             "name": "free-gemini-3-flash-preview"
         }
       }
-    }
+    },
+    "deepseek-proxy": {
+      "npm": "@voidrot/openai-featherless-compatible",
+      "name": "deepseek-proxy",
+      "options": {
+        "baseURL": "http://localhost:9626/v1",
+        "toolCallFallback": "auto",
+        "useCompletionUrls": true
+      },
+      "models": {
+        "deepseek/deepseek-v4.1-flash": {
+            "name": "deepseek/deepseek-v4.1-flash"
+        }
+      }
+    },
+    "zen-free": {
+       "npm": "@ai-sdk/openai-compatible",
+       "name": "zen-free",
+          "options": {
+            "baseURL": "http://localhost:9877/v1"
+          },
+          "models": {
+            "muse-spark-1.3-contributor-free": {
+                "name": "muse-spark-1.3-contributor-free"
+            },
+            "muse-spark-1.2-contributor-free": {
+                "name": "muse-spark-1.2-contributor-free"
+            },
+            "mimo-v2.5-free": {
+                "name": "mimo-v2.5-free"
+            },
+            "mimo-v2.6-flash-free": {
+                "name": "mimo-v2.6-flash-free"
+            },
+            "ling-3.0-flash-fin-free": {
+                "name": "ling-3.0-flash-fin-free"
+            },
+            "nemotron-3-ultra-free": {
+                "name": "nemotron-3-ultra-free"
+            },
+            "nemotron-3.5-lightning-free": {
+                "name": "nemotron-3.5-lightning-free"
+            },
+
+            "big-pickle": {
+                "name": "big-pickle"
+            },
+            "space-bunny-free": {
+                "name": "space-bunny-free"
+            }
+          }
+        }
   },
   "default_agent": "jarvis",
-  "subagent_depth": 2,
   "share": "disabled",
   "instructions": [
     "~/.config/opencode/global-rules.md"
@@ -69,7 +116,7 @@
     "sequential-thinking": {
       "type": "local",
       "command": [
-        "/home/kasiro/.bun/bin/mcp-server-sequential-thinking"
+        "/home/kasiro/.npm-global/bin/mcp-server-sequential-thinking"
       ],
       "timeout": 120000,
       "enabled": true
@@ -83,22 +130,10 @@
         "Authorization": "Bearer ctx7sk-418a5f6a-2b9c-4caa-94e2-573821193500"
       }
     },
-    "youtube-transcript": {
-      "type": "local",
-      "command": [
-        "/home/kasiro/Документы/python_projects/yt-transcript-mcp/.venv/bin/yt-transcript-mcp"
-      ],
-      "environment": {
-        "EXA_API_KEY": "57c7932c-0ffa-4f75-8173-da5b8a343752"
-      },
-      "timeout": 60000,
-      "enabled": false
-    },
     "lightpanda": {
       "type": "local",
       "command": [
-        "lightpanda",
-        "mcp"
+        "/home/kasiro/.npm-global/bin/lightpanda-mcp"
       ],
       "enabled": true,
       "timeout": 60000,
@@ -127,7 +162,6 @@
         "webfetch": "deny",
         "deepwiki_*": "deny",
         "context7_*": "deny",
-        "youtube-transcript_*": "deny",
         "lightpanda_*": "deny"
       }
     },
@@ -160,7 +194,6 @@
         "sequential-thinking_*": true,
         "deepwiki_*": true,
         "context7_*": true,
-        "youtube-transcript_*": true,
         "lightpanda_*": true,
         "memory_set": false,
         "memory_replace": false,

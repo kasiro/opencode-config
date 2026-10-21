@@ -1,0 +1,267 @@
+[
+  {
+    "role": "user",
+    "time": 1790276136337,
+    "parts": [
+      {
+        "type": "text",
+        "text": "переведи мою конфигурацию nvim (.config/nvim) на nixvim.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1790276136355,
+    "tokens": {
+      "input": 42568,
+      "output": 242,
+      "reasoning": 39,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Нужно спланировать миграцию nvim на nixvim: сначала изучить текущую конфигурацию, затем документацию nixvim, и только потом выполнять перенос.\n"
+      },
+      {
+        "type": "tool",
+        "tool": "sequential-thinking_sequentialthinking",
+        "callID": "call_836e1682b92b4766817f61c4",
+        "status": "completed",
+        "input": {
+          "thought": "Запрос: перевести конфигурацию nvim (~/.config/nvim) на nixvim.\n\nПлан действий:\n1. Изучить текущую конфигурацию ~/.config/nvim — что там настроено (плагины, ключмапы, настройки)\n2. Найти документацию по nixvim — как переносить конфиги\n3. Создать nixvim-модуль в структуре nixos-config\n4. Интегрировать в home-manager\n\nНачну с изучения текущей конфигурации nvim.",
+          "nextThoughtNeeded": "true",
+          "thoughtNumber": 1,
+          "totalThoughts": 5
+        },
+        "output": "{\n  \"thoughtNumber\": 1,\n  \"totalThoughts\": 5,\n  \"nextThoughtNeeded\": true,\n  \"branches\": [],\n  \"thoughtHistoryLength\": 1\n}\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_9cc6d204766f4e7c87130263",
+        "status": "completed",
+        "input": {
+          "command": "fd . /home/kasiro/.config/nvim --max-depth 2 2>/dev/null | head -50"
+        },
+        "output": "/home/kasiro/.config/nvim/Images/\n/home/kasiro/.config/nvim/Images/1.png\n/home/kasiro/.config/nvim/Images/2.png\n/home/kasiro/.config/nvim/Images/3.png\n/home/kasiro/.config/nvim/Images/4.png\n/home/kasiro/.config/nvim/Images/5.png\n/home/kasiro/.config/nvim/README.md\n/home/kasiro/.config/nvim/init.lua\n/home/kasiro/.config/nvim/lazy-lock.json\n/home/kasiro/.config/nvim/lua/\n/home/kasiro/.config/nvim/lua/core/\n/home/kasiro/.config/nvim/lua/plugins/\n\n<dcp-message-id>m0002</dcp-message-id>",
+        "metadata": {
+          "output": "/home/kasiro/.config/nvim/Images/\n/home/kasiro/.config/nvim/Images/1.png\n/home/kasiro/.config/nvim/Images/2.png\n/home/kasiro/.config/nvim/Images/3.png\n/home/kasiro/.config/nvim/Images/4.png\n/home/kasiro/.config/nvim/Images/5.png\n/home/kasiro/.config/nvim/README.md\n/home/kasiro/.config/nvim/init.lua\n/home/kasiro/.config/nvim/lazy-lock.json\n/home/kasiro/.config/nvim/lua/\n/home/kasiro/.config/nvim/lua/core/\n/home/kasiro/.config/nvim/lua/plugins/\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "fd . /home/kasiro/.config/nvim --max-depth 2 2>/dev/null | head -50"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1790276146044,
+    "tokens": {
+      "input": 43059,
+      "output": 79,
+      "reasoning": 33,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Нужно прочитать содержимое основных файлов конфигурации nvim, чтобы понять какие плагины и настройки используются для переноса на nixvim."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_d0f650c9a80e4057b96ec974",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/nvim/init.lua"
+        },
+        "output": "<path>/home/kasiro/.config/nvim/init.lua</path>\n<type>file</type>\n<content>\n1: -- Basic\n2: require('core.configs')\n3: require('core.plugins')\n4: require('core.mappings')\n5: require('core.colors')\n6: \n7: -- Plugins\n8: require('plugins.nvim-tree')\n9: \n10: require('plugins.lsp')\n11: require('plugins.cmp')\n12: require('plugins.mason')\n13: require('plugins.mason-lspconfig')\n14: require('plugins.telescope')\n15: require('plugins.dashboard')\n16: require('plugins.colorizer')\n17: require('plugins.lualine')\n18: require('plugins.cellular')\n19: require('plugins.comment')\n20: require('plugins.bufferline')\n21: require('plugins.todo')\n22: require('plugins.trouble')\n23: require('plugins.toggleterm')\n24: require('plugins.whichkey')\n25: require('plugins.mini')\n26: \n27: -- Diagnostic command for LSP\n28: function _G.LspDebugInfo()\n29:   print(\"Current filetype: \" .. vim.bo.filetype)\n30:   local clients = vim.lsp.get_clients()\n31:   if #clients == 0 then\n32:     print(\"No active LSP clients.\")\n33:   else\n34:     print(\"Active LSP clients:\")\n35:     for _, client in ipairs(clients) do\n36:       print(\"- \" .. client.name .. \" (id: \" .. client.id .. \")\")\n37:     end\n38:   end\n39: end\n40: \n41: vim.api.nvim_create_user_command('LspDebugInfo', _G.LspDebugInfo, {\n42:   desc = 'Display LSP Debug Information (filetype and active clients)',\n43: })\n\n(End of file - total 43 lines)\n</content>\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "preview": "-- Basic\nrequire('core.configs')\nrequire('core.plugins')\nrequire('core.mappings')\nrequire('core.colors')\n\n-- Plugins\nrequire('plugins.nvim-tree')\n\nrequire('plugins.lsp')\nrequire('plugins.cmp')\nrequire('plugins.mason')\nrequire('plugins.mason-lspconfig')\nrequire('plugins.telescope')\nrequire('plugins.dashboard')\nrequire('plugins.colorizer')\nrequire('plugins.lualine')\nrequire('plugins.cellular')\nrequire('plugins.comment')\nrequire('plugins.bufferline')",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/nvim/init.lua",
+            "text": "-- Basic\nrequire('core.configs')\nrequire('core.plugins')\nrequire('core.mappings')\nrequire('core.colors')\n\n-- Plugins\nrequire('plugins.nvim-tree')\n\nrequire('plugins.lsp')\nrequire('plugins.cmp')\nrequire('plugins.mason')\nrequire('plugins.mason-lspconfig')\nrequire('plugins.telescope')\nrequire('plugins.dashboard')\nrequire('plugins.colorizer')\nrequire('plugins.lualine')\nrequire('plugins.cellular')\nrequire('plugins.comment')\nrequire('plugins.bufferline')\nrequire('plugins.todo')\nrequire('plugins.trouble')\nrequire('plugins.toggleterm')\nrequire('plugins.whichkey')\nrequire('plugins.mini')\n\n-- Diagnostic command for LSP\nfunction _G.LspDebugInfo()\n  print(\"Current filetype: \" .. vim.bo.filetype)\n  local clients = vim.lsp.get_clients()\n  if #clients == 0 then\n    print(\"No active LSP clients.\")\n  else\n    print(\"Active LSP clients:\")\n    for _, client in ipairs(clients) do\n      print(\"- \" .. client.name .. \" (id: \" .. client.id .. \")\")\n    end\n  end\nend\n\nvim.api.nvim_create_user_command('LspDebugInfo', _G.LspDebugInfo, {\n  desc = 'Display LSP Debug Information (filetype and active clients)',\n})",
+            "lineStart": 1,
+            "lineEnd": 43,
+            "totalLines": 43,
+            "truncated": false
+          }
+        },
+        "title": "../.config/nvim/init.lua"
+      },
+      {
+        "type": "tool",
+        "tool": "bash",
+        "callID": "call_c299115a665f497b962f758c",
+        "status": "completed",
+        "input": {
+          "command": "fd . /home/kasiro/.config/nvim/lua --type f"
+        },
+        "output": "/home/kasiro/.config/nvim/lua/core/colors.lua\n/home/kasiro/.config/nvim/lua/core/configs.lua\n/home/kasiro/.config/nvim/lua/core/mappings.lua\n/home/kasiro/.config/nvim/lua/core/plugins.lua\n/home/kasiro/.config/nvim/lua/plugins/bufferline.lua\n/home/kasiro/.config/nvim/lua/plugins/cellular.lua\n/home/kasiro/.config/nvim/lua/plugins/cmp.lua\n/home/kasiro/.config/nvim/lua/plugins/colorizer.lua\n/home/kasiro/.config/nvim/lua/plugins/comment.lua\n/home/kasiro/.config/nvim/lua/plugins/dashboard.lua\n/home/kasiro/.config/nvim/lua/plugins/lsp.lua\n/home/kasiro/.config/nvim/lua/plugins/lualine.lua\n/home/kasiro/.config/nvim/lua/plugins/mason-lspconfig.lua\n/home/kasiro/.config/nvim/lua/plugins/mason.lua\n/home/kasiro/.config/nvim/lua/plugins/mini.lua\n/home/kasiro/.config/nvim/lua/plugins/nvim-tree.lua\n/home/kasiro/.config/nvim/lua/plugins/telescope.lua\n/home/kasiro/.config/nvim/lua/plugins/todo.lua\n/home/kasiro/.config/nvim/lua/plugins/toggleterm.lua\n/home/kasiro/.config/nvim/lua/plugins/treesitter.lua\n/home/kasiro/.config/nvim/lua/plugins/trouble.lua\n/home/kasiro/.config/nvim/lua/plugins/whichkey.lua\n\n<dcp-message-id>m0003</dcp-message-id>",
+        "metadata": {
+          "output": "/home/kasiro/.config/nvim/lua/core/colors.lua\n/home/kasiro/.config/nvim/lua/core/configs.lua\n/home/kasiro/.config/nvim/lua/core/mappings.lua\n/home/kasiro/.config/nvim/lua/core/plugins.lua\n/home/kasiro/.config/nvim/lua/plugins/bufferline.lua\n/home/kasiro/.config/nvim/lua/plugins/cellular.lua\n/home/kasiro/.config/nvim/lua/plugins/cmp.lua\n/home/kasiro/.config/nvim/lua/plugins/colorizer.lua\n/home/kasiro/.config/nvim/lua/plugins/comment.lua\n/home/kasiro/.config/nvim/lua/plugins/dashboard.lua\n/home/kasiro/.config/nvim/lua/plugins/lsp.lua\n/home/kasiro/.config/nvim/lua/plugins/lualine.lua\n/home/kasiro/.config/nvim/lua/plugins/mason-lspconfig.lua\n/home/kasiro/.config/nvim/lua/plugins/mason.lua\n/home/kasiro/.config/nvim/lua/plugins/mini.lua\n/home/kasiro/.config/nvim/lua/plugins/nvim-tree.lua\n/home/kasiro/.config/nvim/lua/plugins/telescope.lua\n/home/kasiro/.config/nvim/lua/plugins/todo.lua\n/home/kasiro/.config/nvim/lua/plugins/toggleterm.lua\n/home/kasiro/.config/nvim/lua/plugins/treesitter.lua\n/home/kasiro/.config/nvim/lua/plugins/trouble.lua\n/home/kasiro/.config/nvim/lua/plugins/whichkey.lua\n",
+          "exit": 0,
+          "truncated": false
+        },
+        "title": "fd . /home/kasiro/.config/nvim/lua --type f"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1790276151984,
+    "tokens": {
+      "input": 43992,
+      "output": 193,
+      "reasoning": 41,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "Нужно прочитать все файлы конфигурации nvim, чтобы понять текущие настройки плагинов, маппингов и базовых конфигураций для переноса на nixvim."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_4e237522233b428c90aa2de7",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/nvim/lua/core/configs.lua"
+        },
+        "output": "<path>/home/kasiro/.config/nvim/lua/core/configs.lua</path>\n<type>file</type>\n<content>\n1: \n2: -- Basic Settings\n3: vim.g.did_load_filetypes = 1\n4: vim.g.formatoptions = \"qrn1\"\n5: vim.opt.showmode = false\n6: vim.opt.updatetime = 100\n7: vim.wo.signcolumn = \"yes\"\n8: vim.opt.wrap = false\n9: vim.wo.linebreak = true\n10: vim.opt.virtualedit = \"block\"\n11: vim.opt.undofile = true\n12: vim.opt.shell = \"/data/data/com.termux/files/usr/bin/zsh\"            -- Shell по умолчанию\n13: vim.opt.swapfile = false               -- Отключить swap файлы nvim\n14: vim.opt.encoding = \"utf-8\"             -- Кодировка utf-8\n15: vim.opt.cursorline = true              -- Выделять активную строку где находится курсор\n16: vim.opt.fileformat = \"unix\"\n17: \n18: -- Nvim-Tree\n19: vim.g.loaded_netrw = 1\n20: vim.g.loaded_netrwPlugin = 1\n21: vim.opt.termguicolors = true\n22: \n23: -- Scroll\n24: vim.opt.so = 30                       -- При скролле курсор всегда по центру\n25: \n26: -- Search\n27: vim.opt.ignorecase = true              -- Игнорировать регистр при поиске\n28: vim.opt.smartcase = true               -- Не игнорирует регистр если в паттерне есть большие буквы\n29: vim.opt.hlsearch = true                -- Подсвечивает найденный паттерн\n30: vim.opt.incsearch = true               -- Интерактивный поиск\n31: \n32: -- Mouse\n33: vim.opt.mouse = \"a\"                    -- Возможность использовать мышку\n34: vim.opt.mousefocus = true\n35: \n36: -- Line Numbers\n37: vim.opt.number = true                  -- Показывает номера строк\n38: vim.opt.relativenumber = false         -- Показывает расстояние к нужной строке относительно нашей позиции\n39: vim.wo.number = true                   -- Показывает номера строк\n40: vim.wo.relativenumber = false          -- Показывает расстояние к нужной строке относительно нашей позиции\n41: \n42: -- Splits\n43: vim.opt.splitbelow = true\n44: vim.opt.splitright = true\n45: \n46: -- Clipboard\n47: vim.opt.clipboard = \"unnamedplus\"      -- Разрешить общий буфер обмена\n48: \n49: -- Shorter messages\n50: vim.opt.shortmess:append(\"c\")\n51: \n52: -- Indent Settings\n53: vim.opt.expandtab = true               -- Превратить все tab в пробелы\n54: vim.opt.shiftwidth = 4\n55: vim.opt.tabstop = 4\n56: vim.opt.softtabstop = 4\n57: vim.opt.smartindent = true             -- Копировать отступ на новой строке\n58: vim.opt.cindent = true                 -- Автоотступы\n59: vim.opt.smarttab = true                -- Tab перед строкой вставит shiftwidht количество табов\n60: \n61: -- Функция для добавления '# type: ignore' в конец текущей строки\n62: local function add_type_ignore()\n63:   local lang = 'py'\n64:   local line = vim.api.nvim_get_current_line()\n65:   local new_line = line .. ' # type: ignore'\n66:   vim.api.nvim_set_current_line(new_line)\n67: end\n68: \n69: -- Создаем пользовательскую команду ':Tyig'\n70: vim.api.nvim_create_user_command('Tyig', add_type_ignore, {})\n71: \n72: -- vim.api.nvim_create_autocmd({\"BufWritePre\"}, {\n73: --     pattern = \"*.ts\",\n74: --     command = [[ !tsc %]]\n75: -- })\n76: \n77: vim.api.nvim_create_autocmd({\"BufRead\", \"BufNewFile\"}, {\n78:   pattern = \"*.dy\",\n79:   command = \"set filetype=python\",\n80: })\n81: \n82: vim.api.nvim_create_autocmd({\"BufRead\", \"BufNewFile\"}, {\n83:   pattern = \"*.py\",\n84:   command = \"set filetype=python\",\n85: })\n86: \n87: -- Fillchars\n88: vim.opt.fillchars = {\n89:     vert = \"│\",\n90:     fold = \"⠀\",\n91:     eob = \" \", -- suppress ~ at EndOfBuffer\n92:     -- diff = \"⣿\", -- alternatives = ⣿ ░ ─ ╱\n93:     msgsep = \"‾\",\n94:     foldopen = \"▾\",\n95:     foldsep = \"│\",\n96:     foldclose = \"▸\"\n97: }\n98: \n99: vim.cmd([[highlight clear LineNr]])\n100: vim.cmd([[highlight clear SignColumn]])\n101: \n102: -- LSP настройка для Nix (nixd)\n103: vim.api.nvim_create_autocmd('FileType', {\n104:   pattern = 'nix',\n105:   callback = function()\n106:     vim.lsp.start({ name = 'nixd', cmd = { 'nixd' } })\n107:   end,\n108: })\n\n(End of file - total 108 lines)\n</content>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "preview": "\n-- Basic Settings\nvim.g.did_load_filetypes = 1\nvim.g.formatoptions = \"qrn1\"\nvim.opt.showmode = false\nvim.opt.updatetime = 100\nvim.wo.signcolumn = \"yes\"\nvim.opt.wrap = false\nvim.wo.linebreak = true\nvim.opt.virtualedit = \"block\"\nvim.opt.undofile = true\nvim.opt.shell = \"/data/data/com.termux/files/usr/bin/zsh\"            -- Shell по умолчанию\nvim.opt.swapfile = false               -- Отключить swap файлы nvim\nvim.opt.encoding = \"utf-8\"             -- Кодировка utf-8\nvim.opt.cursorline = true              -- Выделять активную строку где находится курсор\nvim.opt.fileformat = \"unix\"\n\n-- Nvim-Tree\nvim.g.loaded_netrw = 1\nvim.g.loaded_netrwPlugin = 1",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/nvim/lua/core/configs.lua",
+            "text": "\n-- Basic Settings\nvim.g.did_load_filetypes = 1\nvim.g.formatoptions = \"qrn1\"\nvim.opt.showmode = false\nvim.opt.updatetime = 100\nvim.wo.signcolumn = \"yes\"\nvim.opt.wrap = false\nvim.wo.linebreak = true\nvim.opt.virtualedit = \"block\"\nvim.opt.undofile = true\nvim.opt.shell = \"/data/data/com.termux/files/usr/bin/zsh\"            -- Shell по умолчанию\nvim.opt.swapfile = false               -- Отключить swap файлы nvim\nvim.opt.encoding = \"utf-8\"             -- Кодировка utf-8\nvim.opt.cursorline = true              -- Выделять активную строку где находится курсор\nvim.opt.fileformat = \"unix\"\n\n-- Nvim-Tree\nvim.g.loaded_netrw = 1\nvim.g.loaded_netrwPlugin = 1\nvim.opt.termguicolors = true\n\n-- Scroll\nvim.opt.so = 30                       -- При скролле курсор всегда по центру\n\n-- Search\nvim.opt.ignorecase = true              -- Игнорировать регистр при поиске\nvim.opt.smartcase = true               -- Не игнорирует регистр если в паттерне есть большие буквы\nvim.opt.hlsearch = true                -- Подсвечивает найденный паттерн\nvim.opt.incsearch = true               -- Интерактивный поиск\n\n-- Mouse\nvim.opt.mouse = \"a\"                    -- Возможность использовать мышку\nvim.opt.mousefocus = true\n\n-- Line Numbers\nvim.opt.number = true                  -- Показывает номера строк\nvim.opt.relativenumber = false         -- Показывает расстояние к нужной строке относительно нашей позиции\nvim.wo.number = true                   -- Показывает номера строк\nvim.wo.relativenumber = false          -- Показывает расстояние к нужной строке относительно нашей позиции\n\n-- Splits\nvim.opt.splitbelow = true\nvim.opt.splitright = true\n\n-- Clipboard\nvim.opt.clipboard = \"unnamedplus\"      -- Разрешить общий буфер обмена\n\n-- Shorter messages\nvim.opt.shortmess:append(\"c\")\n\n-- Indent Settings\nvim.opt.expandtab = true               -- Превратить все tab в пробелы\nvim.opt.shiftwidth = 4\nvim.opt.tabstop = 4\nvim.opt.softtabstop = 4\nvim.opt.smartindent = true             -- Копировать отступ на новой строке\nvim.opt.cindent = true                 -- Автоотступы\nvim.opt.smarttab = true                -- Tab перед строкой вставит shiftwidht количество табов\n\n-- Функция для добавления '# type: ignore' в конец текущей строки\nlocal function add_type_ignore()\n  local lang = 'py'\n  local line = vim.api.nvim_get_current_line()\n  local new_line = line .. ' # type: ignore'\n  vim.api.nvim_set_current_line(new_line)\nend\n\n-- Создаем пользовательскую команду ':Tyig'\nvim.api.nvim_create_user_command('Tyig', add_type_ignore, {})\n\n-- vim.api.nvim_create_autocmd({\"BufWritePre\"}, {\n--     pattern = \"*.ts\",\n--     command = [[ !tsc %]]\n-- })\n\nvim.api.nvim_create_autocmd({\"BufRead\", \"BufNewFile\"}, {\n  pattern = \"*.dy\",\n  command = \"set filetype=python\",\n})\n\nvim.api.nvim_create_autocmd({\"BufRead\", \"BufNewFile\"}, {\n  pattern = \"*.py\",\n  command = \"set filetype=python\",\n})\n\n-- Fillchars\nvim.opt.fillchars = {\n    vert = \"│\",\n    fold = \"⠀\",\n    eob = \" \", -- suppress ~ at EndOfBuffer\n    -- diff = \"⣿\", -- alternatives = ⣿ ░ ─ ╱\n    msgsep = \"‾\",\n    foldopen = \"▾\",\n    foldsep = \"│\",\n    foldclose = \"▸\"\n}\n\nvim.cmd([[highlight clear LineNr]])\nvim.cmd([[highlight clear SignColumn]])\n\n-- LSP настройка для Nix (nixd)\nvim.api.nvim_create_autocmd('FileType', {\n  pattern = 'nix',\n  callback = function()\n    vim.lsp.start({ name = 'nixd', cmd = { 'nixd' } })\n  end,\n})",
+            "lineStart": 1,
+            "lineEnd": 108,
+            "totalLines": 108,
+            "truncated": false
+          }
+        },
+        "title": "../.config/nvim/lua/core/configs.lua"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_6a96b2c94d1e4bb68c7c9f31",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/nvim/lua/core/plugins.lua"
+        },
+        "output": "<path>/home/kasiro/.config/nvim/lua/core/plugins.lua</path>\n<type>file</type>\n<content>\n1: \n2: local lazypath = vim.fn.stdpath(\"data\") .. \"/lazy/lazy.nvim\"\n3: if not (vim.uv or vim.loop).fs_stat(lazypath) then\n4:   vim.fn.system({\n5:     \"git\",\n6:     \"clone\",\n7:     \"--filter=blob:none\",\n8:     \"https://github.com/folke/lazy.nvim.git\",\n9:     \"--branch=stable\", -- latest stable release\n10:     lazypath,\n11:   })\n12: end\n13: vim.opt.rtp:prepend(lazypath)\n14: \n15: require(\"lazy\").setup({\n16: \t\n17: \t{\n18: \t\t'nvim-treesitter/nvim-treesitter',\n19: \t\topts = {\n20: \t\t\tensure_installed = {\n21: \t\t\t\t\"bash\",\n22: \t\t\t\t\"css\",\n23: \t\t\t\t\"dockerfile\",\n24: \t\t\t\t\"html\",\n25: \t\t\t\t\"javascript\",\n26: \t\t\t\t\"json\",\n27: \t\t\t\t\"json5\",\n28: \t\t\t\t\"lua\",\n29: \t\t\t\t\"python\",\n30: \t\t\t\t\"vim\",\n31: \t\t\t\t\"yaml\",\n32: \t\t\t\t\"c\",\n33: \t\t\t\t\"go\",\n34: \t\t\t\t\"rust\",\n35: \t\t\t},\n36: \n37: \t\t\tsync_install = false,\n38: \t\t\tauto_install = true,\n39: \t\t\thighlight = {\n40: \t\t\t\tenable = true,\n41: \t\t\t},\n42: \t\t},\n43: \t},\n44: \t{ 'neovim/nvim-lspconfig' },\n45: \t{ 'williamboman/mason.nvim' },\n46: \t{ 'williamboman/mason-lspconfig.nvim' },\n47: \n48: \t-- Autocomplete support\n49: \t{ 'hrsh7th/cmp-nvim-lsp' },\n50: \t{ 'hrsh7th/cmp-buffer' },\n51: \t{ 'hrsh7th/cmp-path' },\n52: \t{ 'hrsh7th/cmp-cmdline' },\n53: \t{ 'hrsh7th/nvim-cmp' },\n54: \t{ 'L3MON4D3/LuaSnip' },\n55: \t{ 'saadparwaiz1/cmp_luasnip' },\n56:     \n57: \t{\n58: \t\t'nvim-telescope/telescope.nvim', tag = '0.1.6',\n59: \t\tdependencies = { 'nvim-lua/plenary.nvim' }\n60: \t},\n61: \n62: \t{\n63: \t  'nvimdev/dashboard-nvim',\n64: \t  event = 'VimEnter',\n65: \t  config = function()\n66: \t    require('dashboard').setup {\n67: \t      -- config\n68: \t    }\n69: \t  end,\n70: \t  dependencies = { {'nvim-tree/nvim-web-devicons'}}\n71: \t},\n72: \n73: \t{ 'Eandrju/cellular-automaton.nvim' },\n74: \t{ 'norcalli/nvim-colorizer.lua' },\n75: \n76: \t{\n77: \t    'nvim-lualine/lualine.nvim',\n78: \t    dependencies = { 'nvim-tree/nvim-web-devicons' }\n79: \t},\n80: \n81: \t{\n82: \t  \"folke/todo-comments.nvim\",\n83: \t  dependencies = { \"nvim-lua/plenary.nvim\" },\n84: \t  opts = {\n85: \t    -- your configuration comes here\n86: \t    -- or leave it empty to use the default settings\n87: \t    -- refer to the configuration section below\n88: \t  }\n89: \t},\n90: \n91: \t{ \"ellisonleao/gruvbox.nvim\", priority = 1000 , config = true, opts = ...},\n92: \t{ \"catppuccin/nvim\", name = \"catppuccin\", priority = 1000 },\n93: \n94: \t{\n95: \t  \"max397574/better-escape.nvim\",\n96: \t  config = function()\n97:   \t    require(\"better_escape\").setup({\n98:   \t    \tmapping = {\"jk\"},\n99:   \t    \ttimeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default\n100:     \t    clear_empty_lines = false, -- clear line after escaping if there is only whitespace\n101:     \t    keys = \"<Esc>\",\n102:   \t    })\n103:   \t  end\n104: \t},\n105: \n106: \t{\n107: \t    'numToStr/Comment.nvim',\n108: \t    opts = {\n109: \t        -- add any options here\n110: \t    },\n111: \t    lazy = false,\n112: \t},\n113: \n114: \t{'akinsho/bufferline.nvim', version = \"*\", dependencies = 'nvim-tree/nvim-web-devicons'},\n115: \n116: \t{\n117: \t  \"nvim-tree/nvim-tree.lua\",\n118: \t  version = \"*\",\n119: \t  lazy = false,\n120: \t  dependencies = {\n121: \t    \"nvim-tree/nvim-web-devicons\",\n122: \t  },\n123: \t  config = function()\n124: \t    require(\"nvim-tree\").setup {}\n125: \t  end,\n126: \t},\n127: \n128: \t{\n129: \t    'dense-analysis/ale',\n130: \t    config = function()\n131: \t        -- Configuration goes here.\n132: \t        local g = vim.g\n133: \t\n134: \t        g.ale_linters = {\n135: \t        \tpython = {'mypy'},\n136: \t        }\n137: \t    end\n138: \t},\n139: \n140: \t{ 'RRethy/vim-illuminate' },\n141: \n142: \t{\n143: \t    \"vhyrro/luarocks.nvim\",\n144: \t    priority = 1001, -- this plugin needs to run before anything else\n145: \t    opts = {\n146: \t        rocks = { \"magick\" },\n147: \t    },\n148: \t},\n149: \n150: \t{\n151: \t \"folke/trouble.nvim\",\n152: \t dependencies = { \"nvim-tree/nvim-web-devicons\" },\n153: \t opts = {\n154: \t  -- your configuration comes here\n155: \t  -- or leave it empty to use the default settings\n156: \t  -- refer to the configuration section below\n157: \t },\n158: \t},\n159: \n160: \t{\n161:         'akinsho/toggleterm.nvim',\n162:         version = \"*\",\n163:         config = true\n164:     },\n165: \n166: \t{\n167: \t  \"folke/which-key.nvim\",\n168: \t  event = \"VeryLazy\",\n169: \t  init = function()\n170: \t    vim.o.timeout = true\n171: \t    vim.o.timeoutlen = 100\n172: \t  end,\n173: \t  opts = {\n174: \t    -- your configuration comes here\n175: \t    -- or leave it empty to use the default settin s\n176: \t    -- refer to the configuration section below\n177: \t  }\n178: \t},\n179: \n180: \t-- Выравнивание и перемещение текста\n181: \t-- Автоматическое открытие фигурных скобок, кавычек и т.д\n182: \t{ 'echasnovski/mini.nvim', version = false },\n183: \t{ 'echasnovski/mini.move', version = false },\n184: \t{ 'echasnovski/mini.pairs', version = false },\n185: \n186: }, {\n187:     git = {\n188:         default_url_format = 'git@github.com:%s'\n189:     }\n190: })\n\n(End of file - total 190 lines)\n</content>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "preview": "\nlocal lazypath = vim.fn.stdpath(\"data\") .. \"/lazy/lazy.nvim\"\nif not (vim.uv or vim.loop).fs_stat(lazypath) then\n  vim.fn.system({\n    \"git\",\n    \"clone\",\n    \"--filter=blob:none\",\n    \"https://github.com/folke/lazy.nvim.git\",\n    \"--branch=stable\", -- latest stable release\n    lazypath,\n  })\nend\nvim.opt.rtp:prepend(lazypath)\n\nrequire(\"lazy\").setup({\n\t\n\t{\n\t\t'nvim-treesitter/nvim-treesitter',\n\t\topts = {\n\t\t\tensure_installed = {",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/nvim/lua/core/plugins.lua",
+            "text": "\nlocal lazypath = vim.fn.stdpath(\"data\") .. \"/lazy/lazy.nvim\"\nif not (vim.uv or vim.loop).fs_stat(lazypath) then\n  vim.fn.system({\n    \"git\",\n    \"clone\",\n    \"--filter=blob:none\",\n    \"https://github.com/folke/lazy.nvim.git\",\n    \"--branch=stable\", -- latest stable release\n    lazypath,\n  })\nend\nvim.opt.rtp:prepend(lazypath)\n\nrequire(\"lazy\").setup({\n\t\n\t{\n\t\t'nvim-treesitter/nvim-treesitter',\n\t\topts = {\n\t\t\tensure_installed = {\n\t\t\t\t\"bash\",\n\t\t\t\t\"css\",\n\t\t\t\t\"dockerfile\",\n\t\t\t\t\"html\",\n\t\t\t\t\"javascript\",\n\t\t\t\t\"json\",\n\t\t\t\t\"json5\",\n\t\t\t\t\"lua\",\n\t\t\t\t\"python\",\n\t\t\t\t\"vim\",\n\t\t\t\t\"yaml\",\n\t\t\t\t\"c\",\n\t\t\t\t\"go\",\n\t\t\t\t\"rust\",\n\t\t\t},\n\n\t\t\tsync_install = false,\n\t\t\tauto_install = true,\n\t\t\thighlight = {\n\t\t\t\tenable = true,\n\t\t\t},\n\t\t},\n\t},\n\t{ 'neovim/nvim-lspconfig' },\n\t{ 'williamboman/mason.nvim' },\n\t{ 'williamboman/mason-lspconfig.nvim' },\n\n\t-- Autocomplete support\n\t{ 'hrsh7th/cmp-nvim-lsp' },\n\t{ 'hrsh7th/cmp-buffer' },\n\t{ 'hrsh7th/cmp-path' },\n\t{ 'hrsh7th/cmp-cmdline' },\n\t{ 'hrsh7th/nvim-cmp' },\n\t{ 'L3MON4D3/LuaSnip' },\n\t{ 'saadparwaiz1/cmp_luasnip' },\n    \n\t{\n\t\t'nvim-telescope/telescope.nvim', tag = '0.1.6',\n\t\tdependencies = { 'nvim-lua/plenary.nvim' }\n\t},\n\n\t{\n\t  'nvimdev/dashboard-nvim',\n\t  event = 'VimEnter',\n\t  config = function()\n\t    require('dashboard').setup {\n\t      -- config\n\t    }\n\t  end,\n\t  dependencies = { {'nvim-tree/nvim-web-devicons'}}\n\t},\n\n\t{ 'Eandrju/cellular-automaton.nvim' },\n\t{ 'norcalli/nvim-colorizer.lua' },\n\n\t{\n\t    'nvim-lualine/lualine.nvim',\n\t    dependencies = { 'nvim-tree/nvim-web-devicons' }\n\t},\n\n\t{\n\t  \"folke/todo-comments.nvim\",\n\t  dependencies = { \"nvim-lua/plenary.nvim\" },\n\t  opts = {\n\t    -- your configuration comes here\n\t    -- or leave it empty to use the default settings\n\t    -- refer to the configuration section below\n\t  }\n\t},\n\n\t{ \"ellisonleao/gruvbox.nvim\", priority = 1000 , config = true, opts = ...},\n\t{ \"catppuccin/nvim\", name = \"catppuccin\", priority = 1000 },\n\n\t{\n\t  \"max397574/better-escape.nvim\",\n\t  config = function()\n  \t    require(\"better_escape\").setup({\n  \t    \tmapping = {\"jk\"},\n  \t    \ttimeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default\n    \t    clear_empty_lines = false, -- clear line after escaping if there is only whitespace\n    \t    keys = \"<Esc>\",\n  \t    })\n  \t  end\n\t},\n\n\t{\n\t    'numToStr/Comment.nvim',\n\t    opts = {\n\t        -- add any options here\n\t    },\n\t    lazy = false,\n\t},\n\n\t{'akinsho/bufferline.nvim', version = \"*\", dependencies = 'nvim-tree/nvim-web-devicons'},\n\n\t{\n\t  \"nvim-tree/nvim-tree.lua\",\n\t  version = \"*\",\n\t  lazy = false,\n\t  dependencies = {\n\t    \"nvim-tree/nvim-web-devicons\",\n\t  },\n\t  config = function()\n\t    require(\"nvim-tree\").setup {}\n\t  end,\n\t},\n\n\t{\n\t    'dense-analysis/ale',\n\t    config = function()\n\t        -- Configuration goes here.\n\t        local g = vim.g\n\t\n\t        g.ale_linters = {\n\t        \tpython = {'mypy'},\n\t        }\n\t    end\n\t},\n\n\t{ 'RRethy/vim-illuminate' },\n\n\t{\n\t    \"vhyrro/luarocks.nvim\",\n\t    priority = 1001, -- this plugin needs to run before anything else\n\t    opts = {\n\t        rocks = { \"magick\" },\n\t    },\n\t},\n\n\t{\n\t \"folke/trouble.nvim\",\n\t dependencies = { \"nvim-tree/nvim-web-devicons\" },\n\t opts = {\n\t  -- your configuration comes here\n\t  -- or leave it empty to use the default settings\n\t  -- refer to the configuration section below\n\t },\n\t},\n\n\t{\n        'akinsho/toggleterm.nvim',\n        version = \"*\",\n        config = true\n    },\n\n\t{\n\t  \"folke/which-key.nvim\",\n\t  event = \"VeryLazy\",\n\t  init = function()\n\t    vim.o.timeout = true\n\t    vim.o.timeoutlen = 100\n\t  end,\n\t  opts = {\n\t    -- your configuration comes here\n\t    -- or leave it empty to use the default settin s\n\t    -- refer to the configuration section below\n\t  }\n\t},\n\n\t-- Выравнивание и перемещение текста\n\t-- Автоматическое открытие фигурных скобок, кавычек и т.д\n\t{ 'echasnovski/mini.nvim', version = false },\n\t{ 'echasnovski/mini.move', version = false },\n\t{ 'echasnovski/mini.pairs', version = false },\n\n}, {\n    git = {\n        default_url_format = 'git@github.com:%s'\n    }\n})",
+            "lineStart": 1,
+            "lineEnd": 190,
+            "totalLines": 190,
+            "truncated": false
+          }
+        },
+        "title": "../.config/nvim/lua/core/plugins.lua"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_9f8a97dacf92406396d6f581",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/nvim/lua/core/mappings.lua"
+        },
+        "output": "<path>/home/kasiro/.config/nvim/lua/core/mappings.lua</path>\n<type>file</type>\n<content>\n1: vim.g.mapleader = \" \"\n2: \n3: -- Quit\n4: vim.keymap.set('n', '<C-q>', '<cmd>:q<CR>')\n5: \n6: -- Copy all text\n7: vim.keymap.set('n', '<C-a>', '<cmd>%y+<CR>')\n8: \n9: -- Saving a file via Ctrl+S\n10: vim.keymap.set('i', '<C-s>', '<cmd>:w<CR>')\n11: vim.keymap.set('n', '<C-s>', '<cmd>:w<CR>')\n12: \n13: -- NvimTree\n14: vim.keymap.set('n', '<leader>t', ':NvimTreeToggle<CR>')\n15: vim.keymap.set('n', '<leader>tf', ':NvimTreeFocus<CR>')\n16: \n17: -- My command: Tyig\n18: -- Назначаем хоткей для выполнения команды ':Tyig'\n19: vim.keymap.set('n', '<leader>h',':Tyig<CR>')\n20: \n21: -- BufferLine\n22: vim.keymap.set('n','<Tab>', ':BufferLineCycleNext<CR>')\n23: vim.keymap.set('n','<leader><Tab>', ':BufferLineCyclePrev<CR>')\n24: vim.keymap.set('n', '<C-H>', ':BufferLineCloseOthers<CR>')\n25: -- Закрытие текущего буфер\n26: vim.keymap.set('n', '<leader><Esc>', ':bd<CR>')\n27: -- подвинуть в право влево вкладку\n28: -- vim.keymap.set('n', '<C-.>', ':BufferLineMoveNext<CR>')\n29: -- vim.keymap.set('n', '<C-,>', ':BufferLineMovePrev<CR>')\n30: \n31: -- TodoList\n32: vim.keymap.set('n', '<leader>nl', ':TodoTelescope<CR>')\n33: \n34: -- ToggleTerm\n35: vim.keymap.set('n', '<leader>s', ':ToggleTerm direction=float<CR>')\n\n(End of file - total 35 lines)\n</content>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "preview": "vim.g.mapleader = \" \"\n\n-- Quit\nvim.keymap.set('n', '<C-q>', '<cmd>:q<CR>')\n\n-- Copy all text\nvim.keymap.set('n', '<C-a>', '<cmd>%y+<CR>')\n\n-- Saving a file via Ctrl+S\nvim.keymap.set('i', '<C-s>', '<cmd>:w<CR>')\nvim.keymap.set('n', '<C-s>', '<cmd>:w<CR>')\n\n-- NvimTree\nvim.keymap.set('n', '<leader>t', ':NvimTreeToggle<CR>')\nvim.keymap.set('n', '<leader>tf', ':NvimTreeFocus<CR>')\n\n-- My command: Tyig\n-- Назначаем хоткей для выполнения команды ':Tyig'\nvim.keymap.set('n', '<leader>h',':Tyig<CR>')\n",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/nvim/lua/core/mappings.lua",
+            "text": "vim.g.mapleader = \" \"\n\n-- Quit\nvim.keymap.set('n', '<C-q>', '<cmd>:q<CR>')\n\n-- Copy all text\nvim.keymap.set('n', '<C-a>', '<cmd>%y+<CR>')\n\n-- Saving a file via Ctrl+S\nvim.keymap.set('i', '<C-s>', '<cmd>:w<CR>')\nvim.keymap.set('n', '<C-s>', '<cmd>:w<CR>')\n\n-- NvimTree\nvim.keymap.set('n', '<leader>t', ':NvimTreeToggle<CR>')\nvim.keymap.set('n', '<leader>tf', ':NvimTreeFocus<CR>')\n\n-- My command: Tyig\n-- Назначаем хоткей для выполнения команды ':Tyig'\nvim.keymap.set('n', '<leader>h',':Tyig<CR>')\n\n-- BufferLine\nvim.keymap.set('n','<Tab>', ':BufferLineCycleNext<CR>')\nvim.keymap.set('n','<leader><Tab>', ':BufferLineCyclePrev<CR>')\nvim.keymap.set('n', '<C-H>', ':BufferLineCloseOthers<CR>')\n-- Закрытие текущего буфер\nvim.keymap.set('n', '<leader><Esc>', ':bd<CR>')\n-- подвинуть в право влево вкладку\n-- vim.keymap.set('n', '<C-.>', ':BufferLineMoveNext<CR>')\n-- vim.keymap.set('n', '<C-,>', ':BufferLineMovePrev<CR>')\n\n-- TodoList\nvim.keymap.set('n', '<leader>nl', ':TodoTelescope<CR>')\n\n-- ToggleTerm\nvim.keymap.set('n', '<leader>s', ':ToggleTerm direction=float<CR>')",
+            "lineStart": 1,
+            "lineEnd": 35,
+            "totalLines": 35,
+            "truncated": false
+          }
+        },
+        "title": "../.config/nvim/lua/core/mappings.lua"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_d46def498fd546a3bc1884e2",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/nvim/lua/plugins/lsp.lua"
+        },
+        "output": "<path>/home/kasiro/.config/nvim/lua/plugins/lsp.lua</path>\n<type>file</type>\n<content>\n1: \n2: -- Setup language servers.\n3: \n4: \n5: -- local capabilities = vim.lsp.protocol.make_client_capabilities()\n6: -- capabilities.textDocument.completion.completionItem.snippetSupport = true\n7: --\n8: -- lspconfig.emmet_ls.setup({\n9: --     -- on_attach = on_attach,\n10: --     capabilities = capabilities,\n11: --     filetypes = {\n12: --         \"css\",\n13: --         \"html\",\n14: --         \"javascript\",\n15: --         \"scss\",\n16: --         \"vue\"\n17: --     },\n18: --     cmd = {\"emmet-ls\", \"--stdio\"},\n19: --     init_options = {\n20: --       html = {\n21: --         options = {\n22: --           -- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267\n23: --           [\"bem.enabled\"] = true,\n24: --         },\n25: --       },\n26: --     }\n27: -- })\n28: \n29: -- lspconfig.emmet_language_server.setup({\n30: --   filetypes = {\n31: --       \"css\",\n32: --       \"eruby\",\n33: --       \"html\",\n34: --       \"javascript\",\n35: --       \"javascriptreact\",\n36: --       \"less\",\n37: --       \"sass\",\n38: --       \"scss\",\n39: --       \"vue\",\n40: --       \"pug\",\n41: --       \"typescriptreact\"\n42: --   },\n43: --   cmd = {\"emmet-language-server\", \"--stdio\"},\n44: --   -- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).\n45: --   -- **Note:** only the options listed in the table are supported.\n46: --   init_options = {\n47: --     ---@type table<string, string>\n48: --     includeLanguages = {},\n49: --     --- @type string[]\n50: --     excludeLanguages = {},\n51: --     --- @type string[]\n52: --     extensionsPath = {},\n53: --     --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)\n54: --     preferences = {},\n55: --     --- @type boolean Defaults to `true`\n56: --     showAbbreviationSuggestions = true,\n57: --     --- @type \"always\" | \"never\" Defaults to `\"always\"`\n58: --     showExpandedAbbreviation = \"always\",\n59: --     --- @type boolean Defaults to `false`\n60: --     showSuggestionsAsSnippets = true,\n61: --     --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)\n62: --     syntaxProfiles = {},\n63: --     --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)\n64: --     variables = {},\n65: --   },\n66: -- })\n67: \n68: \n69: \n70: -- Setup Ruff Linter\n71: -- lspconfig.ruff.setup {\n72: --   init_options = {\n73: --     settings = {\n74: --       -- Any extra CLI arguments for `ruff` go here.\n75: --       args = {\n76: -- \t\t\"--select=E,F,UP,N,I,ASYNC,S,PTH\",\n77: -- \t\t\"--line-length=79\",\n78: -- \t\t\"--respect-gitignore\",  -- Исключать из сканирования файлы в .gitignore\n79: --       \t\"--target-version=py311\"\n80: --       },\n81: --     }\n82: --   }\n83: -- }\n84: \n85: -- Global mappings.\n86: -- See `:help vim.diagnostic.*` for documentation on any of the below functions\n87: vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)\n88: vim.keymap.set('n', '<C-[>', vim.diagnostic.goto_prev)\n89: -- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)\n90: vim.keymap.set('n', '<C-]>', vim.diagnostic.goto_next)\n91: \n92: -- Use LspAttach autocommand to only map the following keys\n93: -- after the language server attaches to the current buffer\n94: vim.api.nvim_create_autocmd('LspAttach', {\n95:   group = vim.api.nvim_create_augroup('UserLspConfig', {}),\n96:   callback = function(ev)\n97:     -- Enable completion triggered by <c-x><c-o>\n98:     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'\n99:     \n100:     -- Buffer local mappings.\n101:     -- See `:help vim.lsp.*` for documentation on any of the below functions\n102:     local opts = { buffer = ev.buf }\n103:     vim.keymap.set('n', '<C-d>', vim.lsp.buf.declaration, opts)\n104:     vim.keymap.set('n', '<C-l>', vim.lsp.buf.definition, opts)\n105:     vim.keymap.set('n', '<C-f>', vim.lsp.buf.hover, opts)\n106:     vim.keymap.set('n', 'i', vim.lsp.buf.implementation, opts)\n107:     vim.keymap.set('n', '<C-r>', vim.lsp.buf.signature_help, opts)\n108:     \n109:     -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)\n110:     -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)\n111:     -- vim.keymap.set('n', '<space>wl', function()\n112:     --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))\n113:     -- end, opts)\n114:     \n115:     -- TODO: Используется повторно, необходимо вырезать в след.версии\n116:     -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)\n117:     vim.keymap.set({ 'n', 'v' }, '<space>r', vim.lsp.buf.code_action, opts)\n118:     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)\n119:     vim.keymap.set('n', '<space>f', function()\n120:       vim.lsp.buf.format { async = true }\n121:     end, opts)\n122:   end,\n123: })\n124: \n125: \n\n(End of file - total 125 lines)\n</content>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "preview": "\n-- Setup language servers.\n\n\n-- local capabilities = vim.lsp.protocol.make_client_capabilities()\n-- capabilities.textDocument.completion.completionItem.snippetSupport = true\n--\n-- lspconfig.emmet_ls.setup({\n--     -- on_attach = on_attach,\n--     capabilities = capabilities,\n--     filetypes = {\n--         \"css\",\n--         \"html\",\n--         \"javascript\",\n--         \"scss\",\n--         \"vue\"\n--     },\n--     cmd = {\"emmet-ls\", \"--stdio\"},\n--     init_options = {\n--       html = {",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/nvim/lua/plugins/lsp.lua",
+            "text": "\n-- Setup language servers.\n\n\n-- local capabilities = vim.lsp.protocol.make_client_capabilities()\n-- capabilities.textDocument.completion.completionItem.snippetSupport = true\n--\n-- lspconfig.emmet_ls.setup({\n--     -- on_attach = on_attach,\n--     capabilities = capabilities,\n--     filetypes = {\n--         \"css\",\n--         \"html\",\n--         \"javascript\",\n--         \"scss\",\n--         \"vue\"\n--     },\n--     cmd = {\"emmet-ls\", \"--stdio\"},\n--     init_options = {\n--       html = {\n--         options = {\n--           -- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267\n--           [\"bem.enabled\"] = true,\n--         },\n--       },\n--     }\n-- })\n\n-- lspconfig.emmet_language_server.setup({\n--   filetypes = {\n--       \"css\",\n--       \"eruby\",\n--       \"html\",\n--       \"javascript\",\n--       \"javascriptreact\",\n--       \"less\",\n--       \"sass\",\n--       \"scss\",\n--       \"vue\",\n--       \"pug\",\n--       \"typescriptreact\"\n--   },\n--   cmd = {\"emmet-language-server\", \"--stdio\"},\n--   -- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).\n--   -- **Note:** only the options listed in the table are supported.\n--   init_options = {\n--     ---@type table<string, string>\n--     includeLanguages = {},\n--     --- @type string[]\n--     excludeLanguages = {},\n--     --- @type string[]\n--     extensionsPath = {},\n--     --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)\n--     preferences = {},\n--     --- @type boolean Defaults to `true`\n--     showAbbreviationSuggestions = true,\n--     --- @type \"always\" | \"never\" Defaults to `\"always\"`\n--     showExpandedAbbreviation = \"always\",\n--     --- @type boolean Defaults to `false`\n--     showSuggestionsAsSnippets = true,\n--     --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)\n--     syntaxProfiles = {},\n--     --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)\n--     variables = {},\n--   },\n-- })\n\n\n\n-- Setup Ruff Linter\n-- lspconfig.ruff.setup {\n--   init_options = {\n--     settings = {\n--       -- Any extra CLI arguments for `ruff` go here.\n--       args = {\n-- \t\t\"--select=E,F,UP,N,I,ASYNC,S,PTH\",\n-- \t\t\"--line-length=79\",\n-- \t\t\"--respect-gitignore\",  -- Исключать из сканирования файлы в .gitignore\n--       \t\"--target-version=py311\"\n--       },\n--     }\n--   }\n-- }\n\n-- Global mappings.\n-- See `:help vim.diagnostic.*` for documentation on any of the below functions\nvim.keymap.set('n', '<space>e', vim.diagnostic.open_float)\nvim.keymap.set('n', '<C-[>', vim.diagnostic.goto_prev)\n-- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)\nvim.keymap.set('n', '<C-]>', vim.diagnostic.goto_next)\n\n-- Use LspAttach autocommand to only map the following keys\n-- after the language server attaches to the current buffer\nvim.api.nvim_create_autocmd('LspAttach', {\n  group = vim.api.nvim_create_augroup('UserLspConfig', {}),\n  callback = function(ev)\n    -- Enable completion triggered by <c-x><c-o>\n    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'\n    \n    -- Buffer local mappings.\n    -- See `:help vim.lsp.*` for documentation on any of the below functions\n    local opts = { buffer = ev.buf }\n    vim.keymap.set('n', '<C-d>', vim.lsp.buf.declaration, opts)\n    vim.keymap.set('n', '<C-l>', vim.lsp.buf.definition, opts)\n    vim.keymap.set('n', '<C-f>', vim.lsp.buf.hover, opts)\n    vim.keymap.set('n', 'i', vim.lsp.buf.implementation, opts)\n    vim.keymap.set('n', '<C-r>', vim.lsp.buf.signature_help, opts)\n    \n    -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)\n    -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)\n    -- vim.keymap.set('n', '<space>wl', function()\n    --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))\n    -- end, opts)\n    \n    -- TODO: Используется повторно, необходимо вырезать в след.версии\n    -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)\n    vim.keymap.set({ 'n', 'v' }, '<space>r', vim.lsp.buf.code_action, opts)\n    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)\n    vim.keymap.set('n', '<space>f', function()\n      vim.lsp.buf.format { async = true }\n    end, opts)\n  end,\n})\n\n",
+            "lineStart": 1,
+            "lineEnd": 125,
+            "totalLines": 125,
+            "truncated": false
+          }
+        },
+        "title": "../.config/nvim/lua/plugins/lsp.lua"
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call_1c51a6653ba94c24951a456f",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/.config/nvim/lua/plugins/cmp.lua"
+        },
+        "output": "<path>/home/kasiro/.config/nvim/lua/plugins/cmp.lua</path>\n<type>file</type>\n<content>\n1: \n2: local cmp = require 'cmp'\n3: \n4: cmp.setup({\n5:     snippet = {\n6:         -- REQUIRED - you must specify a snippet engine\n7:         expand = function(args)\n8:             -- vim.fn[\"vsnip#anonymous\"](args.body) -- For `vsnip` users.\n9:             require('luasnip').lsp_expand(args.body) -- For `luasnip` users.\n10:             -- require('snippy').expand_snippet(args.body) -- For `snippy` users.\n11:             -- vim.fn[\"UltiSnips#Anon\"](args.body) -- For `ultisnips` users.\n12:         end\n13: \n14:     },\n15:     window = {\n16:         completion = cmp.config.window.bordered(),\n17:         documentation = cmp.config.window.bordered()\n18:     },\n19:     mapping = cmp.mapping.preset.insert({\n20:         ['<C-b>'] = cmp.mapping.scroll_docs(-4),\n21:         ['<C-f>'] = cmp.mapping.scroll_docs(4),\n22:         ['<C-e>'] = cmp.mapping.abort(),\n23:         ['<CR>'] = cmp.mapping.confirm({select = true}),\n24:         [\"<Tab>\"] = cmp.mapping(function(fallback)\n25:             if cmp.visible() then\n26:                 cmp.select_next_item()\n27:             else\n28:                 fallback()\n29:             end\n30:         end, {\"i\", \"s\"}),\n31:         [\"<S-Tab>\"] = cmp.mapping(function(fallback)\n32:             if cmp.visible() then\n33:                 cmp.select_prev_item()\n34:             else\n35:                 fallback()\n36:             end\n37:         end, {\"i\", \"s\"})\n38:     }),\n39:     sources = cmp.config.sources({\n40:         {name = 'nvim_lsp'},\n41:         {name = 'luasnip'}, -- For vsnip users.\n42:         {name = \"path\"}\n43:     }, {\n44:         {name = 'buffer'},\n45:         {name = 'nvim_lsp_signature_help'}\n46:     })\n47: })\n48: \n49: -- Set configuration for specific filetype.\n50: cmp.setup.filetype('gitcommit', {\n51:     sources = cmp.config.sources({\n52:         {name = 'cmp_git'} -- You can specify the `cmp_git` source if you were installed it.\n53:     }, {{name = 'buffer'}})\n54: })\n55: \n56: -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).\n57: cmp.setup.cmdline({'/', '?'}, {\n58:     mapping = cmp.mapping.preset.cmdline(),\n59:     sources = {{name = 'buffer'}}\n60: })\n61: \n62: -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).\n63: cmp.setup.cmdline(':', {\n64:     mapping = cmp.mapping.preset.cmdline(),\n65:     sources = cmp.config.sources({{name = 'path'}}, {{name = 'cmdline'}})\n66: })\n67: \n68: \n\n(End of file - total 68 lines)\n</content>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "preview": "\nlocal cmp = require 'cmp'\n\ncmp.setup({\n    snippet = {\n        -- REQUIRED - you must specify a snippet engine\n        expand = function(args)\n            -- vim.fn[\"vsnip#anonymous\"](args.body) -- For `vsnip` users.\n            require('luasnip').lsp_expand(args.body) -- For `luasnip` users.\n            -- require('snippy').expand_snippet(args.body) -- For `snippy` users.\n            -- vim.fn[\"UltiSnips#Anon\"](args.body) -- For `ultisnips` users.\n        end\n\n    },\n    window = {\n        completion = cmp.config.window.bordered(),\n        documentation = cmp.config.window.bordered()\n    },\n    mapping = cmp.mapping.preset.insert({\n        ['<C-b>'] = cmp.mapping.scroll_docs(-4),",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "file",
+            "path": "/home/kasiro/.config/nvim/lua/plugins/cmp.lua",
+            "text": "\nlocal cmp = require 'cmp'\n\ncmp.setup({\n    snippet = {\n        -- REQUIRED - you must specify a snippet engine\n        expand = function(args)\n            -- vim.fn[\"vsnip#anonymous\"](args.body) -- For `vsnip` users.\n            require('luasnip').lsp_expand(args.body) -- For `luasnip` users.\n            -- require('snippy').expand_snippet(args.body) -- For `snippy` users.\n            -- vim.fn[\"UltiSnips#Anon\"](args.body) -- For `ultisnips` users.\n        end\n\n    },\n    window = {\n        completion = cmp.config.window.bordered(),\n        documentation = cmp.config.window.bordered()\n    },\n    mapping = cmp.mapping.preset.insert({\n        ['<C-b>'] = cmp.mapping.scroll_docs(-4),\n        ['<C-f>'] = cmp.mapping.scroll_docs(4),\n        ['<C-e>'] = cmp.mapping.abort(),\n        ['<CR>'] = cmp.mapping.confirm({select = true}),\n        [\"<Tab>\"] = cmp.mapping(function(fallback)\n            if cmp.visible() then\n                cmp.select_next_item()\n            else\n                fallback()\n            end\n        end, {\"i\", \"s\"}),\n        [\"<S-Tab>\"] = cmp.mapping(function(fallback)\n            if cmp.visible() then\n                cmp.select_prev_item()\n            else\n                fallback()\n            end\n        end, {\"i\", \"s\"})\n    }),\n    sources = cmp.config.sources({\n        {name = 'nvim_lsp'},\n        {name = 'luasnip'}, -- For vsnip users.\n        {name = \"path\"}\n    }, {\n        {name = 'buffer'},\n        {name = 'nvim_lsp_signature_help'}\n    })\n})\n\n-- Set configuration for specific filetype.\ncmp.setup.filetype('gitcommit', {\n    sources = cmp.config.sources({\n        {name = 'cmp_git'} -- You can specify the `cmp_git` source if you were installed it.\n    }, {{name = 'buffer'}})\n})\n\n-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).\ncmp.setup.cmdline({'/', '?'}, {\n    mapping = cmp.mapping.preset.cmdline(),\n    sources = {{name = 'buffer'}}\n})\n\n-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).\ncmp.setup.cmdline(':', {\n    mapping = cmp.mapping.preset.cmdline(),\n    sources = cmp.config.sources({{name = 'path'}}, {{name = 'cmdline'}})\n})\n\n",
+            "lineStart": 1,
+            "lineEnd": 68,
+            "totalLines": 68,
+            "truncated": false
+          }
+        },
+        "title": "../.config/nvim/lua/plugins/cmp.lua"
+      }
+    ]
+  }
+]

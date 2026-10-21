@@ -1,0 +1,20 @@
+[
+  {
+    "role": "user",
+    "time": 1792335699825,
+    "parts": [
+      {
+        "type": "text",
+        "text": "проверь правильно ли у меня настроен @install.sh \n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "Called the Read tool with the following input: {\"filePath\":\"/home/kasiro/nixos-config/install.sh\"}\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<path>/home/kasiro/nixos-config/install.sh</path>\n<type>file</type>\n<content>\n1: #!/usr/bin/env bash\n2: # install.sh — разворачивает NixOS-конфиг и запускает nixos-rebuild switch.\n3: # Запускать ОТ ОБЫЧНОГО ПОЛЬЗОВАТЕЛЯ (не через sudo) — pkexec сам поднимет права.\n4: set -euo pipefail\n5: \n6: # ------------------------------- настройки -------------------------------\n7: # ⚠️ поменяй на свой реальный репозиторий (или передавай через env REPO_URL=...)\n8: REPO_URL=\"${REPO_URL:-https://github.com/kasiro/nixos-config}\"\n9: TARGET_DIR=\"${TARGET_DIR:-$HOME/nixos-config}\"\n10: FLAKE_ATTR=\"${FLAKE_ATTR:-nixos}\"\n11: HWD_REL=\"modules/hardware/hardware-configuration.nix\"\n12: # -------------------------------------------------------------------------\n13: \n14: echo \"==> Repo URL:   $REPO_URL\"\n15: echo \"==> Target dir: $TARGET_DIR\"\n16: echo \"==> Flake attr: $FLAKE_ATTR\"\n17: echo\n18: \n19: # --- 1. Клонирование конфига ---------------------------------\n20: if [ -d \"$TARGET_DIR/.git\" ]; then\n21:   echo \"==> [$TARGET_DIR] уже существует, пропускаю...\"\n22: else\n23:   echo \"==> Клонирую $REPO_URL -> $TARGET_DIR\"\n24:   git clone \"$REPO_URL\" \"$TARGET_DIR\"\n25: fi\n26: \n27: cd \"$TARGET_DIR\"\n28: \n29: # --- 2. Удаление старого hardware-configuration.nix -----------------------\n30: HWD_PATH=\"$TARGET_DIR/$HWD_REL\"\n31: if [ -f \"$HWD_PATH\" ]; then\n32:   echo \"==> Удаляю старый $HWD_REL\"\n33:   rm -f \"$HWD_PATH\"\n34: fi\n35: \n36: # --- 3. Генерация нового hardware-configuration.nix -----------------------\n37: echo \"==> Генерирую новый $HWD_REL\"\n38: nix-shell -p nixos-install-tools --run \"nixos-generate-config --show-hardware-config\" > \"$HWD_PATH\"\n39: \n40: # Флейки видят только те файлы, что добавлены в git — иначе nixos-rebuild\n41: # скажет \"path '...' is not tracked by Git\".\n42: git add .\n43: \n44: # --- 4. Установка ---------------------------------------------------------\n45: echo\n46: echo \"==> nixos-rebuild switch (flake: $TARGET_DIR#$FLAKE_ATTR)\"\n47: echo\n48: \n49: # exec — чтобы pkexec получил stdin/stdout напрямую и мы видели весь вывод\n50: exec nix-shell -p pkexec --run \"pkexec nixos-rebuild switch --flake $TARGET_DIR#$FLAKE_ATTR --show-trace\"\n\n(End of file - total 50 lines)\n</content>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

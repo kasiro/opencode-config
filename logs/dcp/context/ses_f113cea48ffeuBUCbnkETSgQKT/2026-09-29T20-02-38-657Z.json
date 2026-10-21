@@ -1,0 +1,20 @@
+[
+  {
+    "role": "user",
+    "time": 1790712157865,
+    "parts": [
+      {
+        "type": "text",
+        "text": "у меня в @home/programs/zed_editor.nix не срабатывает xdg.desktopEntries и не создаётся .desktop файл. погугли и разберись. файлы не меняй.\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "Called the Read tool with the following input: {\"filePath\":\"/home/kasiro/nixos-config/home/programs/zed_editor.nix\"}\n\n<dcp-message-id>m0001</dcp-message-id>"
+      },
+      {
+        "type": "text",
+        "text": "<path>/home/kasiro/nixos-config/home/programs/zed_editor.nix</path>\n<type>file</type>\n<content>\n1: { pkgs, ... }:\n2: let\n3: \n4:   # Собираем path-server из исходников\n5:   path-server = pkgs.rustPlatform.buildRustPackage rec {\n6:     pname = \"path-server\";\n7:     version = \"1.4.2\"; # Проверь актуальную версию на GitHub\n8: \n9:     src = pkgs.fetchFromGitHub {\n10:       owner = \"kunlinglio\";\n11:       repo = \"path-server\";\n12:       rev = \"v${version}\"; # или конкретный коммит\n13:       hash = \"sha256-DKIDQZB9hzbS02fLheGo5yIdelpP2G6+VvRrVs0cj50=\";  # Получишь после первой попытки сборки\n14:     };\n15: \n16:     # Если в репозитории есть Cargo.lock, укажи его хэш\n17:     cargoHash = \"sha256-e9m175il3hzmMqVzuMF6e+8ByvAF+7XQheIS/f8JyUY=\";\n18: \n19:     # Отключаем ненужные проверки, если они мешают\n20:     doCheck = false;\n21:   };\n22: \n23:   zedLaunch = pkgs.writeShellScriptBin \"zed-launch\" ''\n24:     export WAYLAND_DISPLAY=\"\"\n25:     export MESA_VK_DEVICE_SELECT=10de:1402\n26:     exec ${pkgs.zed-editor}/bin/zeditor \"$@\"\n27:   '';\n28: \n29: in\n30: {\n31:   targets.genericLinux.nixGL.vulkan.enable = true;\n32:   xdg.enable = true;\n33:   home.packages = with pkgs; [\n34:     nixd\n35:     nil\n36:     rust-analyzer\n37:     pyright\n38:     luaPackages.lua-lsp\n39:     zedLaunch\n40:   ];\n41: \n42:   programs.zed-editor = {\n43:     enable = true;\n44:     package = pkgs.zed-editor;\n45: \n46:     userSettings = {\n47:         # Тема и шрифты\n48:         theme = \"Catppuccin Macchiato - No Italics\";\n49:         show_completions_on_input = true;\n50: \n51:         # Настройки терминала\n52:         terminal = {\n53:           shell = {\n54:             program = \"${pkgs.fish}/bin/fish\";\n55:           };\n56:           line_height = \"comfortable\";\n57:           env = {\n58:             PATH = \"/run/wrappers/bin:/run/current-system/sw/bin:$PATH\";\n59:           };\n60:         };\n61: \n62:         # Настройки LSP (языковых серверов)\n63:         # Это решит проблему, когда Zed не может скачать серверы сам\n64:         lsp = pkgs.lib.genAttrs [\n65:           \"nix\"\n66:           \"rust-analyzer\"\n67:           \"pyright\"\n68:           \"lua\"\n69:           \"path-server-lsp\"\n70:         ] (name: {\n71:           binary.path_lookup = true;\n72:         });\n73: \n74:         # Другие полезные настройки\n75:         auto_update = false; # Отключаем автообновление, т.к. управляем через Nix\n76:         hour_format = \"hour24\";\n77:         vim_mode = false;\n78:       };\n79: \n80:       # Список расширений для автоматической установки\n81:       extensions = [\n82:         \"nix\"\n83:         \"toml\"\n84:         \"rust\"\n85:         \"elixir\"\n86:         \"make\"\n87:         \"pylsp\"\n88:         \"lua\"\n89:         \"path-server-lsp\"\n90:       ];\n91:   };\n92: \n93:   xdg.desktopEntries.\"dev.zed.Zed\" = {\n94:     name = \"Zed\";\n95:     genericName = \"Code Editor\";\n96:     comment = \"Code Editor\";\n97:     exec = \"${zedLaunch}/bin/zeditor %F\";\n98:     icon = \"zed\";\n99:     categories = [ \"Development\" \"IDE\" \"TextEditor\" ];\n100:     mimeType = [ \"text/plain\" ];\n101:     settings = {\n102:       StartupWMClass = \"dev.zed.Zed\";\n103:     };\n104:   };\n105: \n106: }\n\n(End of file - total 106 lines)\n</content>\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]

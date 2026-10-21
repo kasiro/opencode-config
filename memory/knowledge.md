@@ -10,6 +10,7 @@ read_only: false
 - ses CLI: обёртка в ~/.local/bin/ses (перед использованием ses --help)
 - ocdb errors --days N зависает на БД >1ГБ
 - ID сессии: определяется через parent_id в SQLite
+- ydotool: НЕ поддерживает UTF-8 (ASCII-таблица keycode 0-127). Для кириллицы — clipboard-метод: `wl-copy "текст" && ydotool key 29:1 47:1 47:0 29:0` (Ctrl+V)
 
 ## Паттерны и статистика
 - general — основной исполнитель (~92%); deepseek-v4-flash-free — базовая, big-pickle — легкая но не очень умная модель (исполнитель/саб агент - это максимум)
@@ -26,7 +27,7 @@ read_only: false
 - RAM: 7.7 GiB (узкое место)
 - GPU: NVIDIA GTX 950 (2 GiB VRAM) — десктоп, монитор Samsung SMB2330 (DVI-I-1)
 - Диск: 466 GiB HDD (52% занято, ~224 GiB свободно)
-- ОС: CachyOS Linux, ядро 6.18.42-1-cachyos-lts
+- ОС: **NixOS** (после дистрохоппинга с CachyOS)
 - Python 3.14.5, Node v22.22.2, Docker 29.5.1
 - Десктоп:
 	- GNOME на Wayland (сессия 23, tty2);

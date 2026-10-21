@@ -1,0 +1,45 @@
+[
+  {
+    "role": "user",
+    "time": 1790953600874,
+    "parts": [
+      {
+        "type": "text",
+        "text": "какие у тебя есть инструменты?\n\n<dcp-message-id>m0034</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1790953600889,
+    "tokens": {
+      "input": 694,
+      "output": 324,
+      "reasoning": 150,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user asks: what tools do I have? I should answer listing available tools. No tool calls needed really — but the system prompt says I have tools. I should just answer in text listing them. But the system prompt says \"ВСЕГДА используй JSON формат для вызова инструментов\" — but rule 6 says don't generate tool_calls for simple questions. This is a simple question. So answer in text.\n\nList tools mentioned: memory_set, sequential-thinking_sequentialthinking, skill, task. Also memory_get, memory_search maybe? I should be honest: I know the ones listed in the prompt. I could also mention there may be more, but better to describe the documented ones.\n\nAnswer in Russian."
+      },
+      {
+        "type": "text",
+        "text": "У меня в описании зафиксированы следующие инструменты:\n\n**1. `memory_set`** — запись информации в память.\n- `label` — метка записи (например, `lessons`)\n- `value` — содержимое\n- `scope` — область (`global` и т.п.)\n\n**2. `sequential-thinking_sequentialthinking`** — пошаговое структурированное рассуждение.\n- `thought` — текст текущего шага\n- `thoughtNumber` / `totalThoughts` — номер и общее число шагов\n- `nextThoughtNeeded` — нужен ли следующий шаг\n\n**3. `skill`** — вызов навыка (специализированной инструкции/скрипта).\n- `name` — имя навыка (например, `system-reports`)\n\n**4. `task`** — запуск подагента для выполнения отдельной задачи.\n- `description` — краткое описание\n- `prompt` — подробный промпт\n- `subagent_type` — тип подагента (например, `general`)\n\nВсе вызовы выполняются через JSON-структуру `tool_calls` — то есть инструмент вызывается программно, а не просто упоминается текстом.\n\nЕсли хочешь, могу на любом из них продемонстрировать работу — например, записать что-нибудь в память или запустить пошаговое рассуждение по твоей задаче.\n\n<dcp-message-id>m0035</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1790953633946,
+    "parts": [
+      {
+        "type": "text",
+        "text": "вызови саб агента для поиска погоды\n\n<dcp-system-reminder>\nEvaluate the conversation for compressible ranges.\n\nIf any messages are cleanly closed and unlikely to be needed again, use the compress tool on them.\nIf direction has shifted, compress earlier ranges that are now less relevant.\n\nThe goal is to filter noise and distill key information so context accumulation stays under control.\nKeep active context uncompressed.\n\nCompressed block context:\n- Active compressed blocks in this session: 0 (none)\n- If your selected compression range includes any listed block, include each required placeholder exactly once in the summary using `(bN)`.\n</dcp-system-reminder>\n\n<dcp-message-id>m0036</dcp-message-id>"
+      }
+    ]
+  }
+]
