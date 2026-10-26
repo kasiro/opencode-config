@@ -1,0 +1,12 @@
+[
+  {
+    "role": "user",
+    "time": 1792863693501,
+    "parts": [
+      {
+        "type": "text",
+        "text": "я хочу написать язык как nix декларативный но понятный для себя.\nего цель: это язык который описывает настройки.\n\nпример: я хочу им описать например json файл.\nя беру и пишу на своём языке:\n() => {\n  settings: {\n    isbool: true;\n    isstring: 'hello';\n    autoimport: true;\n    isinteger: 10;\n    islist: [\n      'hello'\n      'world'\n    ]\n  }\n}\n\nи это превратится в json.\n\n+ например я хочу настроить для toml. что бы мой язык мог в него компилироваться:\nя беру и описываю как выглядит toml на языке dl (так я его назвал).\n\n() => {\n   header: '[$rectools.tomlheader.name ${name}]';\n   list: {\n     format: 'variable';\n     separator: '='; # key=value\n   };\n}\n\nзатем называю файл: toml.dl\nи использую его для описания:\n( toml ) => {\n   toml.create {\n      path: './mytoml.toml';\n      list: {\n         pereferences: {\n            key = value;\n         }\n      }\n   }\n}\n\nи создастся toml файл:\n[pereferences]\nkey = value\n\n\nну короче на каотором можно описать любой файл для компиляции.\nэто реально? имеет ли смысл мне его делать для хранения настроек или типа сборки файлов или проектных файлов?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  }
+]
