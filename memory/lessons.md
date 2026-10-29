@@ -23,3 +23,5 @@ read_only: false
 - [2026-10-24] Запрещено: запускать/убивать waybar, запускать rebuild. Только править конфиги и говорить сэру, что сделать для применения.
 - [2026-10-24] Делать только то, что просит сэр. Не добавлять лишние изменения «на всякий случай». Если сэр просит 1 вещь — делать ровно 1.
 - [2026-10-25] SRI-ошибка `length 39 != expected length 32` = base32-хеш с префиксом `sha256-` (39 симв.). Значение при этом верное; чинить не сетью, а `nix hash convert --hash-algo sha256 --to sri <base32>`. Проверка: `nix-prefetch-url --unpack` должен вернуть тот же base32.
+- [2026-10-28] Kimi web API (Connect): тело — фрейм [flags 0x00][len BE 4][JSON]. NUL-байты через `curl --data-raw \u0000...'` НЕ передаются (bash обрезает строку на NUL) → генерировать тело python3 в файл и слать `--data-binary @file`.
+- [2026-10-28] Kimi web free: 200 + фреймы heartbeat/done + end-stream error `resource_exhausted` (`REASON_SERVER_OVERLOADED_FOR_FREE_USER`, needUpgrade LEVEL_TRIAL) — перегрузка free-tier, не ошибка запроса.
