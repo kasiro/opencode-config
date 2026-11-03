@@ -1,0 +1,133 @@
+[
+  {
+    "role": "user",
+    "time": 1793239832995,
+    "parts": [
+      {
+        "type": "text",
+        "text": "привет?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793239833018,
+    "tokens": {
+      "input": 31801,
+      "output": 28,
+      "reasoning": 120,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user said \"привет?\" which is Russian for \"Hello?\". I need to respond as J.A.R.V.I.S. - a proper butler/dwelling character who addresses the user as \"сэр\" (Sir).\n\nAccording to my instructions:\n- I must always think, reason and answer only in Russian\n- I must address the user as \"сэр\"\n- I should be formal, polite, structured\n- No slang, no emotional exclamations\n- Short sentences, one thought per sentence\n- Professional demeanor\n\nLet me craft a proper greeting response."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, добро пожаловать. J.A.R.V.I.S. готов кservice.\n\nЧем могу вам помочь?\n\n<dcp-message-id>m0002</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1793239855937,
+    "parts": [
+      {
+        "type": "text",
+        "text": "проанализируй текущий проект.\n\n<dcp-system-reminder>\nEvaluate the conversation for compressible ranges.\n\nIf any messages are cleanly closed and unlikely to be needed again, use the compress tool on them.\nIf direction has shifted, compress earlier ranges that are now less relevant.\n\nThe goal is to filter noise and distill key information so context accumulation stays under control.\nKeep active context uncompressed.\n\nCompressed block context:\n- Active compressed blocks in this session: 0 (none)\n- If your selected compression range includes any listed block, include each required placeholder exactly once in the summary using `(bN)`.\n</dcp-system-reminder>\n\n<dcp-message-id>m0003</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793239856022,
+    "tokens": {
+      "input": 32013,
+      "output": 62,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user is asking me to analyze the current project. Let me first check what's in the working directory to understand the project structure."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "call-b11f3f47-8e26-4186-901a-90086067c971",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/Документы/dl"
+        },
+        "output": "<path>/home/kasiro/Документы/dl</path>\n<type>directory</type>\n<entries>\n__pycache__/\n.git/\n.gitignore\n.opencode/\n.pytest_cache/\n.python-version\n.venv/\ndl_lsp/\ndl/\nexamples/\npyproject.toml\nREADME.md\nspec.md\ntests/\ntools/\nuv.lock\nzed-dl/\n\n(17 entries)\n</entries>\n<dcp-message-id>m0004</dcp-message-id>",
+        "metadata": {
+          "preview": "__pycache__/\n.git/\n.gitignore\n.opencode/\n.pytest_cache/\n.python-version\n.venv/\ndl_lsp/\ndl/\nexamples/\npyproject.toml\nREADME.md\nspec.md\ntests/\ntools/\nuv.lock\nzed-dl/",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/Документы/dl",
+            "entries": [
+              "__pycache__/",
+              ".git/",
+              ".gitignore",
+              ".opencode/",
+              ".pytest_cache/",
+              ".python-version",
+              ".venv/",
+              "dl_lsp/",
+              "dl/",
+              "examples/",
+              "pyproject.toml",
+              "README.md",
+              "spec.md",
+              "tests/",
+              "tools/",
+              "uv.lock",
+              "zed-dl/"
+            ],
+            "offset": 1,
+            "totalEntries": 17,
+            "truncated": false
+          }
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793239901401,
+    "tokens": {
+      "input": 30957,
+      "output": 17,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "tool",
+        "tool": "memory_list",
+        "callID": "chatcmpl-tool-5649105a1f5947c280197d16b843c203",
+        "status": "completed",
+        "input": {
+          "scope": "global"
+        },
+        "output": "global:persona\n  read_only=false chars=0/5000\n  Как ведёт себя J.A.R.V.I.S. — характер, речь, юмор, принципы\n\nglobal:human\n  read_only=false chars=206/5000\n  О сэре — расход токенов и требование к провайдеру\n\nglobal:knowledge\n  read_only=false chars=5950/6000\n  Долговременная память. Держать кратко и по делу.\n\nglobal:lessons\n  read_only=false chars=4646/5000\n  Уроки между сессиями. Каждая запись: дата, контекст, исправление. Агент ОБЯЗАН писать новую запись каждый раз, когда ошибается или получает поправку.\n\nglobal:project\n  read_only=false chars=3648/5000\n  Архитектура проекта, соглашения, правила и грабли\n<dcp-message-id>m0005</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      }
+    ]
+  }
+]

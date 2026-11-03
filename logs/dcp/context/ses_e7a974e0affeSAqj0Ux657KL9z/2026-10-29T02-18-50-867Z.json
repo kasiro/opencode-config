@@ -1,0 +1,163 @@
+[
+  {
+    "role": "user",
+    "time": 1793239832995,
+    "parts": [
+      {
+        "type": "text",
+        "text": "привет?\n\n<dcp-message-id>m0001</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793239833018,
+    "tokens": {
+      "input": 31801,
+      "output": 28,
+      "reasoning": 120,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "The user said \"привет?\" which is Russian for \"Hello?\". I need to respond as J.A.R.V.I.S. - a proper butler/dwelling character who addresses the user as \"сэр\" (Sir).\n\nAccording to my instructions:\n- I must always think, reason and answer only in Russian\n- I must address the user as \"сэр\"\n- I should be formal, polite, structured\n- No slang, no emotional exclamations\n- Short sentences, one thought per sentence\n- Professional demeanor\n\nLet me craft a proper greeting response."
+      },
+      {
+        "type": "text",
+        "text": "Сэр, добро пожаловать. J.A.R.V.I.S. готов кservice.\n\nЧем могу вам помочь?\n\n<dcp-message-id>m0002</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "time": 1793240154520,
+    "parts": [
+      {
+        "type": "text",
+        "text": "проанализируй текущий проект.\n\n<dcp-system-reminder>\nEvaluate the conversation for compressible ranges.\n\nIf any messages are cleanly closed and unlikely to be needed again, use the compress tool on them.\nIf direction has shifted, compress earlier ranges that are now less relevant.\n\nThe goal is to filter noise and distill key information so context accumulation stays under control.\nKeep active context uncompressed.\n\nCompressed block context:\n- Active compressed blocks in this session: 0 (none)\n- If your selected compression range includes any listed block, include each required placeholder exactly once in the summary using `(bN)`.\n</dcp-system-reminder>\n\n<dcp-message-id>m0008</dcp-message-id>"
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793240154597,
+    "tokens": {
+      "input": 27465,
+      "output": 189,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "reasoning",
+        "text": "We need to analyze project. Should delegate to general to inspect repository structure or so. Probably use task to analyze repository. Could use deploychan_onboard to get route for analyzing project. But user just says \"проанализируй текущий проект\". That is ambiguous: likely summarize architecture, find potential problems, maybe check code. We can comply with step: plan: open repository files via read. The project root path /home/kasiro/Документы/dl. Let's read important files: maybe spec.md, settings.dl etc. Use read tool. To give overview, maybe read root files list? But read requires file path; we can read the directory? read directory path likely returns directory listing. Let's attempt read."
+      },
+      {
+        "type": "tool",
+        "tool": "read",
+        "callID": "chatcmpl-tool-9d50a51a9c8aad79",
+        "status": "completed",
+        "input": {
+          "filePath": "/home/kasiro/Документы/dl",
+          "offset": 1,
+          "limit": 50
+        },
+        "output": "<path>/home/kasiro/Документы/dl</path>\n<type>directory</type>\n<entries>\n__pycache__/\n.git/\n.gitignore\n.opencode/\n.pytest_cache/\n.python-version\n.venv/\ndl_lsp/\ndl/\nexamples/\npyproject.toml\nREADME.md\nspec.md\ntests/\ntools/\nuv.lock\nzed-dl/\n\n(17 entries)\n</entries>\n<dcp-message-id>m0009</dcp-message-id>",
+        "metadata": {
+          "preview": "__pycache__/\n.git/\n.gitignore\n.opencode/\n.pytest_cache/\n.python-version\n.venv/\ndl_lsp/\ndl/\nexamples/\npyproject.toml\nREADME.md\nspec.md\ntests/\ntools/\nuv.lock\nzed-dl/",
+          "truncated": false,
+          "loaded": [],
+          "display": {
+            "type": "directory",
+            "path": "/home/kasiro/Документы/dl",
+            "entries": [
+              "__pycache__/",
+              ".git/",
+              ".gitignore",
+              ".opencode/",
+              ".pytest_cache/",
+              ".python-version",
+              ".venv/",
+              "dl_lsp/",
+              "dl/",
+              "examples/",
+              "pyproject.toml",
+              "README.md",
+              "spec.md",
+              "tests/",
+              "tools/",
+              "uv.lock",
+              "zed-dl/"
+            ],
+            "offset": 1,
+            "totalEntries": 17,
+            "truncated": false
+          }
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793240173107,
+    "tokens": {
+      "input": 30969,
+      "output": 17,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "tool",
+        "tool": "memory_list",
+        "callID": "chatcmpl-tool-81116d2643194a8bbddeab975eb0b777",
+        "status": "completed",
+        "input": {
+          "scope": "project"
+        },
+        "output": "project:project\n  read_only=false chars=0/5000\n  The project block: Stores durable, high-signal information about this codebase: commands, architecture notes, conventions, and gotchas.\n\nproject:dl-grammar\n  read_only=false chars=2475/5000\n  DL (язык конфигурации): синтаксис v2.2, структура проекта, команды\n<dcp-message-id>m0010</dcp-message-id>",
+        "metadata": {
+          "truncated": false
+        }
+      }
+    ]
+  },
+  {
+    "role": "assistant",
+    "time": 1793240213546,
+    "tokens": {
+      "input": 31103,
+      "output": 40,
+      "reasoning": 0,
+      "cache": {
+        "write": 0,
+        "read": 0
+      }
+    },
+    "parts": [
+      {
+        "type": "tool",
+        "tool": "memory_replace",
+        "callID": "chatcmpl-tool-3f6c9245420540919f026cdd7ff1108f",
+        "status": "error",
+        "input": {
+          "label": "project",
+          "scope": "project",
+          "oldText": "sintaksis",
+          "newText": "syntax"
+        },
+        "error": "Old text not found in project:project."
+      }
+    ]
+  }
+]
