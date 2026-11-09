@@ -54,7 +54,7 @@ permission:
 
 | Агент | Что делает | Инструменты |
 |-------|-----------|-------------|
-| **Opencode-General** | Универсал: поиск + код + bash + диагностика (память НЕ пишет — это делает J.A.R.V.I.S. через memory blocks) | Built-in: edit, bash, read |
+| **Opencode-General (не General)** | Универсал: поиск + код + bash + диагностика (память НЕ пишет — это делает J.A.R.V.I.S. через memory blocks) | Built-in: edit, bash, read |
 
 ## ЧТО Я НЕ ДЕЛАЮ
 - ❌ **Не редактирую файлы** — делегирую Opencode-General
