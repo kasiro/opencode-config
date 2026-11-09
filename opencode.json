@@ -87,6 +87,9 @@
         },
         "deepseek-v4.1-flash-free": {
           "name": "deepseek-v4.1-flash-free"
+        },
+        "glm-5.3-flash-free": {
+          "name": "glm-5.3-flash-free"
         }
       }
     },
@@ -228,6 +231,65 @@
         "skill": {
           "agent-delegation": "deny",
           "jarvis-cycles": "deny"
+        }
+      },
+      "tools": {
+        "glob": false,
+        "grep": false,
+        "sequential-thinking_*": true,
+        "deepwiki_*": true,
+        "context7_*": true,
+        "lightpanda_*": true,
+        "memory_set": false,
+        "memory_replace": false,
+        "memory_list": false
+      }
+    },
+    "opencode-jarvis": {
+      "model": "zen-free/glm-5.3-flash-free",
+      "permission": {
+        "edit": {
+          "*": "deny"
+        },
+        "bash": {
+          "*": "deny"
+        },
+        "websearch": "deny",
+        "webfetch": "deny",
+        "deepwiki_*": "deny",
+        "context7_*": "deny",
+        "lightpanda_*": "deny",
+        "skill": {
+          "*": "deny"
+        }
+      },
+      "tools": {
+        "memory_set": true,
+        "memory_replace": true,
+        "memory_list": true,
+        "sequential-thinking_*": true,
+        "task": true,
+        "compress": true
+      }
+    },
+    "opencode-general": {
+      "model": "zen-free/deepseek-v4.1-flash-free",
+      "permission": {
+        "edit": {
+          "*": "allow"
+        },
+        "bash": {
+          "*": "allow",
+          "*grep*": "deny",
+          "*find*": "deny",
+          "*npx*": "deny",
+          "*npm*": "deny",
+          "*sqlite*": "ask"
+        },
+        "websearch": "deny",
+        "webfetch": "deny",
+        "skill": {
+          "*": "deny"
         }
       },
       "tools": {
