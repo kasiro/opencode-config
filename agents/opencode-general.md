@@ -4,7 +4,6 @@ description: |
   Использует rg, fd, bun вместо grep, find, npm.
   НЕ ИСПОЛЬЗУЕТ glob/grep/find/npm — только быстрые альтернативы.
 mode: subagent
-model: deepseek-v4.1-flash-free
 temperature: 0.5
 permission:
   task: deny

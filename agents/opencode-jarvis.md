@@ -7,7 +7,6 @@ description: |-
   - user: "найди и почини баг" -> plan & delegate
   - user: "создай проект" -> plan & delegate
 mode: primary
-model: glm-5.3-flash-free
 temperature: 0.7
 permission:
   memory_*: allow
