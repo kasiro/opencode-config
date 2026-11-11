@@ -6,11 +6,9 @@ label: lessons
 limit: 5000
 read_only: false
 ---
-- [2026-09-04] При создании нового проекта — сначала спросить расположение (папку) у сэра, не создавать по своему усмотрению.
-- [2026-09-09] SRPC decryptMessage: пользователи вводят payload в поле «Сообщение» (#m), а не «Результат» (#o) — поле результата после кнопок, интуитивно кажется только для вывода. Фикс: проверять оба поля, приоритет #o, фолбэк #m + очистить #m после расшифровки.
-- [2026-09-17] Hermes+localproxy 503: httpx не понимает CIDR в NO_PROXY (127.0.0.0/8) → локальные запросы уходили через xray :10809 → 503. curl CIDR понимает (200), чем вводил в заблуждение. Фикс: точный 127.0.0.1 в NO_PROXY/no_proxy (fish config + bashrc). (общено general: анонимный curl → WAF HTML, но с авторизацией endpoint отдаёт JSON).
-- [2026-09-23] zen-free-proxy.py: HTTPError от Zen API (503) → игнорировать, не пытаться отправить ответ (клиент уже таймаутил). ConnectionResetError во внешнем except — норма, не логировать как ошибку.
-- [2026-09-23] jev-1.13-free (System One API): требует endpoint /zen/v1/systemone, минимальные заголовки (без x-opencode-project, x-opencode-mode, Accept), формат {state, questions} без stream/tools/messages. Прокси: отдельные функции get_*_headers(), data.pop() для systemone.
+- [2026-09-04] Создание проекта: спрашивать расположение у сэра.
+- [2026-09-17] NO_PROXY CIDR: httpx не понимает 127.0.0.0/8 → точный 127.0.0.1 в fish config + bashrc.
+- [2026-09-23] Zen API 503: игнорировать, клиент таймаутил. System One API: endpoint /zen/v1/systemone, минимальные заголовки.
 - [2026-10-21] При доработке cpx включил в промпт сабагенту pull/clone как «проверку» — сэр не разрешал операции над своими репозиториями. → Проверка инструментов: только read-only/dry-run; операции, меняющие состояние репо/файлов, — отдельно спрашивать.
 - [2026-10-19] NixOS 26.05 (GNOME 50): `gdm.wayland` удалена (Wayland всегда), `gdm.autoLogin` — атрибут `{user=...}`, НЕ bool. `gdm.systemDb` не существует никогда. Проверять несуществующие опции через `nix flake check` ДО rebuild.
 - [2026-10-21] Запрет «ничего не запускать» для сабагента: уточнять «даже python3 -c/ast/py_compile запрещены» — иначе general трактует как «не запускать прокси/тесты» и выполняет python для статической проверки.
@@ -25,4 +23,5 @@ read_only: false
 - [2026-10-28] Kimi web API (Connect): тело — фрейм [flags 0x00][len BE 4][JSON]. NUL-байты через `curl --data-raw \u0000...'` НЕ передаются (bash обрезает строку на NUL) → генерировать тело python3 в файл и слать `--data-binary @file`.
 - [2026-10-28] Kimi web free: 200 + фреймы heartbeat/done + end-stream error `resource_exhausted` (`REASON_SERVER_OVERLOADED_FREE_USER`, needUpgrade LEVEL_TRIAL) — перегрузка free-tier, не ошибка запроса.
 - [2026-11-01] NixOS + uv: wheel duckdb → ImportError libstdc++.so.6. Фикс: devShell mkShell с stdenv.cc.cc.lib + LD_LIBRARY_PATH = lib.makeLibraryPath [ stdenv.cc.cc.lib ], затем uv sync внутри nix develop (из голой оболочки .venv/bin/python либу не видит).
-- [2026-11-04] Тяжёлые/долгие команды (nix flake check, rebuild, скачивание flake-входов, сборки) сабагентами НЕ запускать — только быстрый синтаксис-парсинг (nix-instantiate --parse). Eval-проверки и сборки выполняет сэр сам, ему сообщать список команд.
+- [2026-11-11] Блокировка shell для J.A.R.V.I.S.: синтаксис {"action": "shell", "resource": "*", "effect": "deny"}. Путь к bash — только через subagent(general). Применять /reload после изменения opencode.json.
+- [2026-11-11] Миграция v1→v2: инструмент `task` заменён на `subagent` (синтаксис: `subagent(agent="general", prompt="...")`). В agent-файлах обновлены все упоминания: jarvis.md, mavis.md, general.md, opencode-general.md. Permission format v2: object с паттернами (`bash: {"*": allow, "*find*": deny}`).

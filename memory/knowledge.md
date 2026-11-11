@@ -5,33 +5,24 @@ limit: 6000
 read_only: false
 ---
 ## Технические знания
-- opencode.db: вызовы инструментов в json_extract(data, '$.type') = 'tool' (не 'toolCall')
-- Расположение скиллов: ~/.agents/skills/ (новые), ~/.config/opencode/skills/ (устаревшие)
-- ses CLI: обёртка в ~/.local/bin/ses (перед использованием ses --help)
-- ocdb errors --days N зависает на БД >1ГБ
-- ID сессии: определяется через parent_id в SQLite
-- ydotool: НЕ поддерживает UTF-8 (ASCII-таблица keycode 0-127). Для кириллицы — clipboard-метод: `wl-copy "текст" && ydotool key 29:1 47:1 47:0 29:0` (Ctrl+V)
+- opencode.db: json_extract(data, '$.type') = 'tool' (не 'toolCall')
+- Скиллы: ~/.agents/skills/ (новые), ~/.config/opencode/skills/ (устаревшие)
+- ses CLI: ~/.local/bin/ses; ocdb errors --days N зависает на БД >1ГБ
+- ydotool: нет UTF-8 → clipboard-метод (wl-copy + Ctrl+V)
 
-## Паттерны и статистика
-- general — основной исполнитель (~92%); deepseek-v4-flash-free — базовая, big-pickle — легкая но не очень умная модель (исполнитель/саб агент - это максимум)
-- Систематический пропуск CYCLE 1: 24/25 сессий (критично); невалидные вызовы инструментов 40+/14д
+## Паттерны
+- general: ~92% задач; deepseek-v4-flash-free — базовая модель; CYCLE 1 пропускается (24/25 сессий)
 
-## Справочник инструментов
-- Память: memory blocks (memory_set/memory_replace/memory_list).
-- ses CLI: поиск сессий через SQLite FTS5 — ses search/list/inspect
-- ocdb: универсальный самописный CLI для opencode.db — sessions, search, tools, errors, stats
-- Консолидация знаний: пересмотр memory blocks вручную.
+## Инструменты
+- Память: memory_set/memory_replace/memory_list
+- ses CLI: search/list/inspect (SQLite FTS5)
+- ocdb: sessions/search/tools/errors/stats
 
-## Справочник системы
-- CPU: Intel Core i5-4430 (4 ядра, 4 потока)
-- RAM: 7.7 GiB (узкое место)
-- GPU: NVIDIA GTX 950 (2 GiB VRAM) — десктоп, монитор Samsung SMB2330 (DVI-I-1)
-- Диск: 466 GiB HDD (52% занято, ~224 GiB свободно)
-- ОС: **NixOS** (после дистрохоппинга с CachyOS)
+## Система
+- CPU: i5-4430 (4c/4t); RAM: 7.7 GiB; GPU: GTX 950 (2 GiB)
+- Диск: 466 GiB HDD (52%); ОС: NixOS
 - Python 3.14.5, Node v22.22.2, Docker 29.5.1
-- Десктоп:
-	- GNOME на Wayland (сессия 23, tty2);
-	- doas nopass:kasiro; kasiro в группе video; группы i2c нет
+- GNOME/Wayland, doas nopass:kasiro
 
 ## Обнаружено
 - [2026-08-10] rust-hashcat: симптом «неизвестный токен чарсета '?L'» при свежих исходниках → release-бинар старее правок (бинарь в ~/.cargo/build/release). Диагностика: stat -c '%y' бинаря vs src/*.rs; фикс: cargo build --release.
@@ -52,6 +43,11 @@ read_only: false
 
 ## Правила поведения
 - [2026-08-16] Поиск информации: единственный канал — lightpanda (Bing через fetch).
+
+## Миграция v1→v2 (2026-11-11)
+- Инструмент `task` → `subagent`: синтаксис `subagent(agent="general", prompt="...")`
+- Permission format v2: object с паттернами (`bash: {"*": allow, "*find*": deny}`)
+- Обновлённые файлы: jarvis.md, mavis.md, general.md, opencode-general.md
 
 ## Уроки
 - [2026-07-21] Паттерн инструментов: повторяющиеся операции (>1-2 раз) → создать утилиту. Статус: активен

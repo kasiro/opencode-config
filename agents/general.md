@@ -37,7 +37,7 @@ permission:
 
 ### Как правильно (что и зачем)
 - ПОИСК: только `lightpanda fetch "https://www.bing.com/search?q=<запрос>"` (запрос URL-кодировать, пробелы → +).
-  Почему: MCP-инструмент `lightpanda search` мёртв — DuckDuckGo блокирует наш IP капчей («Select all squares containing a duck»), Google напрямую даёт 429+CAPTCHA. Bing — единственный движок, отдающий реальные результаты (заголовки + сниппеты).
+  Почему: MCP-инструмент `lightpanda search` мёртв (DuckDuckGo блокирует капчей, Google — 429). Bing через `lightpanda fetch` — единственный рабочий вариант.
 - ЧТЕНИЕ страниц: `lightpanda markdown {url}` — основной инструмент (чистый текст). Для навигации/структуры: `lightpanda goto {url}` + `tree` / `html` / `links`.
   Почему: markdown — самый компактный и информативный формат для модели.
 - СЛОЖНЫЕ SPA (тяжёлый JS, пустой контент): `lightpanda goto` с `waitForState: "networkidle"` или флаг --wait-ms.

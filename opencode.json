@@ -136,18 +136,53 @@
     "~/.config/opencode/global-rules.md"
   ],
   "share": "disabled",
-  "permission": {
-    "bash": {
-      "*find*": "deny",
-      "*grep*": "deny",
-      "*npm*": "deny",
-      "*sqlite*": "ask",
-      "*opencode*": "ask"
+  "permissions": [
+    {
+      "action": "tool.use",
+      "resource": "bash:*find*",
+      "effect": "deny"
     },
-    "glob": "deny",
-    "grep": "deny",
-    "websearch": "deny"
-  },
+    {
+      "action": "tool.use",
+      "resource": "bash:*grep*",
+      "effect": "deny"
+    },
+    {
+      "action": "tool.use",
+      "resource": "bash:*npm*",
+      "effect": "deny"
+    },
+    {
+      "action": "tool.use",
+      "resource": "bash:*sqlite*",
+      "effect": "ask"
+    },
+    {
+      "action": "tool.use",
+      "resource": "bash:*opencode*",
+      "effect": "ask"
+    },
+    {
+      "action": "tool.use",
+      "resource": "glob",
+      "effect": "deny"
+    },
+    {
+      "action": "tool.use",
+      "resource": "grep",
+      "effect": "deny"
+    },
+    {
+      "action": "websearch.use",
+      "resource": "*",
+      "effect": "deny"
+    },
+    {
+      "action": "tool.use",
+      "resource": "webfetch",
+      "effect": "deny"
+    }
+  ],
   "mcp": {
     "deepwiki": {
       "type": "remote",
@@ -191,115 +226,222 @@
       "timeout": 120000
     }
   },
-  "agent": {
+  "agents": {
     "jarvis": {
-      "permission": {
-        "edit": {
-          "*": "deny"
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
         },
-        "bash": {
-          "*": "deny"
+        {
+          "action": "websearch.use",
+          "resource": "*",
+          "effect": "deny"
         },
-        "websearch": "deny",
-        "webfetch": "deny",
-        "deepwiki_*": "deny",
-        "context7_*": "deny",
-        "lightpanda_*": "deny"
-      }
+        {
+          "action": "webfetch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "deepwiki_*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "context7_*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "lightpanda_*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "execute",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "skill.use",
+          "resource": "*",
+          "effect": "allow"
+        }
+      ]
     },
     "title": {
       "model": "opencode/big-pickle"
     },
     "general": {
-      "permission": {
-        "edit": {
-          "*": "allow"
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
         },
-        "bash": {
-          "*": "allow",
-          "*grep*": "deny",
-          "*find*": "deny",
-          "*npx*": "deny",
-          "*npm*": "deny",
-          "*sqlite*": "ask"
+        {
+          "action": "tool.use",
+          "resource": "bash:*",
+          "effect": "allow"
         },
-        "websearch": "deny",
-        "webfetch": "deny",
-        "skill": {
-          "agent-delegation": "deny",
-          "jarvis-cycles": "deny"
+        {
+          "action": "tool.use",
+          "resource": "bash:*grep*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*find*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*npx*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*npm*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*sqlite*",
+          "effect": "ask"
+        },
+        {
+          "action": "websearch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "webfetch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "skill.use",
+          "resource": "agent-delegation",
+          "effect": "deny"
+        },
+        {
+          "action": "skill.use",
+          "resource": "jarvis-cycles",
+          "effect": "deny"
         }
-      },
-      "tools": {
-        "glob": false,
-        "grep": false,
-        "sequential-thinking_*": true,
-        "deepwiki_*": true,
-        "context7_*": true,
-        "lightpanda_*": true,
-        "memory_set": false,
-        "memory_replace": false,
-        "memory_list": false
-      }
+      ]
     },
     "opencode-jarvis": {
       "model": "opencode/glm-5.3-flash-free",
-      "permission": {
-        "edit": {
-          "*": "deny"
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
         },
-        "bash": {
-          "*": "deny"
+        {
+          "action": "tool.use",
+          "resource": "bash:*",
+          "effect": "deny"
         },
-        "websearch": "deny",
-        "webfetch": "deny",
-        "deepwiki_*": "deny",
-        "context7_*": "deny",
-        "lightpanda_*": "deny",
-        "skill": {
-          "*": "deny"
+        {
+          "action": "websearch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "webfetch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "deepwiki_*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "context7_*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "lightpanda_*",
+          "effect": "deny"
+        },
+        {
+          "action": "skill.use",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "tool.use",
+          "resource": "execute",
+          "effect": "deny"
         }
-      },
-      "tools": {
-        "memory_set": true,
-        "memory_replace": true,
-        "memory_list": true,
-        "sequential-thinking_*": true,
-        "task": true,
-        "compress": true
-      }
+      ]
     },
     "opencode-general": {
       "model": "opencode/deepseek-v4.1-flash-free",
-      "permission": {
-        "edit": {
-          "*": "allow"
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
         },
-        "bash": {
-          "*": "allow",
-          "*grep*": "deny",
-          "*find*": "deny",
-          "*npx*": "deny",
-          "*npm*": "deny",
-          "*sqlite*": "ask"
+        {
+          "action": "tool.use",
+          "resource": "bash:*",
+          "effect": "allow"
         },
-        "websearch": "deny",
-        "webfetch": "deny",
-        "skill": {
-          "*": "deny"
+        {
+          "action": "tool.use",
+          "resource": "bash:*grep*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*find*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*npx*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*npm*",
+          "effect": "deny"
+        },
+        {
+          "action": "tool.use",
+          "resource": "bash:*sqlite*",
+          "effect": "ask"
+        },
+        {
+          "action": "websearch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "webfetch.use",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "skill.use",
+          "resource": "*",
+          "effect": "deny"
         }
-      },
-      "tools": {
-        "glob": false,
-        "grep": false,
-        "sequential-thinking_*": true,
-        "deepwiki_*": true,
-        "context7_*": true,
-        "lightpanda_*": true,
-        "memory_set": false,
-        "memory_replace": false,
-        "memory_list": false
-      }
+      ]
     },
     "explore": {
       "disable": true
@@ -308,7 +450,7 @@
   "lsp": {},
   "plugin": [
     "opencode-intellisearch",
-    "@tarquinen/opencode-dcp@3.1.13",
+    "@tarquinen/opencode-dcp@latest",
     "opencode-agent-memory"
   ],
   "compaction": {
@@ -320,6 +462,8 @@
     "max_bytes": 204800
   },
   "experimental": {
-    "mcp_timeout": 120000
+    "mcp_timeout": 120000,
+    "artifacts": true,
+    "schedules": true
   }
 }
