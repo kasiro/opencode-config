@@ -15,8 +15,7 @@ permission:
   webfetch: deny
   websearch: deny
   question: deny
-  skill:
-    session-search: allow
+  skill: {}
   memory_set: allow
   memory_replace: allow
   memory_list: allow

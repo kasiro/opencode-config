@@ -7,7 +7,6 @@ read_only: false
 ## Технические знания
 - opencode.db: json_extract(data, '$.type') = 'tool' (не 'toolCall')
 - Скиллы: ~/.agents/skills/ (новые), ~/.config/opencode/skills/ (устаревшие)
-- ses CLI: ~/.local/bin/ses; ocdb errors --days N зависает на БД >1ГБ
 - ydotool: нет UTF-8 → clipboard-метод (wl-copy + Ctrl+V)
 
 ## Паттерны
@@ -15,8 +14,6 @@ read_only: false
 
 ## Инструменты
 - Память: memory_set/memory_replace/memory_list
-- ses CLI: search/list/inspect (SQLite FTS5)
-- ocdb: sessions/search/tools/errors/stats
 
 ## Система
 - CPU: i5-4430 (4c/4t); RAM: 7.7 GiB; GPU: GTX 950 (2 GiB)
@@ -25,32 +22,60 @@ read_only: false
 - GNOME/Wayland, doas nopass:kasiro
 
 ## Обнаружено
-- [2026-08-10] rust-hashcat: симптом «неизвестный токен чарсета '?L'» при свежих исходниках → release-бинар старее правок (бинарь в ~/.cargo/build/release). Диагностика: stat -c '%y' бинаря vs src/*.rs; фикс: cargo build --release.
-- [2026-08-15] whitepeach: WP+deepseek-v4-flash-free → 503; hy3-free+WP → 200; анонимно → 200; платные → 401; UA curl → 429, opencode → ок.
-- [2026-08-17] Баг Zen API: stream=true + tool-calls → content обрезается (finish_reason=tool_calls); stream=false → полный текст. OpenCode всегда стримит → ответы J.A.R.V.I.S. перед tool-calls обрезаны.
-- [2026-08-16] Оптимизация kasiro: bore-tunnel/opencrabs/xray-checker остановлены, Docker остановлен (не disable), ydotoold починен. MCP остались: deepwiki, sequential-thinking, context7, youtube-transcript, lightpanda (~18 МБ RSS, ЕДИНСТВЕННЫЙ интернет: Bing через fetch; search мёртв — DDG CAPTCHA, Google 429; Notion/WB не читаются).
-- [2026-08-16] Яркость kasiro: НЕТ /sys/class/backlight, D-Bus пуст. Путь — DDC/CI: ddcutil 2.2.7, doas НЕ нужен (udev uaccess). SMB2330: /dev/i2c-0, DVI-I-1, VCP 2.0. Команды: ddcutil detect/getvcp 10/setvcp 10 <0-100>. xrandr на Wayland не работает.
-- [2026-08-18] KVM на kasiro: VT-x включена, виртуализация есть
-- [2026-10-24] "Model access is disabled" — ответ сервера Zen, не локально (нет OPENCODE_DISABLE_FREE_MODELS, auth в порядке) → массовая деградация free (status.opencode.ai); лечить нечего, брать mimo-v2.6-flash-free. Анонимный curl → 403 FreeTierError (free только «из OpenCode», подделка UA/session не работает).
-- [2026-08-20] NixOS для тестов: решение — установка на флешку /dev/sdb (USB 2.0, 117 ГБ, live ISO на ней). Флешка и виртуалка отвергнуты ранее (скорость), покупка диска отвергнута (без трат), ужатие btrfs на /dev/sda отвергнуто (риск). Схема: tmpfs root (система в RAM — «летает»), /nix + /home + /persist на btrfs subvolumes флешки, /boot — ESP. Плата ASUS H81M-E: USB 3.0 xHCI есть, 3/4 SATA свободны. Загрузчик: systemd-boot (UEFI) или GRUB (BIOS) — canTouchEfiVariables = false. Сэр выполняет установку сам, команды выданы.
-- [2026-08-20] Флешка /dev/sdb (ProductCode, ID 346d:5678, USB 2.0, ноунейм) ФИЗИЧЕСКИ ДЕГРАДИРОВАЛА: чтение 5.6 MB/s (провалы до 44-130 kB/s на первых 40 МБ — ECC-ретраи), запись w_await 2458 мс (~186 KiB/s на мелких файлах с fsync), write-through без кэша, без SMART. disko-install «Copying store paths» завис на 2% (8:44 remaining). btrfs чиста (0 ошибок), порт USB не виноват. Вывод: негодна, NixOS установлен.
-- [2026-10-26] swayfx-enhanced 0.5.3 на NVIDIA proprietary: анимации + damage-трекинг scenefx → окна «не на полный экран», исчезают при drag/resize. Фикс: `animation_duration_ms 0` + `corner_radius 0` в appearance.nix — проверено. Блочный `blur { }` в 0.5.x невалиден (нужен плоский), blur выключен.
+- [2026-08-17] Zen API: stream=true + tool-calls → content обрезается
+- [2026-08-16] Яркость: DDC/CI (ddcutil), doas не нужен; xrandr на Wayland не работает
+- [2026-10-24] "Model access disabled" — сервер Zen; брать mimo-v2.6-flash-free
+- [2026-08-20] Флешка /dev/sdb деградировала (44-130 kB/s) → NixOS установлен
+- [2026-10-26] swayfx-enhanced 0.5.3 + NVIDIA: animation_duration_ms=0 + corner_radius=0
 
-## rust-hashcat (\$HOME/Документы/rust_project)
-- SRPC -m 9900: взлом ключа SRPC по MAC (без расшифровки). salted_key = key + "srpc_v2_salt_2024_secure_random_bytes" (37 байт); mac_key = HMAC-SHA256(salted_key, "mac_key_derivation"); expected = HMAC-SHA256(mac_key, body)[:16] vs base36_decode(MAC) (A-Z0-9: A=0..Z=25, 0=26..9=35, 16 байт BE). CPU+GPU (srpc.wgsl: много-блочный SHA256+HMAC). Скорость: CPU ~1.23 MH/s, GPU ~0.2 MH/s (на GTX 950 CPU быстрее — 3 SHA256/кандидата). 99 тестов. Potfile: цель содержит ':' → rsplit_once.
-- --no-repeat: перестановки без повторов (Lehmer code), только -a 3, одинаковый чарсет, CPU-only (~1.77 MH/s).
-- WGSL грабли: runtime-массивы нельзя передавать в функции; write_buffer требует кратности 4; SHA256-padding 0x80 через OR (не затирая байты до boff); wgpu не проверяет неинициализированные WGSL-массивы.
+## rust-hashcat
+- SRPC -m 9900: HMAC-SHA256(salted_key, body)[:16] vs base36_decode(MAC); salted_key = key + "srpc_v2_salt_2024_secure_random_bytes"
+- --no-repeat: Lehmer code, -a 3, CPU-only (~1.77 MH/s)
+- WGSL: runtime-массивы не в функции; write_buffer кратность 4; padding 0x80 через OR
 
 ## Правила поведения
 - [2026-08-16] Поиск информации: единственный канал — lightpanda (Bing через fetch).
 
+## Недоступные инструменты (v2)
+- **deny**: glob, grep, websearch, webfetch (заменён на lightpanda MCP)
+- **bash pattern match**: *find*, *grep*, *npm*, *npx* (блокируется даже в URL)
+- **ask**: *sqlite*, *opencode* (требуют подтверждения сэра)
+- **Альтернативы**: fd вместо find, rg вместо grep, bun вместо npm, bunx вместо npx
+
 ## Миграция v1→v2 (2026-11-11)
-- Инструмент `task` → `subagent`: синтаксис `subagent(agent="general", prompt="...")`
-- Permission format v2: object с паттернами (`bash: {"*": allow, "*find*": deny}`)
-- Обновлённые файлы: jarvis.md, mavis.md, general.md, opencode-general.md
+
+### Инструменты
+- `task` → `subagent`
+- MCP через `execute` + `tools.*`
+- Permission format v2: object с паттернами
+
+### Синтаксис вызова инструментов
+
+**Встроенные** (напрямую):
+```javascript
+read({path, limit, offset})
+edit({path, oldString, newString})
+bash({command})
+memory_set({label, scope, value, limit})
+memory_replace({label, scope, oldText, newText, edits})
+subagent({agent, description, prompt, background})
+skill({id})
+compress({topic, content: [{startId, endId, summary}]})
+```
+
+**MCP** (через `execute`):
+```javascript
+await tools.lightpanda.fetch({url})
+await tools.lightpanda.markdown({url})
+await tools.deepwiki.read_wiki_structure({repoName})
+await tools.context7["query-docs"]({libraryId, query})
+await tools.deploychan.get_skill({skill_id})
+```
+
+
 
 ## Уроки
 - [2026-07-21] Паттерн инструментов: повторяющиеся операции (>1-2 раз) → создать утилиту. Статус: активен
 - [2026-07-29] Сэр предпочитает простые объяснения и не любит сложных терминов в архитектуре. Статус: активен
 - Урок ≠ действие. Запись ошибки не исправляет её автоматически. Статус: активен
-- [2026-07-31] OpenCode Zen Free API (https://opencode.ai/zen/v1) работает БЕЗ ключа: /models и /chat/completions → 200, cost "0". deepseek-v4-flash-free есть в списке. Reasonix (v1.18.0): провайдер zen-free (base_url opencode.ai/zen/v1, api_key_env ZEN_API_KEY, ключ в ~/.reasonix/.env), default_model = "zen-free". Работает.
+- [2026-07-31] OpenCode Zen Free API работает БЕЗ ключа через zen-free провайдер. Работает.

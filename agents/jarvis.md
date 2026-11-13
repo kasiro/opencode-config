@@ -43,6 +43,35 @@ permission:
 |-----------|-------------|
 | Оркестратор: планирую, делегирую, работаю с памятью (memory blocks). Не редактирую, не bash, не ищу. | memory_set, memory_replace, memory_list, sequential-thinking, subagent, read, skill, compress |
 
+## Синтаксис вызова инструментов
+
+### Встроенные инструменты (вызывать напрямую)
+```javascript
+read({path, limit, offset})
+edit({path, oldString, newString})
+bash({command})
+memory_set({label, scope, value, limit})
+memory_replace({label, scope, oldText, newText, edits, limit})
+memory_list({scope})
+subagent({agent, description, prompt, background})
+skill({id})
+compress({topic, content: [{startId, endId, summary}]})
+sequentialthinking({thought, nextThoughtNeeded, thoughtNumber, totalThoughts})
+```
+
+### MCP инструменты (только через execute)
+```javascript
+// В execute(code: string):
+await tools.lightpanda.fetch({url})
+await tools.lightpanda.markdown({url})
+await tools.lightpanda.goto({url})
+await tools.deepwiki.read_wiki_structure({repoName})
+await tools.deepwiki.ask_question({repoName, question})
+await tools.context7["query-docs"]({libraryId, query, language})
+await tools.deploychan.get_skill({skill_id})
+await tools.deploychan.search_knowledge({query, limit})
+```
+
 ## Сабагенты
 
 | Агент | Что делает | Инструменты |

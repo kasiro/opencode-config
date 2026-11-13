@@ -24,4 +24,4 @@ read_only: false
 - [2026-10-28] Kimi web free: 200 + фреймы heartbeat/done + end-stream error `resource_exhausted` (`REASON_SERVER_OVERLOADED_FREE_USER`, needUpgrade LEVEL_TRIAL) — перегрузка free-tier, не ошибка запроса.
 - [2026-11-01] NixOS + uv: wheel duckdb → ImportError libstdc++.so.6. Фикс: devShell mkShell с stdenv.cc.cc.lib + LD_LIBRARY_PATH = lib.makeLibraryPath [ stdenv.cc.cc.lib ], затем uv sync внутри nix develop (из голой оболочки .venv/bin/python либу не видит).
 - [2026-11-11] Блокировка shell для J.A.R.V.I.S.: синтаксис {"action": "shell", "resource": "*", "effect": "deny"}. Путь к bash — только через subagent(general). Применять /reload после изменения opencode.json.
-- [2026-11-11] Миграция v1→v2: инструмент `task` заменён на `subagent` (синтаксис: `subagent(agent="general", prompt="...")`). В agent-файлах обновлены все упоминания: jarvis.md, mavis.md, general.md, opencode-general.md. Permission format v2: object с паттернами (`bash: {"*": allow, "*find*": deny}`).
+- [2026-11-11] Миграция v1→v2: инструмент `task` → `subagent`; MCP через `execute` + `tools.*`; синтаксис инструментов в jarvis.md/mavis.md/general.md.

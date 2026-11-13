@@ -1,7 +1,7 @@
 ---
 description: |
   Исполнитель анализа сессий OpenCode.
-  Без права делегировать: разбирает историю по session_id через ses/ocdb и возвращает сырой result auditor'у.
+  Без права делегировать: разбирает историю по session_id и возвращает сырой result auditor'у.
 mode: subagent
 temperature: 0.3
 permission:
@@ -14,8 +14,7 @@ permission:
   webfetch: deny
   websearch: deny
   question: deny
-  skill:
-    session-search: allow
+  skill: {}
   memory_set: deny
   memory_replace: deny
   memory_list: deny
@@ -30,12 +29,9 @@ permission:
 
 ## Шаги
 
-1. Подними историю по `session_id` через `bash` (скилл `session-search`, CLI `ses`/`ocdb`):
-   - `ses inspect <session_id>` — метаданные, сообщения, todos, токены;
-   - `ses inspect <session_id> --messages 5` / `--todos` / `--json` — прицельно по частям;
-   - `ses search "<фраза>"` / `ses fts "<запрос>"` — поиск связанных мест (по слову, фразе в кавычках, `AND`/`OR`/`NOT`);
-   - `ses ocdb session <session_id> --raw` — сырые данные при необходимости.
-   Для чтения файлов используй `read`. Других каналов данных нет.
+1. Подними историю по `session_id` через инструменты OpenCode:
+   - Используй `read` для чтения файлов сессий
+   - При необходимости используй `bash` только для read-only операций (без изменений)
 2. Восстанови хронологию строго по артефактам:
    - исходный запрос сэра (дословная цитата);
    - первое расхождение (где поведение впервые отклонилось от запроса);

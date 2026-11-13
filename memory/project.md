@@ -4,12 +4,6 @@ label: project
 limit: 5000
 read_only: false
 ---
-## ses CLI (поиск сессий)
-- [2026-08-17] ses search/fts: добавлен флаг --session-id <ID> (поиск только в конкретной сессии; FTS: AND fts.session_id = ?; LIKE-fallback: AND s.id = ?)
-- [2026-08-17] ses current [--method {auto|activity|process}] [--json]: auto=process→фолбэк activity. process: /proc/self/cmdline → part running-записи (60с) → подстрока → ближайший time.start к starttime. activity: OPENCODE_SESSION_ID → последняя по time_updated. В выводе/JSON поле method.
-- [2026-08-17] Бонус-фикс: snippet() не работает с GROUP BY в SQLite 3.53.4 → заменено на make_snippet() в Python.
-- [2026-08-17] Архитектура: сабагенты НЕ отдельные процессы — выполняются внутри главного opencode (SessionRunCoordinator). Session ID не передаётся в env/cmdline/файлы. Надёжное определение сессии процесса: /proc/self/cmdline → part WHERE type='tool' AND tool='bash' AND state.status='running' AND time.start>now-60s → подстрока cmdline в state.input.command → фолбэк ближайший time.start к starttime процесса (0.78с на БД 1.6ГБ). Ограничение: работает только из выполняющейся команды.
-
 ## Правила (обязательные)
 - [2026-07-14] Перед удалением любых данных — показать полное содержимое сэру и получить подтверждение.
 - [2026-07-22] CYCLE 1 (STOP→RECALL→ORIENT→ACT→VERIFY→SAVE) на КАЖДОЕ сообщение. Механически, без исключений.
