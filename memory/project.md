@@ -30,5 +30,10 @@ read_only: false
 ## dsh (deepseek-harness)
 - [2026-08-17] dsh 0.1.0-rc.6 (bun, ~/.bun/bin/dsh). TUI НЕТ (только web/headless; web = алиас на автоинициализируемый профиль). UA зашит в APP_IDENTITY пакета dsh-llm (lib/index.js + lib/types/attribution.js) → заменён на opencode/1.18.18 (Zen API отдаёт 429 для чужих UA; headers провайдера фильтруются, user-agent зарезервирован). Правка слетит при bun update. Провайдер Zen: llm-pi-ai.providers.opencode, apiKeyEnv OPENCODE_API_KEY, baseURL opencode.ai/zen/v1 (встроенный каталог pi-ai).
 
+## Noctalia ↔ Hyprland (2026-11-14)
+- Бордеры Hyprland теперь из шаблона `hyprland` noctalia: в конец hyprland.lua добавлен `require("noctalia").apply_theme()` — Hyprland сам reload'ит файлы, загруженные через require() (inotify), смена обоев = живой цвет бордера без rebuild.
+- Шаблон рендерит ~/.config/hypr/noctalia.lua (обычный файл, не store). Не рендерит decoration.
+- Kitty-шаблон: полный ANSI + SIGUSR1 → мгновенно. Starship-шаблон НЕ работает: ~/.config/starship.toml — HM-симлинк в store (programs.starship в home/kasiro/shell/starship.nix), noctalia не может писать.
+
 ## lightpanda MCP — исправление
 - [2026-09-20] Ошибка "connection closed -32000" — проблема stdio/opencode, не бинарника. Фикс: увеличить timeout до 120000, проверить permission для агента.
