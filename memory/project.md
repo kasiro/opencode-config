@@ -33,7 +33,8 @@ read_only: false
 ## Noctalia ↔ Hyprland (2026-11-14)
 - Бордеры Hyprland теперь из шаблона `hyprland` noctalia: в конец hyprland.lua добавлен `require("noctalia").apply_theme()` — Hyprland сам reload'ит файлы, загруженные через require() (inotify), смена обоев = живой цвет бордера без rebuild.
 - Шаблон рендерит ~/.config/hypr/noctalia.lua (обычный файл, не store). Не рендерит decoration.
-- Kitty-шаблон: полный ANSI + SIGUSR1 → мгновенно. Starship-шаблон НЕ работает: ~/.config/starship.toml — HM-симлинк в store (programs.starship в home/kasiro/shell/starship.nix), noctalia не может писать.
+- Kitty-шаблон: полный ANSI + SIGUSR1 → мгновенно. В programs.kitty.extraConfig добавлен `include themes/noctalia.conf` (extraConfig идёт ПОСЛЕ settings в kitty.conf → перекрывает цвета HM; apply.sh идемпотентен, при наличии строки store-файл не трогает).
+- Starship переведён на live-файл: programs.starship.settings удалён (HM не генерит starship.toml при settings={} + presets=[]), seed-активация home.activation.starshipSeed в home/kasiro/shell/starship.nix: симлинк→конвертирует в обычный файл, отсутствующий→seит из pkgs.writeText, обычный файл→не трогает. ~/.config/starship.toml теперь ВНЕ HM — править конфиг starship через nix больше нельзя (чтобы вернуть — убрать активацию + вернуть settings).
 
 ## lightpanda MCP — исправление
 - [2026-09-20] Ошибка "connection closed -32000" — проблема stdio/opencode, не бинарника. Фикс: увеличить timeout до 120000, проверить permission для агента.
