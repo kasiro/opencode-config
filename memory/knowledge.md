@@ -27,6 +27,7 @@ read_only: false
 - [2026-10-24] "Model access disabled" — сервер Zen; брать mimo-v2.6-flash-free
 - [2026-08-20] Флешка /dev/sdb деградировала (44-130 kB/s) → NixOS установлен
 - [2026-10-26] swayfx-enhanced 0.5.3 + NVIDIA: animation_duration_ms=0 + corner_radius=0
+- [2026-11-15] OpenCode `ctx.session.context()`: параметр `sessionID` (НЕ `session_id`), возвращает МАССИВ сообщений (не `{data:{messages}}`). Роль в поле `type` (не `role`), текст в `text` / `content[]` (`text`/`reasoning`); shell — `command`+`output.output`, compaction — `summary`. Неверный ключ → пусто без ошибки.
 
 ## rust-hashcat
 - SRPC -m 9900: HMAC-SHA256(salted_key, body)[:16] vs base36_decode(MAC); salted_key = key + "srpc_v2_salt_2024_secure_random_bytes"
