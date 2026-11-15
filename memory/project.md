@@ -27,6 +27,10 @@ read_only: false
 ## Региональные ограничения
 - [2026-07-29] Западный хостинг (Oracle Cloud, Fly.io, Render, Hetzner, GitHub Codespaces) — оплата недоступна с российских карт. Альтернативы: Selectel, Beget, Timeweb (от 300₽/мес), Oracle Cloud Free Tier (если карта дружественной страны).
 
+## rebuild.py (2026-11-15)
+- Пропуск rebuild при отсутствии git-изменений + флаг `-f/--force`. PREHOOKS=[project_init]: клонирование 6 проектов (kasiro 5 + whitepeach/Marsel) при отсутствии каталогов (перенесено из удалённого modules/system/activation-scripts.nix).
+- Грабля: /home/whitepeach drwx------ → kasiro не может is_dir() → PermissionError валил бы prehook; guard: недоступный каталог = «уже существует» (в чужой home клонировать всё равно нельзя).
+
 ## dsh (deepseek-harness)
 - [2026-08-17] dsh 0.1.0-rc.6 (bun, ~/.bun/bin/dsh). TUI НЕТ (только web/headless; web = алиас на автоинициализируемый профиль). UA зашит в APP_IDENTITY пакета dsh-llm (lib/index.js + lib/types/attribution.js) → заменён на opencode/1.18.18 (Zen API отдаёт 429 для чужих UA; headers провайдера фильтруются, user-agent зарезервирован). Правка слетит при bun update. Провайдер Zen: llm-pi-ai.providers.opencode, apiKeyEnv OPENCODE_API_KEY, baseURL opencode.ai/zen/v1 (встроенный каталог pi-ai).
 
