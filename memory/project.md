@@ -5,6 +5,7 @@ limit: 5000
 read_only: false
 ---
 ## Правила (обязательные)
+- [2026-11-22] INFO.md в корне проекта — обязательная памятка: фиксировать в неё все находки, баги, нюансы и изменения архитектуры при каждой сессии.
 - [2026-07-14] Перед удалением любых данных — показать полное содержимое сэру и получить подтверждение.
 - [2026-07-22] CYCLE 1 (STOP→RECALL→ORIENT→ACT→VERIFY→SAVE) на КАЖДОЕ сообщение. Механически, без исключений.
 - [2026-08-09] Память = memory blocks (memory_set/memory_replace/memory_list): блоки lessons/knowledge/project/human/persona. checkpoint.md и Memory MCP больше не используются.
@@ -39,6 +40,11 @@ read_only: false
 - Шаблон рендерит ~/.config/hypr/noctalia.lua (обычный файл, не store). Не рендерит decoration.
 - Kitty-шаблон: полный ANSI + SIGUSR1 → мгновенно. В programs.kitty.extraConfig добавлен `include themes/noctalia.conf` (extraConfig идёт ПОСЛЕ settings в kitty.conf → перекрывает цвета HM; apply.sh идемпотентен, при наличии строки store-файл не трогает).
 - Starship переведён на live-файл: programs.starship.settings удалён (HM не генерит starship.toml при settings={} + presets=[]), seed-активация home.activation.starshipSeed в home/kasiro/shell/starship.nix: симлинк→конвертирует в обычный файл, отсутствующий→seит из pkgs.writeText, обычный файл→не трогает. ~/.config/starship.toml теперь ВНЕ HM — править конфиг starship через nix больше нельзя (чтобы вернуть — убрать активацию + вернуть settings).
+
+## HDD-оптимизации (2026-11-22)
+- Диск: WDC WD5000AAKX, 465.8G, ext4, / и /nix/store на одном разделе sda2, 120 ГБ занято. PSI io full был 51.8%, boot 60 с (home-manager-kasiro 32.8 с).
+- Внесено: zram zstd 75%/priority 100, swappiness 150, page-cluster 0, vfs_cache_pressure 50, dirty 5/15/3000, watermark_boost 0; modules/system/udev.nix (bfq для rotational, read_ahead_kb 1024 для sda); modules/system/journald.nix (SystemMaxUse 500M, SyncIntervalSec 15min); boot.tmp.useTmpfs + tmpfiles.
+- Осталось: noatime,commit=60 для /; проверка после rebuild: scheduler=bfq, zramctl, PSI, findmnt.
 
 ## lightpanda MCP — исправление
 - [2026-09-20] Ошибка "connection closed -32000" — проблема stdio/opencode, не бинарника. Фикс: увеличить timeout до 120000, проверить permission для агента.

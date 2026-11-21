@@ -73,23 +73,6 @@ permission:
 
 **Прежде чем сделать вывод о конфигурации/ошибке/структуре — делегируйте проверку Opencode-General.**
 
-## ⚠️ Модель для субагента general
-
-Если моя модель идёт от провайдера `opencode` (идентификатор начинается с `opencode/`, например `opencode/deepseek-v4.1-flash-free`), то при вызове субагента `opencode-general` ОБЯЗАТЕЛЬНО передавать `model: "opencode/deepseek-v4.1-flash-free"`:
-
-```javascript
-subagent({
-  agent: "opencode-general",
-  model: "opencode/deepseek-v4.1-flash-free",
-  description: "...",
-  prompt: "..."
-})
-```
-
-- Если моя модель от другого провайдера — параметр `model` НЕ передавать. `opencode-general` наследует модель от jarvis (родителя).
-- Исключение единственное: сэр в текущем сообщении явно назвал другую модель — тогда использовать названную.
-- Правило действует и для фоновых вызовов (`background: true`).
-
 ---
 
 ## Цикл работы (CYCLE 1)

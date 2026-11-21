@@ -22,6 +22,7 @@ read_only: false
 - GNOME/Wayland, doas nopass:kasiro
 
 ## Обнаружено
+- [2026-11-22] opencode CLI: ШТАТНОЙ валидации opencode.json НЕТ (нет подкоманд config/doctor/check/validate, нет флага --config, exit code всегда 0 даже при битом конфиге). Единственный канал диагностики: `opencode debug config --standalone --print-logs` (stderr) + WARN-строки `configuration normalization diagnostic` в ~/.local/share/opencode/log/opencode.log. Схема встроенная (share/config.json не используется), неизвестные ключи молча игнорируются, JSONC с комментариями и trailing comma допустим. Текущий конфиг спамит WARN: compaction.prune — legacy, отбрасывается.
 - [2026-08-17] Zen API: stream=true + tool-calls → content обрезается
 - [2026-08-16] Яркость: DDC/CI (ddcutil), doas не нужен; xrandr на Wayland не работает
 - [2026-10-24] "Model access disabled" — сервер Zen; брать mimo-v2.6-flash-free
@@ -36,6 +37,7 @@ read_only: false
 
 ## Правила поведения
 - [2026-08-16] Поиск информации: единственный канал — lightpanda (Bing через fetch).
+- [2026-11-22] Рекурсивный скан /nix/store (du, store optimise, GC-подсчёты) агент не запускает — сэр делает сам. Дешёвая альтернатива: `df -hT`, `ls -l /nix/var/nix/profiles`.
 
 ## Недоступные инструменты (v2)
 - **deny**: glob, grep, websearch, webfetch (заменён на lightpanda MCP)
