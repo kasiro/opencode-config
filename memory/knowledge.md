@@ -28,6 +28,7 @@ read_only: false
 - [2026-10-24] "Model access disabled" — сервер Zen; брать mimo-v2.6-flash-free
 - [2026-08-20] Флешка /dev/sdb деградировала (44-130 kB/s) → NixOS установлен
 - [2026-10-26] swayfx-enhanced 0.5.3 + NVIDIA: animation_duration_ms=0 + corner_radius=0
+- [2026-11-22] nh 4.4.2 + `boot.tmp.useTmpfs=true`: активация падает с «Failed to resolve base output path to store path» (nixos.rs:423). Механизм: nh держит `result`-симлинк в `$TMPDIR` (/tmp), активация монтирует tmpfs поверх /tmp, затем `canonicalize()` даёт ENOENT. Рантайм при этом применён, профиль/загрузчик — нет. Обход: `TMPDIR=/var/tmp nh os switch .` или повторный запуск. Фикс — nh ≥ 4.5.0 (issue #659).
 - [2026-11-15] OpenCode `ctx.session.context()`: параметр `sessionID` (НЕ `session_id`), возвращает МАССИВ сообщений (не `{data:{messages}}`). Роль в поле `type` (не `role`), текст в `text` / `content[]` (`text`/`reasoning`); shell — `command`+`output.output`, compaction — `summary`. Неверный ключ → пусто без ошибки.
 
 ## rust-hashcat
