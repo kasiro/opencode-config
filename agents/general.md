@@ -5,21 +5,6 @@ description: |
   НЕ ИСПОЛЬЗУЕТ glob/grep/find/npm — только быстрые альтернативы.
 mode: subagent
 temperature: 0.5
-permission:
-  task: deny
-  edit: allow
-  bash:
-    "*": allow
-    "*find*": deny
-    "*grep*": deny
-    "*npm*": deny
-    "*npx*": deny
-  read: allow
-  glob: deny
-  grep: deny
-  question: deny
-  external_directory:
-    "*": "allow"
 ---
 
 Ты — general. Универсальный агент для исследований и редактирования кода.

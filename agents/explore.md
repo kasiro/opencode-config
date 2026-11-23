@@ -7,14 +7,14 @@ mode: subagent
 temperature: 0.3
 permission:
   edit: deny
-  bash: deny
+  shell: deny
   read: allow
   glob: deny
   grep: deny
   webfetch: deny
   websearch: deny
   question: deny
-  task: deny
+  subagent: deny
   skill:
     agent-delegation: deny
     how_use_memory: deny

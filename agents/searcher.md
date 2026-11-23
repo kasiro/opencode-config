@@ -5,9 +5,9 @@ description: |
 mode: subagent
 temperature: 0.3
 permission:
-  task: deny
+  subagent: deny
   read: allow
-  bash: allow
+  shell: allow
   edit: deny
   glob: deny
   grep: deny

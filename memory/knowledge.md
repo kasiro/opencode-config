@@ -42,7 +42,7 @@ read_only: false
 
 ## Недоступные инструменты (v2)
 - **deny**: glob, grep, websearch, webfetch (заменён на lightpanda MCP)
-- **bash pattern match**: *find*, *grep*, *npm*, *npx* (блокируется даже в URL)
+- **shell pattern match** (`opencode.json` → `permissions`, `action: "shell"`, whole-value glob): *find*, *grep*, *npm*, *npx* — `*find*` ловит любое вхождение (URL, `t.find()`), а `find *` только команду (в т.ч. после пайпа)
 - **ask**: *sqlite*, *opencode* (требуют подтверждения сэра)
 - **Альтернативы**: fd вместо find, rg вместо grep, bun вместо npm, bunx вместо npx
 

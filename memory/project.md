@@ -33,7 +33,7 @@ read_only: false
 - Грабля: /home/whitepeach drwx------ → kasiro не может is_dir() → PermissionError валил бы prehook; guard: недоступный каталог = «уже существует» (в чужой home клонировать всё равно нельзя).
 
 ## dsh (deepseek-harness)
-- [2026-08-17] dsh 0.1.0-rc.6 (bun, ~/.bun/bin/dsh). TUI НЕТ (только web/headless; web = алиас на автоинициализируемый профиль). UA зашит в APP_IDENTITY пакета dsh-llm (lib/index.js + lib/types/attribution.js) → заменён на opencode/1.18.18 (Zen API отдаёт 429 для чужих UA; headers провайдера фильтруются, user-agent зарезервирован). Правка слетит при bun update. Провайдер Zen: llm-pi-ai.providers.opencode, apiKeyEnv OPENCODE_API_KEY, baseURL opencode.ai/zen/v1 (встроенный каталог pi-ai).
+- [2026-08-17] dsh 0.1.0-rc.6 (bun, ~/.bun/bin/dsh): TUI нет, только web/headless. UA зашит в dsh-llm (APP_IDENTITY) → заменён на opencode/1.18.18, иначе Zen API даёт 429. Правка слетает при bun update. Zen: baseURL opencode.ai/zen/v1, apiKeyEnv OPENCODE_API_KEY.
 
 ## Noctalia ↔ Hyprland (2026-11-14)
 - Бордеры Hyprland теперь из шаблона `hyprland` noctalia: в конец hyprland.lua добавлен `require("noctalia").apply_theme()` — Hyprland сам reload'ит файлы, загруженные через require() (inotify), смена обоев = живой цвет бордера без rebuild.
@@ -44,7 +44,8 @@ read_only: false
 ## HDD-оптимизации (2026-11-22)
 - Диск: WDC WD5000AAKX, 465.8G, ext4, / и /nix/store на одном разделе sda2, 120 ГБ занято. PSI io full был 51.8%, boot 60 с (home-manager-kasiro 32.8 с).
 - Внесено: zram zstd 75%/priority 100, swappiness 150, page-cluster 0, vfs_cache_pressure 50, dirty 5/15/3000, watermark_boost 0; modules/system/udev.nix (bfq для rotational, read_ahead_kb 1024 для sda); modules/system/journald.nix (SystemMaxUse 500M, SyncIntervalSec 15min); boot.tmp.useTmpfs + tmpfiles.
-- Осталось: noatime,commit=60 для /; проверка после rebuild: scheduler=bfq, zramctl, PSI, findmnt.
+- Применено (генерация system-460, проверено 23.11): bfq активен, zram zstd 5.77G PRIO 100, swappiness 150, dirty 5/15/3000, vfs 50, page-cluster 0, / = rw,noatime,commit=60, journald 469.8M, /tmp tmpfs 3.9G. PSI io full avg60: 51.84% → 4.93%.
+- Не применилось: read_ahead_kb sda = 8192 (правило 99-local.rules есть, udevadm test его видит, но sysfs 8192). Загрузка не ускорилась: userspace 59.33 с, home-manager-kasiro 33.82 с, dev-sda2.device 32.31 с.
 
 ## lightpanda MCP — исправление
 - [2026-09-20] Ошибка "connection closed -32000" — проблема stdio/opencode, не бинарника. Фикс: увеличить timeout до 120000, проверить permission для агента.
